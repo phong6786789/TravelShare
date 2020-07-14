@@ -9,7 +9,7 @@
     tools:context=".MainActivity">
 
 <TextView
-    android:text="TRAVEL SHARE"
+    android:text="HELLO"
     android:textSize="45sp"
     android:textColor="@color/bg"
     android:textStyle="bold"
