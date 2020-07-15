@@ -6,4 +6,9 @@
     values-round/strings.xml for round devices.
     -->
     <string name="hello_world">Hello Square World!</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="facebook_app_id">571774376851700</string>
+    <string name="fb_login_protocol_scheme">fb571774376851700</string>
+    <string name="server_client_id">544446656625-7n5vha8b745qn8bp7f7qe1hu3esdpcor.apps.googleusercontent.com</string>
 </resources>
