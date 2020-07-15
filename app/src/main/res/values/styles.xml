@@ -6,6 +6,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="fontFamily">@font/text</item>
+        <item name="android:textSize">20sp</item>
     </style>
     <style name="title" parent="AppTheme">
         <item name="fontFamily">@font/logo</item>

@@ -97,9 +97,7 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 v.startAnimation(buttonClick);
-                txtRegTk.setText("");
-                txtRegMk.setText("");
-                txtRegMkk.setText("");
+                finish();
             }
         });
 
