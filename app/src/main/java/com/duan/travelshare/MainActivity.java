@@ -1,9 +1,21 @@
 package com.duan.travelshare;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.view.MenuItem;
+
+import com.duan.travelshare.fragment.GiaoDichFragment;
+import com.duan.travelshare.fragment.HomeFragment;
+import com.duan.travelshare.fragment.ThongBaoFragment;
+import com.duan.travelshare.fragment.UserFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
@@ -14,19 +26,53 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//        try {
-//            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
-//            for (Signature signature : info.signatures) {
-//                MessageDigest md = MessageDigest.getInstance("SHA");
-//                md.update(signature.toByteArray());
-//                String hashKey = new String(Base64.encode(md.digest(), 0));
-//                Log.i("TAG", "printHashKey() Hash Key: " + hashKey);
-//            }
-//        } catch (NoSuchAlgorithmException e) {
-//            Log.e("TAG", "printHashKey()", e);
-//        } catch (Exception e) {
-//            Log.e("TAG", "printHashKey()", e);
-//        }
 
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
+        //Tạo màn hình ban đầu là fragment home đầu tiên
+        if (savedInstanceState == null) {
+          loadFragment(new HomeFragment());
+        }
+    }
+
+    //Menu bottom
+    private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            Fragment fragment=null;
+            switch (menuItem.getItemId()) {
+                case R.id.home:
+                    toolbar.setTitle("TRANG CHỦ");
+                    fragment = new HomeFragment();
+                    loadFragment(fragment);
+                    return true;
+
+                case R.id.giaodich:
+                    toolbar.setTitle("GIAO DỊCH");
+                    fragment = new GiaoDichFragment();
+                    loadFragment(fragment);
+                    return true;
+                case R.id.thongbao:
+                    toolbar.setTitle("THÔNG BÁO");
+                    fragment = new ThongBaoFragment();
+                    loadFragment(fragment);
+                    return true;
+
+                case R.id.user:
+                    toolbar.setTitle("CÁ NHÂN");
+                    fragment = new UserFragment();
+                    loadFragment(fragment);
+                    return true;
+            }
+            return false;
+        }
+    };
+    private void loadFragment(Fragment fragment){
+        // load fragment
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frame, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }
