@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 
 import com.duan.travelshare.fragment.GiaoDichFragment;
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
         //Tạo màn hình ban đầu là fragment home đầu tiên
         if (savedInstanceState == null) {
-          loadFragment(new HomeFragment());
+            loadFragment(new HomeFragment());
         }
     }
 
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-            Fragment fragment=null;
+            Fragment fragment = null;
             switch (menuItem.getItemId()) {
                 case R.id.home:
                     toolbar.setTitle("TRANG CHỦ");
@@ -68,11 +69,21 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     };
-    private void loadFragment(Fragment fragment){
+
+    private void loadFragment(Fragment fragment) {
         // load fragment
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            //preventing default implementation previous to android.os.Build.VERSION_CODES.ECLAIRgit
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
