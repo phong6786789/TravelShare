@@ -11,5 +11,4 @@
     <style name="title" parent="AppTheme">
         <item name="fontFamily">@font/logo</item>
     </style>
-
 </resources>
