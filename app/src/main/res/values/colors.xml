@@ -8,4 +8,5 @@
     <color name="hint">#9F9F9F</color>
     <color name="bg">#FFFFFF</color>
     <color name="red">#FF0000</color>
+    <color name="black">#000000</color>
 </resources>
