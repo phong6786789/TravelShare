@@ -33,7 +33,7 @@
         android:textStyle="bold" />
 
     <EditText
-        android:padding="15dp"
+        android:padding="10dp"
         android:drawablePadding="10dp"
         android:id="@+id/edtRegUser"
         android:layout_width="match_parent"
@@ -67,7 +67,7 @@
             android:drawableStart="@drawable/pass"
             android:hint="Nhập mật khẩu"
             android:inputType="textPassword"
-            android:padding="15dp"
+            android:padding="10dp"
             android:textSize="20sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -93,7 +93,7 @@
             android:drawableStart="@drawable/pass"
             android:hint="Nhập lại mật khẩu"
             android:inputType="textPassword"
-            android:padding="15dp"
+            android:padding="10dp"
             android:textSize="20sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -105,7 +105,7 @@
 
         <Button
             android:textStyle="bold"
-            android:padding="15dp"
+            android:padding="10dp"
             android:id="@+id/btnReg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -117,7 +117,7 @@
             android:textSize="20sp" />
 
         <Button
-            android:padding="15dp"
+            android:padding="10dp"
             android:textSize="20sp"
             android:textStyle="bold"
             android:id="@+id/btnRelay"
