@@ -10,12 +10,14 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <?xml version="1.0" encoding="utf-8"?>
         <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_margin="8dp"
+            card_view:cardCornerRadius="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            card_view:cardCornerRadius="10dp"
+            android:id="@+id/cvUserInfo"
             card_view:cardElevation="10dp">
 
             <LinearLayout
@@ -24,44 +26,192 @@
                 android:layout_margin="10dp"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:padding="1dp"
-                    android:cropToPadding="true"
-                    android:scaleType="centerCrop"
-                    android:background="@drawable/border_image"
-                    android:id="@+id/imgP"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:src="@drawable/facebook" />
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imgRoom"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="6dp"
+                    android:src="@drawable/photo" />
 
                 <LinearLayout
+
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/titleP"
-                        android:textColor="@color/blue"
+                        android:text="Vui lòng thêm họ tên..."
+                        android:id="@+id/tvNameUser"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:text="Nguyễn Thanh Phong"
+                        android:textColor="@color/blue"
                         android:textSize="25sp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/priceP"
+                        android:id="@+id/tvEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:text="phong6786789@gmail.com"
+                        android:text="email"
                         android:textColor="@color/hint"
-                        android:textSize="20sp"/>
+                        android:textSize="20sp" />
                 </LinearLayout>
-
-
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            card_view:cardCornerRadius="5dp"
+            android:id="@+id/cvRoomFavorite"
+            card_view:cardElevation="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/cvRoomManager"
+                android:padding="15dp">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/quanlyphongthue" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:text="Quản lý phòng thuê"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            card_view:cardCornerRadius="5dp"
+            android:id="@+id/cvPartner"
+
+            card_view:cardElevation="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="15dp">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/favorite" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:text="Phòng yêu thích"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            card_view:cardCornerRadius="5dp"
+            card_view:cardElevation="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="15dp">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/dkchu" />
+
+                <TextView
+                    android:id="@+id/tvDkiChu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:text="Đăng ký làm chủ cho thuê"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:id="@+id/cvChangePass"
+            card_view:cardCornerRadius="5dp"
+            card_view:cardElevation="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="15dp">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/doimk" />
+
+                <TextView
+                    android:id="@+id/tvDoiMk"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:text="Đổi mật khẩu"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:id="@+id/cvLogOut"
+            card_view:cardCornerRadius="5dp"
+            card_view:cardElevation="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="15dp">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/dangxuat" />
+
+                <TextView
+                    android:id="@+id/tvDangXuat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:text="Đăng xuất"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
     </LinearLayout>
 
 </FrameLayout>

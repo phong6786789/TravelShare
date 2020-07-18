@@ -41,7 +41,7 @@
         android:layout_below="@+id/txtRegister"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="35dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/border"
         android:drawableStart="@drawable/user"
         android:hint="Nhập tên tài khoản"
@@ -50,7 +50,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/pass"
-        android:layout_marginBottom="35dp"
+        android:layout_marginBottom="20dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/edtRegUser"
@@ -74,7 +74,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/pass2"
-        android:layout_marginBottom="45dp"
+        android:layout_marginBottom="20dp"
         android:drawablePadding="10dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/border2"
+    card_view:cardCornerRadius="5dp">
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="vertical">
+       <TextView
+           android:padding="5dp"
+           android:text="THÔNG BÁO"
+           android:textAlignment="center"
+           android:textColor="@color/bg"
+           android:background="@color/blue"
+           android:layout_width="match_parent"
+           android:textSize="20sp"
+           android:textStyle="bold"
+           android:layout_height="wrap_content"/>
+
+       <TextView
+           android:id="@+id/tvInfo"
+           android:padding="5dp"
+           android:textColor="@color/blue"
+           android:text="..."
+           android:textAlignment="center"
+           android:textSize="20sp"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"/>
+   </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>
