@@ -3,38 +3,38 @@ package com.duan.travelshare.model;
 import java.io.Serializable;
 
 public class DanhGia implements Serializable {
-    private String IdComment,Star,Comment;
+    private String idComment,star,comment;
 
     public DanhGia() {
     }
 
     public DanhGia(String idComment, String star, String comment) {
-        IdComment = idComment;
-        Star = star;
-        Comment = comment;
+        this.idComment = idComment;
+        this.star = star;
+        this.comment = comment;
     }
 
     public String getIdComment() {
-        return IdComment;
+        return idComment;
     }
 
     public void setIdComment(String idComment) {
-        IdComment = idComment;
+        this.idComment = idComment;
     }
 
     public String getStar() {
-        return Star;
+        return star;
     }
 
     public void setStar(String star) {
-        Star = star;
+        this.star = star;
     }
 
     public String getComment() {
-        return Comment;
+        return comment;
     }
 
     public void setComment(String comment) {
-        Comment = comment;
+        this.comment = comment;
     }
 }

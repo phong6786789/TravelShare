@@ -3,66 +3,66 @@ package com.duan.travelshare.model;
 import java.io.Serializable;
 
 public class ChiTietPhong implements Serializable {
-    private String IdPhong,Gmail,Address,IdCmt,Img;
-    private int Price;
+    private String idPhong,gmail,address,idCmt,img;
+    private int price;
 
     public ChiTietPhong() {
     }
 
     public ChiTietPhong(String idPhong, String gmail, String address, String idCmt, String img, int price) {
-        IdPhong = idPhong;
-        Gmail = gmail;
-        Address = address;
-        IdCmt = idCmt;
-        Img = img;
-        Price = price;
+        this.idPhong = idPhong;
+        this.gmail = gmail;
+        this.address = address;
+        this.idCmt = idCmt;
+        this.img = img;
+        this.price = price;
     }
 
     public String getIdPhong() {
-        return IdPhong;
+        return idPhong;
     }
 
     public void setIdPhong(String idPhong) {
-        IdPhong = idPhong;
+        this.idPhong = idPhong;
     }
 
     public String getGmail() {
-        return Gmail;
+        return gmail;
     }
 
     public void setGmail(String gmail) {
-        Gmail = gmail;
+        this.gmail = gmail;
     }
 
     public String getAddress() {
-        return Address;
+        return address;
     }
 
     public void setAddress(String address) {
-        Address = address;
+        this.address = address;
     }
 
     public String getIdCmt() {
-        return IdCmt;
+        return idCmt;
     }
 
     public void setIdCmt(String idCmt) {
-        IdCmt = idCmt;
+        this.idCmt = idCmt;
     }
 
     public String getImg() {
-        return Img;
+        return img;
     }
 
     public void setImg(String img) {
-        Img = img;
+        this.img = img;
     }
 
     public int getPrice() {
-        return Price;
+        return price;
     }
 
     public void setPrice(int price) {
-        Price = price;
+        this.price = price;
     }
 }

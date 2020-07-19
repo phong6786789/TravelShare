@@ -3,56 +3,56 @@ package com.duan.travelshare.model;
 import java.io.Serializable;
 
 public class LichSuGD implements Serializable {
-    private String IdGD,Date,Gmail,IdPhong,StatusGD;
+    private String idGD,date,gmail,idPhong,statusGD;
 
     public LichSuGD() {
     }
 
     public LichSuGD(String idGD, String date, String gmail, String idPhong, String statusGD) {
-        IdGD = idGD;
-        Date = date;
-        Gmail = gmail;
-        IdPhong = idPhong;
-        StatusGD = statusGD;
+        this.idGD = idGD;
+        this.date = date;
+        this.gmail = gmail;
+        this.idPhong = idPhong;
+        this.statusGD = statusGD;
     }
 
     public String getIdGD() {
-        return IdGD;
+        return idGD;
     }
 
     public void setIdGD(String idGD) {
-        IdGD = idGD;
+        this.idGD = idGD;
     }
 
     public String getDate() {
-        return Date;
+        return date;
     }
 
     public void setDate(String date) {
-        Date = date;
+        this.date = date;
     }
 
     public String getGmail() {
-        return Gmail;
+        return gmail;
     }
 
     public void setGmail(String gmail) {
-        Gmail = gmail;
+        this.gmail = gmail;
     }
 
     public String getIdPhong() {
-        return IdPhong;
+        return idPhong;
     }
 
     public void setIdPhong(String idPhong) {
-        IdPhong = idPhong;
+        this.idPhong = idPhong;
     }
 
     public String getStatusGD() {
-        return StatusGD;
+        return statusGD;
     }
 
     public void setStatusGD(String statusGD) {
-        StatusGD = statusGD;
+        this.statusGD = statusGD;
     }
 }

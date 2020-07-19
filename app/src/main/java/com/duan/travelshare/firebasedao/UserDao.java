@@ -116,7 +116,6 @@ public class UserDao {
                     }
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 

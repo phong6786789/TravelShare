@@ -3,73 +3,74 @@ package com.duan.travelshare.model;
 import java.io.Serializable;
 
 public class ChiTietKH implements Serializable {
-    private String Gmail,NameKH,AddressKH,LatMapKH,LongMapKH,BrithdayKH,PhoneKH;
+    private String gmail,nameKH,addressKH,latMapKH,longMapKH,brithdayKH,phoneKH;
 
     public ChiTietKH() {
     }
+
     public ChiTietKH(String gmail, String nameKH, String addressKH, String latMapKH, String longMapKH, String brithdayKH, String phoneKH) {
-        Gmail = gmail;
-        NameKH = nameKH;
-        AddressKH = addressKH;
-        LatMapKH = latMapKH;
-        LongMapKH = longMapKH;
-        BrithdayKH = brithdayKH;
-        PhoneKH = phoneKH;
+        this.gmail = gmail;
+        this.nameKH = nameKH;
+        this.addressKH = addressKH;
+        this.latMapKH = latMapKH;
+        this.longMapKH = longMapKH;
+        this.brithdayKH = brithdayKH;
+        this.phoneKH = phoneKH;
     }
 
     public String getGmail() {
-        return Gmail;
+        return gmail;
     }
 
     public void setGmail(String gmail) {
-        Gmail = gmail;
+        this.gmail = gmail;
     }
 
     public String getNameKH() {
-        return NameKH;
+        return nameKH;
     }
 
     public void setNameKH(String nameKH) {
-        NameKH = nameKH;
+        this.nameKH = nameKH;
     }
 
     public String getAddressKH() {
-        return AddressKH;
+        return addressKH;
     }
 
     public void setAddressKH(String addressKH) {
-        AddressKH = addressKH;
+        this.addressKH = addressKH;
     }
 
     public String getLatMapKH() {
-        return LatMapKH;
+        return latMapKH;
     }
 
     public void setLatMapKH(String latMapKH) {
-        LatMapKH = latMapKH;
+        this.latMapKH = latMapKH;
     }
 
     public String getLongMapKH() {
-        return LongMapKH;
+        return longMapKH;
     }
 
     public void setLongMapKH(String longMapKH) {
-        LongMapKH = longMapKH;
+        this.longMapKH = longMapKH;
     }
 
     public String getBrithdayKH() {
-        return BrithdayKH;
+        return brithdayKH;
     }
 
     public void setBrithdayKH(String brithdayKH) {
-        BrithdayKH = brithdayKH;
+        this.brithdayKH = brithdayKH;
     }
 
     public String getPhoneKH() {
-        return PhoneKH;
+        return phoneKH;
     }
 
     public void setPhoneKH(String phoneKH) {
-        PhoneKH = phoneKH;
+        this.phoneKH = phoneKH;
     }
 }

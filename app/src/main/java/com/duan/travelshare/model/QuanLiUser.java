@@ -3,29 +3,29 @@ package com.duan.travelshare.model;
 import java.io.Serializable;
 
 public class QuanLiUser implements Serializable {
-    private String User,LockUser;
+    private String user,lockUser;
 
     public QuanLiUser() {
     }
 
     public QuanLiUser(String user, String lockUser) {
-        User = user;
-        LockUser = lockUser;
+        this.user = user;
+        this.lockUser = lockUser;
     }
 
     public String getUser() {
-        return User;
+        return user;
     }
 
     public void setUser(String user) {
-        User = user;
+        this.user = user;
     }
 
     public String getLockUser() {
-        return LockUser;
+        return lockUser;
     }
 
     public void setLockUser(String lockUser) {
-        LockUser = lockUser;
+        this.lockUser = lockUser;
     }
 }

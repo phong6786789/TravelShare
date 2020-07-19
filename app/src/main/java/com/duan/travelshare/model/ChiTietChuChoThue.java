@@ -3,56 +3,57 @@ package com.duan.travelshare.model;
 import java.io.Serializable;
 
 public class ChiTietChuChoThue implements Serializable {
-    private String Gmail,NameCCT,AddressCCT,BirthdayCCT,PhoneCCT;
+    private String gmail, nameCCT, addressCCT, birthdayCCT, phoneCCT;
 
     public ChiTietChuChoThue() {
     }
 
     public ChiTietChuChoThue(String gmail, String nameCCT, String addressCCT, String birthdayCCT, String phoneCCT) {
-        Gmail = gmail;
-        NameCCT = nameCCT;
-        AddressCCT = addressCCT;
-        BirthdayCCT = birthdayCCT;
-        PhoneCCT = phoneCCT;
+        this.gmail = gmail;
+        this.nameCCT = nameCCT;
+        this.addressCCT = addressCCT;
+        this.birthdayCCT = birthdayCCT;
+        this.phoneCCT = phoneCCT;
     }
 
     public String getGmail() {
-        return Gmail;
+        return gmail;
     }
 
     public void setGmail(String gmail) {
-        Gmail = gmail;
+        this.gmail = gmail;
     }
 
     public String getNameCCT() {
-        return NameCCT;
+        return nameCCT;
     }
 
     public void setNameCCT(String nameCCT) {
-        NameCCT = nameCCT;
+        this.nameCCT = nameCCT;
     }
 
     public String getAddressCCT() {
-        return AddressCCT;
+        return addressCCT;
     }
 
     public void setAddressCCT(String addressCCT) {
-        AddressCCT = addressCCT;
+        this.addressCCT = addressCCT;
     }
 
     public String getBirthdayCCT() {
-        return BirthdayCCT;
+        return birthdayCCT;
     }
 
     public void setBirthdayCCT(String birthdayCCT) {
-        BirthdayCCT = birthdayCCT;
+        this.birthdayCCT = birthdayCCT;
     }
 
     public String getPhoneCCT() {
-        return PhoneCCT;
+        return phoneCCT;
     }
 
     public void setPhoneCCT(String phoneCCT) {
-        PhoneCCT = phoneCCT;
+        this.phoneCCT = phoneCCT;
     }
 }
+

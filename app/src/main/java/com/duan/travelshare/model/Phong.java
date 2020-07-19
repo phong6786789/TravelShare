@@ -3,38 +3,38 @@ package com.duan.travelshare.model;
 import java.io.Serializable;
 
 public class Phong implements Serializable {
-    private String IdPhong,NamePhong,Gmail;
+    private String idPhong,namePhong,gmail;
 
     public Phong() {
     }
 
     public Phong(String idPhong, String namePhong, String gmail) {
-        IdPhong = idPhong;
-        NamePhong = namePhong;
-        Gmail = gmail;
+        this.idPhong = idPhong;
+        this.namePhong = namePhong;
+        this.gmail = gmail;
     }
 
     public String getIdPhong() {
-        return IdPhong;
+        return idPhong;
     }
 
     public void setIdPhong(String idPhong) {
-        IdPhong = idPhong;
+        this.idPhong = idPhong;
     }
 
     public String getNamePhong() {
-        return NamePhong;
+        return namePhong;
     }
 
     public void setNamePhong(String namePhong) {
-        NamePhong = namePhong;
+        this.namePhong = namePhong;
     }
 
     public String getGmail() {
-        return Gmail;
+        return gmail;
     }
 
     public void setGmail(String gmail) {
-        Gmail = gmail;
+        this.gmail = gmail;
     }
 }
