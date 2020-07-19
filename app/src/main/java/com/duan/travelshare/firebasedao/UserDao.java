@@ -86,8 +86,6 @@ public class UserDao {
                     if (data.child("userName").getValue(String.class).equalsIgnoreCase(user)) {
                         key = data.getKey();
                         reference.child(key).child("loaiUser").setValue(loaiUser);
-                        Toast.makeText(context, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
-
 //                        ListNguoiDungActivity.adapter.notifyDataSetChanged();
                     }
                 }
@@ -107,6 +105,7 @@ public class UserDao {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     if (data.child("userName").getValue(String.class).equalsIgnoreCase(userName)) {
+                        User u = data.getValue(User.class);
                         key = data.getKey();
 //                        reference.child(key).child("userName").setValue(userName);
                         reference.child(key).child("password").setValue(password);

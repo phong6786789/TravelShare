@@ -83,7 +83,7 @@ public class Login extends AppCompatActivity {
                     //Set tên tk vô cho LoginOk
                     v.startAnimation(buttonClick);
                     Intent i = new Intent(Login.this, MainActivity.class);
-                    i.putExtra("name", tenTK);
+                    i.putExtra("tk", tenTK);
                     startActivity(i);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 } else {

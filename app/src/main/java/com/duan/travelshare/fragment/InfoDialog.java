@@ -13,17 +13,15 @@ import com.duan.travelshare.R;
 public class InfoDialog {
     Activity activity;
     Dialog dialog;
-    String text;
 
     public InfoDialog() {
     }
 
-    public InfoDialog(Activity activity, String text) {
+    public InfoDialog(Activity activity) {
         this.activity = activity;
-        this.text = text;
     }
 
-    public void toastInfo() {
+    public void toastInfo(String text) {
         dialog = new Dialog(activity);
         dialog.setContentView(R.layout.show);
         dialog.setCancelable(true);

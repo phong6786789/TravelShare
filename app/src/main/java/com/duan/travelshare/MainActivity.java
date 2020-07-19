@@ -22,7 +22,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
-    public  static String name, email;
+    public  static String name="", email="", tk="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         Intent i = getIntent();
         name = i.getStringExtra("name");
         email = i.getStringExtra("email");
-        Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
+        tk = i.getStringExtra("tk");
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
