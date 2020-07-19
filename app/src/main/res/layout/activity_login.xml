@@ -39,7 +39,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/line"
-        android:layout_marginBottom="40dp"
+        android:layout_marginTop="23dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/border"
         android:drawableLeft="@drawable/user"
         android:drawablePadding="10dp"
@@ -54,7 +55,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/edtUserName"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="20dp"
         app:hintEnabled="false"
 
         app:passwordToggleEnabled="true">
@@ -78,7 +79,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/pass"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="20dp"
         android:buttonTint="@color/blue"
         android:text="Nhớ mật khẩu" />
 
@@ -102,7 +103,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/btnLogin"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="20dp"
         android:text="Hoặc đăng nhập với"
         android:textAlignment="center"
         android:textColor="@color/blue"

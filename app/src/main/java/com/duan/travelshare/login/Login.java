@@ -83,14 +83,12 @@ public class Login extends AppCompatActivity {
                     //Set tên tk vô cho LoginOk
                     v.startAnimation(buttonClick);
                     Intent i = new Intent(Login.this, MainActivity.class);
-                    i.putExtra("hello", tenTK);
+                    i.putExtra("tk", tenTK);
                     startActivity(i);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 } else {
                     Toast.makeText(Login.this, "Tên tài khoản hoặc mật khẩu không chính xác!", Toast.LENGTH_SHORT).show();
-
                 }
-
             }
         });
 
@@ -140,11 +138,20 @@ public class Login extends AppCompatActivity {
                         new GraphRequest.GraphJSONObjectCallback() {
                             @Override
                             public void onCompleted(JSONObject object, GraphResponse response) {
-                                Log.v("LoginActivity", response.toString());
+                                response.getError();
+                                String name = "", email="";
+                                Log.v("LoginActivity", object.toString());
                                 try {
-                                    String user = object.getString("name");
+                                    if(object.has("name")){
+                                        name = object.getString("name");
+                                    }
+                                    if(object.has("email")){
+                                        email = object.getString("name");
+                                    }
+
                                     Intent i = new Intent(Login.this, MainActivity.class);
-                                    i.putExtra("hello", user);
+                                    i.putExtra("name", name);
+                                    i.putExtra("email", email);
                                     startActivity(i);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -152,7 +159,7 @@ public class Login extends AppCompatActivity {
                             }
                         });
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,email,birthday,cover,picture.type(large)");
+                parameters.putString("fields", "id,name,email");
                 request.setParameters(parameters);
                 request.executeAsync();
             }
@@ -203,13 +210,14 @@ public class Login extends AppCompatActivity {
             String personName = acct.getDisplayName();
 //            String personGivenName = acct.getGivenName();
 //            String personFamilyName = acct.getFamilyName();
-//            String personEmail = acct.getEmail();
+            String personEmail = acct.getEmail();
 //            String personId = acct.getId();
             //Uri personPhoto = acct.getPhotoUrl();
             // Signed in successfully, show authenticated UI.
             Toast.makeText(Login.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(Login.this, MainActivity.class);
-            i.putExtra("hello", personName);
+            i.putExtra("email", personEmail);
+            i.putExtra("name", personName);
             startActivity(i);
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
