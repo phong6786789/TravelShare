@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.duan.travelshare.fragment.UserFragment;
 import com.duan.travelshare.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -46,6 +47,34 @@ public class UserDao {
                         User nd = next.getValue(User.class);
                         list.add(nd);
                     }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(context, "Lấy thông tin thất bại!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        return list;
+    }
+
+    //Lấy toàn bộ tài khoản mật khẩu
+    public ArrayList<User> getAllFilter() {
+        final ArrayList<User> list = new ArrayList<>();
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    list.clear();
+                    Iterable<DataSnapshot> dataSnapshotIterable = dataSnapshot.getChildren();
+                    Iterator<DataSnapshot> iterator = dataSnapshotIterable.iterator();
+                    while (iterator.hasNext()) {
+                        DataSnapshot next = (DataSnapshot) iterator.next();
+                        User nd = next.getValue(User.class);
+                        list.add(nd);
+                    }
+                    UserFragment.filterUser();
                 }
 
             }

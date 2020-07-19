@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             card_view:cardCornerRadius="5dp"
-            android:id="@+id/cvRoomFavorite"
+            android:id="@+id/cvRoomManager"
             card_view:cardElevation="10dp">
 
             <LinearLayout
@@ -94,7 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             card_view:cardCornerRadius="5dp"
-            android:id="@+id/cvRoomManager"
+            android:id="@+id/cvRoomFavorite"
             card_view:cardElevation="10dp">
 
             <LinearLayout

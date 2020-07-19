@@ -25,9 +25,9 @@ import com.duan.travelshare.model.User;
 import java.util.ArrayList;
 
 public class UserFragment extends Fragment {
-    CardView fullInfo, roomMng, roomFav, partnerRoom, changePass, logOut;
+    static CardView fullInfo, roomMng, roomFav, partnerRoom, changePass, logOut;
     TextView name, email;
-    ArrayList<User> users;
+    static ArrayList<User> users;
     InfoDialog show;
 
     public UserFragment() {
@@ -41,7 +41,7 @@ public class UserFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_user, container, false);
         //Đổ tài khoản vào list
         final UserDao userDao = new UserDao(getActivity());
-        users = userDao.getAll();
+        users = userDao.getAllFilter();
 
 
         show = new InfoDialog(getActivity());
@@ -58,7 +58,7 @@ public class UserFragment extends Fragment {
         name.setText(MainActivity.name);
         email.setText(MainActivity.email);
         //Set tên và email người dùng
-        if(!MainActivity.tk.isEmpty()){
+        if (!MainActivity.tk.isEmpty()) {
             name.setText(MainActivity.tk);
         }
 
@@ -233,7 +233,7 @@ public class UserFragment extends Fragment {
         return view;
     }
 
-    private void filterUser() {
+    public static void filterUser() {
         String loaiUser = "0";
         for (int i = 0; i < users.size(); i++) {
             String tk = users.get(i).getUserName();
@@ -246,8 +246,7 @@ public class UserFragment extends Fragment {
         if (loaiUser.matches("0")) {
             roomMng.setVisibility(View.GONE);
             partnerRoom.setVisibility(View.VISIBLE);
-        }
-        else if(loaiUser.matches("1")){
+        } else if (loaiUser.matches("1")) {
             roomMng.setVisibility(View.VISIBLE);
             partnerRoom.setVisibility(View.GONE);
         }
