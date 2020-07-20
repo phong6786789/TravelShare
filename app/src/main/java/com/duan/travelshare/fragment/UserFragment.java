@@ -29,6 +29,7 @@ public class UserFragment extends Fragment {
     TextView name, email;
     static ArrayList<User> users;
     InfoDialog show;
+    UserDao userDao;
 
     public UserFragment() {
         // Required empty public constructor
@@ -39,9 +40,6 @@ public class UserFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user, container, false);
-        //Đổ tài khoản vào list
-        final UserDao userDao = new UserDao(getActivity());
-        users = userDao.getAllFilter();
 
 
         show = new InfoDialog(getActivity());
@@ -58,12 +56,13 @@ public class UserFragment extends Fragment {
         name.setText(MainActivity.name);
         email.setText(MainActivity.email);
         //Set tên và email người dùng
-        if (!MainActivity.tk.isEmpty()) {
-            name.setText(MainActivity.tk);
+        if (!MainActivity.userName.matches("0")) {
+            name.setText(MainActivity.userName);
         }
 
-        //Lọc user là khách hay là chủ cho thuê
-        filterUser();
+        //Đổ tài khoản vào list
+        userDao = new UserDao(getActivity());
+        users = userDao.getAllFilter();
 
         //Khi chọn thông tin tài khoản
         fullInfo.setOnClickListener(new View.OnClickListener() {
@@ -109,11 +108,13 @@ public class UserFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         try {
-                            if (!MainActivity.tk.isEmpty()) {
-                                userDao.changeLoaiUser(MainActivity.tk, "1");
-                                show.toastInfo("Chúc mừng bạn đã trở thành chủ cho thuê!");
-                                dialog.dismiss();
+                            if (MainActivity.userName.matches("0")) {
+                                userDao.changeLoaiUser(MainActivity.email, "1");
+                            } else {
+                                userDao.changeLoaiUser(MainActivity.userName, "1");
                             }
+                            show.toastInfo("Chúc mừng bạn đã trở thành chủ cho thuê!");
+                            dialog.dismiss();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -134,58 +135,58 @@ public class UserFragment extends Fragment {
         changePass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Dialog dialog = new Dialog(getActivity());
-                dialog.setContentView(R.layout.change_pass);
-                dialog.setCancelable(true);
-                Window window = dialog.getWindow();
-                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                if (dialog != null && dialog.getWindow() != null) {
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                }
+                if (MainActivity.userName.matches("0")) {
+                    show.toastInfo("Bạn đang dùng Google hoặc Facebook nên không thể đổi mật khẩu!");
+                } else {
+                    final Dialog dialog = new Dialog(getActivity());
+                    dialog.setContentView(R.layout.change_pass);
+                    dialog.setCancelable(true);
+                    Window window = dialog.getWindow();
+                    window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    if (dialog != null && dialog.getWindow() != null) {
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    }
 
-                final EditText pass, newPass, newPass2;
-                Button changePass, cancle;
-                pass = dialog.findViewById(R.id.edtOldPassword);
-                newPass = dialog.findViewById(R.id.edtPasswordNew);
-                newPass2 = dialog.findViewById(R.id.edtPasswordNew2);
-                changePass = dialog.findViewById(R.id.btnChangePass);
-                cancle = dialog.findViewById(R.id.btnCanclePass);
+                    final EditText pass, newPass, newPass2;
+                    Button changePass, cancle;
+                    pass = dialog.findViewById(R.id.edtOldPassword);
+                    newPass = dialog.findViewById(R.id.edtPasswordNew);
+                    newPass2 = dialog.findViewById(R.id.edtPasswordNew2);
+                    changePass = dialog.findViewById(R.id.btnChangePass);
+                    cancle = dialog.findViewById(R.id.btnCanclePass);
 
-                changePass.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String userName = MainActivity.name;
+                    changePass.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String userName = MainActivity.name;
 
 
-                        String passOld, passNew, passNew2;
-                        passOld = pass.getText().toString();
-                        passNew = newPass.getText().toString();
-                        passNew2 = newPass2.getText().toString();
+                            String passOld, passNew, passNew2;
+                            passOld = pass.getText().toString();
+                            passNew = newPass.getText().toString();
+                            passNew2 = newPass2.getText().toString();
 //
 //
-                        //Check mk đúng trước\
-                        Boolean checkPassOld = false;
-                        try {
-                            for (int i = 0; i < users.size(); i++) {
-                                String tk = users.get(i).getUserName();
-                                String mk = users.get(i).getPassword();
-                                if (tk.matches(userName) && mk.matches(passOld)) {
-                                    checkPassOld = true;
-                                    break;
+                            //Check mk đúng trước
+                            Boolean checkPassOld = false;
+                            try {
+                                for (int i = 0; i < users.size(); i++) {
+                                    String tk = users.get(i).getUserName();
+                                    String mk = users.get(i).getPassword();
+                                    if (tk.matches(userName) && mk.matches(passOld)) {
+                                        checkPassOld = true;
+                                        break;
+                                    }
                                 }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
 
 
-                        //Check mật khẩu cũ và mật khẩu mới
+                            //Check mật khẩu cũ và mật khẩu mới
 
-                        try {
-                            if (MainActivity.tk.isEmpty()) {
-                                show.toastInfo("Bạn đang dùng Google hoặc Facebook nên không thể đổi mật khẩu!");
-                                dialog.dismiss();
-                            } else {
+                            try {
+
                                 if (passOld.isEmpty() || passNew.isEmpty() || passNew2.isEmpty()) {
                                     show.toastInfo("Bạn không được để trống!");
                                 } else {
@@ -203,23 +204,24 @@ public class UserFragment extends Fragment {
                                 }
 
 
-                            }
 //
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+
                         }
+                    });
 
+                    cancle.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.show();
+                }
 
-                    }
-                });
-
-                cancle.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
-                    }
-                });
-                dialog.show();
 
             }
         });
@@ -235,20 +237,35 @@ public class UserFragment extends Fragment {
 
     public static void filterUser() {
         String loaiUser = "0";
-        for (int i = 0; i < users.size(); i++) {
-            String tk = users.get(i).getUserName();
-            if (MainActivity.tk.matches(tk)) {
-                loaiUser = users.get(i).getLoaiUser();
-                break;
+        if (MainActivity.userName.matches("0")) {
+            for (int i = 0; i < users.size(); i++) {
+                String tk = users.get(i).getUserName();
+                if (MainActivity.email.matches(tk)) {
+                    loaiUser = users.get(i).getLoaiUser();
+                    break;
+                }
+            }
+        } else {
+            for (int i = 0; i < users.size(); i++) {
+                String tk = users.get(i).getUserName();
+                if (MainActivity.userName.matches(tk)) {
+                    loaiUser = users.get(i).getLoaiUser();
+                    break;
+                }
             }
         }
 
-        if (loaiUser.matches("0")) {
-            roomMng.setVisibility(View.GONE);
-            partnerRoom.setVisibility(View.VISIBLE);
-        } else if (loaiUser.matches("1")) {
-            roomMng.setVisibility(View.VISIBLE);
-            partnerRoom.setVisibility(View.GONE);
+
+        try {
+            if (loaiUser.matches("0")) {
+                roomMng.setVisibility(View.GONE);
+                partnerRoom.setVisibility(View.VISIBLE);
+            } else if (loaiUser.matches("1")) {
+                roomMng.setVisibility(View.VISIBLE);
+                partnerRoom.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

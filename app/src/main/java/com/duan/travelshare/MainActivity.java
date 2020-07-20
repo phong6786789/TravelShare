@@ -3,26 +3,31 @@ package com.duan.travelshare;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.widget.Toast;
 
+import com.duan.travelshare.firebasedao.UserDao;
 import com.duan.travelshare.fragment.GiaoDichFragment;
 import com.duan.travelshare.fragment.HomeFragment;
 import com.duan.travelshare.fragment.ThongBaoFragment;
 import com.duan.travelshare.fragment.UserFragment;
+import com.duan.travelshare.model.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
-    public  static String name="", email="", tk="";
+    public static String name = "", email = "", userName = "";
+    static UserDao userDao;
+    static ArrayList<User> users;
+    static Boolean check = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +37,19 @@ public class MainActivity extends AppCompatActivity {
         Intent i = getIntent();
         name = i.getStringExtra("name");
         email = i.getStringExtra("email");
-        tk = i.getStringExtra("tk");
+        userName = i.getStringExtra("userName");
+//        Toast.makeText(this, userName, Toast.LENGTH_SHORT).show();
+
+        //Get toàn bộ list về
+        if (userName.matches("0")) {
+            userDao = new UserDao(this);
+            users = userDao.checkUser();
+            Log.d("TAG", "login:"+"đăng nhập bằng gg fb");
+        }
+        else {
+            Log.d("TAG", "login:"+"đăng nhập bằng tk mk");
+        }
+
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
@@ -84,12 +101,31 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
     }
 
+
+    //Chặn hành động bấm phím back của người dùng
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            //preventing default implementation previous to android.os.Build.VERSION_CODES.ECLAIRgit
             return true;
         }
         return super.onKeyDown(keyCode, event);
     }
+
+
+    //Check tài khoản là Google hoặc Facebook đã đăng nhập trước đó chưa
+    public static void checkUser() {
+        for (int i = 0; i < users.size(); i++) {
+            String tk = users.get(i).getUserName();
+            if (email.equalsIgnoreCase(tk)) {
+                check = true;
+                break;
+            }
+        }
+        if(check==false){
+            userDao.insert(new User(email,"","0"));
+            check=true;
+        }
+    }
+
+
 }

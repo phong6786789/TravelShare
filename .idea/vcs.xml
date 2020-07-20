@@ -3,5 +3,6 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/TravelShare" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/facebook-android-sdk" vcs="Git" />
   </component>
 </project>

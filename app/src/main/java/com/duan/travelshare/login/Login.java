@@ -2,7 +2,11 @@ package com.duan.travelshare.login;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -39,6 +43,8 @@ import com.google.android.gms.tasks.Task;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 public class Login extends AppCompatActivity {
@@ -56,6 +62,8 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+
         userDao = new UserDao(this);
         users = userDao.getAll();
         init();
@@ -83,7 +91,7 @@ public class Login extends AppCompatActivity {
                     //Set tên tk vô cho LoginOk
                     v.startAnimation(buttonClick);
                     Intent i = new Intent(Login.this, MainActivity.class);
-                    i.putExtra("tk", tenTK);
+                    i.putExtra("userName", tenTK);
                     startActivity(i);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 } else {
@@ -139,19 +147,22 @@ public class Login extends AppCompatActivity {
                             @Override
                             public void onCompleted(JSONObject object, GraphResponse response) {
                                 response.getError();
-                                String name = "", email="";
+                                String name = "", id = "";
                                 Log.v("LoginActivity", object.toString());
                                 try {
-                                    if(object.has("name")){
+                                    if (object.has("name")) {
                                         name = object.getString("name");
                                     }
-                                    if(object.has("email")){
-                                        email = object.getString("name");
+                                    if (object.has("id")) {
+                                        id = object.getString("id");
                                     }
 
+                                    Log.i("TAG", "key" + id + "///" + name);
+
                                     Intent i = new Intent(Login.this, MainActivity.class);
+                                    i.putExtra("email", id);
                                     i.putExtra("name", name);
-                                    i.putExtra("email", email);
+                                    i.putExtra("userName","0");
                                     startActivity(i);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -159,7 +170,7 @@ public class Login extends AppCompatActivity {
                             }
                         });
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,email");
+                parameters.putString("fields", "id,name");
                 request.setParameters(parameters);
                 request.executeAsync();
             }
@@ -218,6 +229,7 @@ public class Login extends AppCompatActivity {
             Intent i = new Intent(Login.this, MainActivity.class);
             i.putExtra("email", personEmail);
             i.putExtra("name", personName);
+            i.putExtra("userName","0");
             startActivity(i);
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
