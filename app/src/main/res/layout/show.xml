@@ -11,19 +11,22 @@
        android:layout_height="wrap_content"
        android:orientation="vertical">
        <TextView
-           android:padding="5dp"
-           android:text="THÔNG BÁO"
-           android:textAlignment="center"
-           android:textColor="@color/bg"
            android:background="@color/blue"
+           android:theme="@style/title"
+           android:textAlignment="center"
            android:layout_width="match_parent"
-           android:textSize="20sp"
-           android:textStyle="bold"
-           android:layout_height="wrap_content"/>
+           android:layout_height="wrap_content"
+           android:layout_alignParentTop="true"
+           android:layout_centerInParent="true"
+           android:layout_marginBottom="20dp"
+           android:text="THÔNG BÁO"
+           android:textColor="@color/bg"
+           android:textSize="35sp"
+           android:textStyle="bold" />
 
        <TextView
            android:id="@+id/tvInfo"
-           android:padding="5dp"
+           android:layout_marginBottom="20dp"
            android:textColor="@color/blue"
            android:text="..."
            android:textAlignment="center"

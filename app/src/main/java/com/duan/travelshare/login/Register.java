@@ -12,8 +12,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
+import com.duan.travelshare.firebasedao.FullUserDao;
 import com.duan.travelshare.firebasedao.UserDao;
+import com.duan.travelshare.fragment.ShowDialog;
+import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.User;
 
 import java.util.ArrayList;
@@ -24,6 +28,8 @@ public class Register extends AppCompatActivity {
     Button btDangKy, btNhapLai;
     ArrayList<User> users = new ArrayList<>();
     UserDao userDao;
+    FullUserDao fullUserDao;
+    private ShowDialog showDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +37,8 @@ public class Register extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         userDao = new UserDao(this);
         users = userDao.getAll();
-
+        fullUserDao = new FullUserDao(this);
+        showDialog = new ShowDialog(this);
         init();
         final Animation buttonClick = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
 
@@ -63,19 +70,20 @@ public class Register extends AppCompatActivity {
                 }
 
                 if (tk.isEmpty()) {
-                    Toast.makeText(Register.this, "Tên tài khoản không được để trống!", Toast.LENGTH_SHORT).show();
+                    showDialog.toastInfo("Tên tài khoản không được để trống!");
                 } else if (tk.length() < 5 || tk.length() > 10) {
-                    Toast.makeText(Register.this, "Tên tài khoản ít nhất có 5 ký tự và nhiều nhất là 10 ký tự!", Toast.LENGTH_SHORT).show();
+                    showDialog.toastInfo("Tên tài khoản ít nhất có 5 ký tự và nhiều nhất là 10 ký tự!");
                 } else {
                     if (mk.isEmpty() || mkk.isEmpty()) {
-                        Toast.makeText(Register.this, "Mật khẩu không được để trống!", Toast.LENGTH_SHORT).show();
+                        showDialog.toastInfo("Mật khẩu không được để trống!");
                     } else {
                         if (xetTk == true) {
                             if (xetMk == true) {
                                 v.startAnimation(buttonClick);
                                 User user = new User(tk, mk, "0");
                                 userDao.insert(user);
-                                Toast.makeText(Register.this, "Thêm tài khoản thành công!", Toast.LENGTH_SHORT).show();
+                                fullUserDao.insertFullUser(new FullUser(tk, "",tk,"","",""));
+                                showDialog.toastInfo("Đăng ký tài khoản thành công!");
                                 //Truyền dữ liệu về ô đăng nhập, mật khẩu trang Login
                                 Intent i = new Intent();
                                 i.putExtra("tk", tk);
@@ -83,10 +91,10 @@ public class Register extends AppCompatActivity {
                                 setResult(RESULT_OK, i);
                                 finish();
                             } else {
-                                Toast.makeText(Register.this, "Mật khẩu không khớp nhau!", Toast.LENGTH_SHORT).show();
+                                showDialog.toastInfo("Mật khẩu không khớp nhau!");
                             }
                         } else {
-                            Toast.makeText(Register.this, "Tên tài khoản không được trùng!", Toast.LENGTH_SHORT).show();
+                            showDialog.toastInfo("Tên tài khoản không được trùng!");
                         }
                     }
                 }

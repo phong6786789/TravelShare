@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,6 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
@@ -28,7 +28,7 @@ public class UserFragment extends Fragment {
     static CardView fullInfo, roomMng, roomFav, partnerRoom, changePass, logOut;
     TextView name, email;
     static ArrayList<User> users;
-    InfoDialog show;
+    ShowDialog show;
     UserDao userDao;
 
     public UserFragment() {
@@ -42,7 +42,7 @@ public class UserFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_user, container, false);
 
 
-        show = new InfoDialog(getActivity());
+        show = new ShowDialog(getActivity());
         //Khai báo các id
         fullInfo = view.findViewById(R.id.cvUserInfo);
         roomFav = view.findViewById(R.id.cvRoomFavorite);
@@ -68,7 +68,11 @@ public class UserFragment extends Fragment {
         fullInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                ShowUserFragment showUserFragment = new ShowUserFragment();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.frame, showUserFragment)
+                        .commit();
             }
         });
 

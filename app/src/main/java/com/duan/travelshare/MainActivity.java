@@ -12,11 +12,13 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 
+import com.duan.travelshare.firebasedao.FullUserDao;
 import com.duan.travelshare.firebasedao.UserDao;
 import com.duan.travelshare.fragment.GiaoDichFragment;
 import com.duan.travelshare.fragment.HomeFragment;
 import com.duan.travelshare.fragment.ThongBaoFragment;
 import com.duan.travelshare.fragment.UserFragment;
+import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     static UserDao userDao;
     static ArrayList<User> users;
     static Boolean check = false;
+    static FullUserDao fullUserDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         userName = i.getStringExtra("userName");
 //        Toast.makeText(this, userName, Toast.LENGTH_SHORT).show();
 
+        fullUserDao = new FullUserDao(this);
         //Get toàn bộ list về
         if (userName.matches("0")) {
             userDao = new UserDao(this);
@@ -123,9 +127,11 @@ public class MainActivity extends AppCompatActivity {
         }
         if(check==false){
             userDao.insert(new User(email,"","0"));
+            fullUserDao.insertFullUser(new FullUser(MainActivity.name, "",MainActivity.email,"","",""));
             check=true;
         }
     }
+
 
 
 }

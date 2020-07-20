@@ -10,14 +10,14 @@ import android.widget.TextView;
 
 import com.duan.travelshare.R;
 
-public class InfoDialog {
+public class ShowDialog {
     Activity activity;
     Dialog dialog;
 
-    public InfoDialog() {
+    public ShowDialog() {
     }
 
-    public InfoDialog(Activity activity) {
+    public ShowDialog(Activity activity) {
         this.activity = activity;
     }
 
