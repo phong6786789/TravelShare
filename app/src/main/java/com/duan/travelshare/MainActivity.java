@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
-    public static String name = "", email = "", userName = "";
+    public static String name = "0", email = "0", userName = "0";
     static UserDao userDao;
     static ArrayList<User> users;
     static Boolean check = false;
@@ -45,14 +45,14 @@ public class MainActivity extends AppCompatActivity {
 
         fullUserDao = new FullUserDao(this);
         //Get toàn bộ list về
-        if (userName.matches("0")) {
-            userDao = new UserDao(this);
-            users = userDao.checkUser();
-            Log.d("TAG", "login:"+"đăng nhập bằng gg fb");
-        }
-        else {
-            Log.d("TAG", "login:"+"đăng nhập bằng tk mk");
-        }
+//        if (userName.matches("0")) {
+//            userDao = new UserDao(this);
+//            users = userDao.checkUser();
+//            Log.d("TAG", "login:"+"đăng nhập bằng gg fb");
+//        }
+//        else {
+//            Log.d("TAG", "login:"+"đăng nhập bằng tk mk");
+//        }
 
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
@@ -117,20 +117,20 @@ public class MainActivity extends AppCompatActivity {
 
 
     //Check tài khoản là Google hoặc Facebook đã đăng nhập trước đó chưa
-    public static void checkUser() {
-        for (int i = 0; i < users.size(); i++) {
-            String tk = users.get(i).getUserName();
-            if (email.equalsIgnoreCase(tk)) {
-                check = true;
-                break;
-            }
-        }
-        if(check==false){
-            userDao.insert(new User(email,"","0"));
-            fullUserDao.insertFullUser(new FullUser(MainActivity.name, "",MainActivity.email,"","",""));
-            check=true;
-        }
-    }
+//    public static void checkUser() {
+//        for (int i = 0; i < users.size(); i++) {
+//            String tk = users.get(i).getUserName();
+//            if (email.equalsIgnoreCase(tk)) {
+//                check = true;
+//                break;
+//            }
+//        }
+//        if(check==false){
+//            userDao.insert(new User(email,"","0"));
+//            fullUserDao.insertFullUser(new FullUser(MainActivity.name, "",MainActivity.email,"","",""));
+//            check=true;
+//        }
+//    }
 
 
 

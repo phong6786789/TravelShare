@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.fragment.UserFragment;
+import com.duan.travelshare.login.Login;
 import com.duan.travelshare.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -24,6 +25,7 @@ public class UserDao {
     Context context;
     DatabaseReference reference;
     String key = "";
+    Login login;
 
     public UserDao() {
     }
@@ -76,34 +78,6 @@ public class UserDao {
                         list.add(nd);
                     }
                     UserFragment.filterUser();
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(context, "Lấy thông tin thất bại!", Toast.LENGTH_SHORT).show();
-            }
-        });
-        return list;
-    }
-
-    //Duyệt user đã có chưa
-    public ArrayList<User> checkUser() {
-        final ArrayList<User> list = new ArrayList<>();
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    list.clear();
-                    Iterable<DataSnapshot> dataSnapshotIterable = dataSnapshot.getChildren();
-                    Iterator<DataSnapshot> iterator = dataSnapshotIterable.iterator();
-                    while (iterator.hasNext()) {
-                        DataSnapshot next = (DataSnapshot) iterator.next();
-                        User nd = next.getValue(User.class);
-                        list.add(nd);
-                    }
-                    MainActivity.checkUser();
                 }
 
             }
@@ -173,6 +147,7 @@ public class UserDao {
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
