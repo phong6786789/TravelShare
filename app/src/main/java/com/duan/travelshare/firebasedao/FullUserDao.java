@@ -6,6 +6,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.duan.travelshare.MainActivity;
+import com.duan.travelshare.fragment.ShowUserFragment;
 import com.duan.travelshare.fragment.UserFragment;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.User;
@@ -48,6 +49,7 @@ public class FullUserDao {
                         DataSnapshot next = (DataSnapshot) iterator.next();
                         FullUser nd = next.getValue(FullUser.class);
                         list.add(nd);
+                        ShowUserFragment.setUser();
                     }
                 }
 

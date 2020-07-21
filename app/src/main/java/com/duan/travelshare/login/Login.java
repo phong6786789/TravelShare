@@ -42,9 +42,6 @@ import com.google.android.gms.tasks.Task;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 public class Login extends AppCompatActivity {
@@ -92,6 +89,7 @@ public class Login extends AppCompatActivity {
                     v.startAnimation(buttonClick);
                     Intent i = new Intent(Login.this, MainActivity.class);
                     i.putExtra("userName", tenTK);
+                    i.putExtra("email", tenTK);
                     startActivity(i);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 } else {
