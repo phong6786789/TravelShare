@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Phong implements Serializable {
     private String idPhong,namePhong,gmail;
-
+    ChiTietPhong chiTietPhong;
     public Phong() {
     }
 
