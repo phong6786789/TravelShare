@@ -75,11 +75,15 @@ public class UserFragment extends Fragment {
                         .commit();
             }
         });
-
+        //Quản lý phòng thuê
         roomMng.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                ManegerPhongThueFragment manegerPhongThueFragment = new ManegerPhongThueFragment();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.frame, manegerPhongThueFragment)
+                        .commit();
             }
         });
         roomFav.setOnClickListener(new View.OnClickListener() {
