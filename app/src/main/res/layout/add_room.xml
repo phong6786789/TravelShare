@@ -38,26 +38,16 @@
         android:hint="Giá Phòng/ngày"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-    <LinearLayout
+    <EditText
+        android:inputType="text"
+        android:background="@drawable/border"
+        android:padding="8dp"
+        android:layout_marginBottom="20dp"
+        android:id="@+id/edtTPDiaChi"
+        android:textSize="20sp"
+        android:hint="Nhập địa chỉ"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp">
-        <EditText
-            android:id="@+id/edtTPDiaChi"
-            android:padding="10dp"
-            android:background="@drawable/border"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="4"
-            android:hint="Nhập địa chỉ" />
-
-        <ImageView
-            android:id="@+id/imgTPMyMap"
-            android:layout_width="30dp"
-            android:layout_height="45dp"
-            android:layout_weight="1"
-            android:src="@drawable/place" />
-    </LinearLayout>
+        android:layout_height="wrap_content"/>
     <EditText
         android:inputType="text"
         android:background="@drawable/border"
@@ -66,16 +56,6 @@
         android:id="@+id/edtTPMoTaChiTietPhong"
         android:textSize="20sp"
         android:hint="Mô tả chi tiết phòng"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-    <EditText
-        android:inputType="text"
-        android:background="@drawable/border"
-        android:padding="8dp"
-        android:layout_marginBottom="20dp"
-        android:id="@+id/edtTPDichVu"
-        android:textSize="20sp"
-        android:hint="Các dịch vụ, tiện ích"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
     <LinearLayout
