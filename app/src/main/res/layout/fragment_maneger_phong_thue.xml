@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.ManegerPhongThueFragment">
+    <LinearLayout
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <EditText
+            android:drawablePadding="10dp"
+            android:hint="Nhập phòng cần tìm"
+            android:id="@+id/edtSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border"
+            android:drawableLeft="@drawable/ic_search"
+            android:padding="10dp" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rec_MngPhongThue"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp" />
+    </LinearLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnAddMngPhongThue"
+        android:src="@drawable/ic_add"
+        android:layout_margin="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>
