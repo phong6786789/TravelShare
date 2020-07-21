@@ -23,7 +23,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
+import com.duan.travelshare.firebasedao.FullUserDao;
 import com.duan.travelshare.firebasedao.UserDao;
+import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.User;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -42,6 +44,7 @@ import com.google.android.gms.tasks.Task;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class Login extends AppCompatActivity {
@@ -49,18 +52,24 @@ public class Login extends AppCompatActivity {
     EditText txtTk, txtMk;
     Button btLogin;
     TextView btReg;
-    ArrayList<User> users = new ArrayList<>();
+    ArrayList<User> users;
     CallbackManager callbackManager;
     LoginButton loginFB;
     ImageView signInButton;
-    UserDao userDao;
+    private UserDao userDao;
+    ArrayList<User> list;
+    private FullUserDao fullUserDao;
+    private String email = "0", name = "0", userName = "0";
+
+    public Login() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
+        fullUserDao = new FullUserDao(Login.this);
         userDao = new UserDao(this);
         users = userDao.getAll();
         init();
@@ -145,23 +154,22 @@ public class Login extends AppCompatActivity {
                             @Override
                             public void onCompleted(JSONObject object, GraphResponse response) {
                                 response.getError();
-                                String name = "", id = "";
                                 Log.v("LoginActivity", object.toString());
                                 try {
                                     if (object.has("name")) {
                                         name = object.getString("name");
                                     }
                                     if (object.has("id")) {
-                                        id = object.getString("id");
+                                        email = object.getString("id");
                                     }
 
-                                    Log.i("TAG", "key" + id + "///" + name);
+                                    Log.i("TAG", "key" + email + "///" + name);
 
-                                    Intent i = new Intent(Login.this, MainActivity.class);
-                                    i.putExtra("email", id);
-                                    i.putExtra("name", name);
-                                    i.putExtra("userName","0");
-                                    startActivity(i);
+
+                                    //Kiểm tra tài khoản có tồn tại không? Nếu chưa thì đăng ký
+                                    checkUser();
+
+
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -216,19 +224,17 @@ public class Login extends AppCompatActivity {
         try {
             // get info User
             GoogleSignInAccount acct = completedTask.getResult(ApiException.class);
-            String personName = acct.getDisplayName();
+            name = acct.getDisplayName();
 //            String personGivenName = acct.getGivenName();
 //            String personFamilyName = acct.getFamilyName();
-            String personEmail = acct.getEmail();
+            email = acct.getEmail();
 //            String personId = acct.getId();
             //Uri personPhoto = acct.getPhotoUrl();
             // Signed in successfully, show authenticated UI.
+
             Toast.makeText(Login.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-            Intent i = new Intent(Login.this, MainActivity.class);
-            i.putExtra("email", personEmail);
-            i.putExtra("name", personName);
-            i.putExtra("userName","0");
-            startActivity(i);
+            //Kiểm tra tài khoản có tồn tại không? Nếu chưa thì đăng ký
+            checkUser();
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -279,5 +285,30 @@ public class Login extends AppCompatActivity {
 
     public void loginFacebook(View view) {
         loginFB.performClick();
+    }
+
+    //Kiểm tra tài khoản đã tồn tại chưa
+
+    public void checkUser() {
+        Boolean check = false;
+            for (int i = 0; i < users.size(); i++) {
+                String tk = users.get(i).getUserName();
+                if (email.equalsIgnoreCase(tk)) {
+                    check = true;
+                    break;
+                }
+            }
+
+        if (!check) {
+            //Truyền dữ liệu vào Main
+            userDao.insert(new User(email, "", "0"));
+            fullUserDao.insertFullUser(new FullUser(name, "", email, "", "", ""));
+        }
+
+        Intent i = new Intent(Login.this, MainActivity.class);
+        i.putExtra("email", email);
+        i.putExtra("name", name);
+        i.putExtra("userName", userName);
+        startActivity(i);
     }
 }
