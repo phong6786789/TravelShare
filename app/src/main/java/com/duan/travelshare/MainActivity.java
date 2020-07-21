@@ -21,6 +21,7 @@ import com.duan.travelshare.fragment.UserFragment;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     static ArrayList<User> users;
     static Boolean check = false;
     static FullUserDao fullUserDao;
+    static ArrayList<FullUser> list;
+    public static int position = -1;
+    public static FullUser fullUserOne;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,18 +45,12 @@ public class MainActivity extends AppCompatActivity {
         name = i.getStringExtra("name");
         email = i.getStringExtra("email");
         userName = i.getStringExtra("userName");
-//        Toast.makeText(this, userName, Toast.LENGTH_SHORT).show();
+
+        //Đổ list vào
 
         fullUserDao = new FullUserDao(this);
-        //Get toàn bộ list về
-//        if (userName.matches("0")) {
-//            userDao = new UserDao(this);
-//            users = userDao.checkUser();
-//            Log.d("TAG", "login:"+"đăng nhập bằng gg fb");
-//        }
-//        else {
-//            Log.d("TAG", "login:"+"đăng nhập bằng tk mk");
-//        }
+
+        list = fullUserDao.getAllFullUser();
 
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
@@ -116,22 +114,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //Check tài khoản là Google hoặc Facebook đã đăng nhập trước đó chưa
-//    public static void checkUser() {
-//        for (int i = 0; i < users.size(); i++) {
-//            String tk = users.get(i).getUserName();
-//            if (email.equalsIgnoreCase(tk)) {
-//                check = true;
-//                break;
-//            }
-//        }
-//        if(check==false){
-//            userDao.insert(new User(email,"","0"));
-//            fullUserDao.insertFullUser(new FullUser(MainActivity.name, "",MainActivity.email,"","",""));
-//            check=true;
-//        }
-//    }
-
-
+    //Set info lên user
+    public static void setUser() {
+        position = -1;
+        for (int i = 0; i < list.size(); i++) {
+            String email = list.get(i).getEmailUser();
+            if (email.matches(email) || userName.matches(email)) {
+                position = i;
+                break;
+            }
+        }
+        fullUserOne = list.get(position);
+    }
 
 }

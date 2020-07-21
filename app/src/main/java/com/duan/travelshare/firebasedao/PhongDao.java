@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.fragment.ShowUserFragment;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
@@ -47,7 +48,7 @@ public class PhongDao {
                         DataSnapshot next = (DataSnapshot) iterator.next();
                         ChiTietPhong nd = next.getValue(ChiTietPhong.class);
                         list.add(nd);
-                        ShowUserFragment.setUser();
+                        MainActivity.setUser();
                     }
                 }
 
