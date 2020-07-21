@@ -95,7 +95,7 @@ public class ShowUserFragment extends Fragment {
                 cmnd.setText(fullUser.getCmndUser());
                 email.setText(fullUser.getEmailUser());
                 birthday.setText(fullUser.getBirtdayUser());
-                phone.setText(fullUser.getBirtdayUser());
+                phone.setText(fullUser.getPhoneUser());
                 address.setText(fullUser.getAddressUser());
 
                 //Phân biệt tài khoản đăng nhập bằng fb, gg hay firebase
@@ -209,7 +209,7 @@ public class ShowUserFragment extends Fragment {
             cmnd.setText(fullUser.getCmndUser());
             email.setText(fullUser.getEmailUser());
             birthday.setText(fullUser.getBirtdayUser());
-            phone.setText(fullUser.getBirtdayUser());
+            phone.setText(fullUser.getPhoneUser());
             address.setText(fullUser.getAddressUser());
         }
     }
