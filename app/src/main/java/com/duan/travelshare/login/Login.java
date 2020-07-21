@@ -2,7 +2,11 @@ package com.duan.travelshare.login;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -38,7 +42,6 @@ import com.google.android.gms.tasks.Task;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 public class Login extends AppCompatActivity {
@@ -56,6 +59,8 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+
         userDao = new UserDao(this);
         users = userDao.getAll();
         init();
@@ -83,14 +88,13 @@ public class Login extends AppCompatActivity {
                     //Set tên tk vô cho LoginOk
                     v.startAnimation(buttonClick);
                     Intent i = new Intent(Login.this, MainActivity.class);
-                    i.putExtra("hello", tenTK);
+                    i.putExtra("userName", tenTK);
+                    i.putExtra("email", tenTK);
                     startActivity(i);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 } else {
                     Toast.makeText(Login.this, "Tên tài khoản hoặc mật khẩu không chính xác!", Toast.LENGTH_SHORT).show();
-
                 }
-
             }
         });
 
@@ -140,11 +144,23 @@ public class Login extends AppCompatActivity {
                         new GraphRequest.GraphJSONObjectCallback() {
                             @Override
                             public void onCompleted(JSONObject object, GraphResponse response) {
-                                Log.v("LoginActivity", response.toString());
+                                response.getError();
+                                String name = "", id = "";
+                                Log.v("LoginActivity", object.toString());
                                 try {
-                                    String user = object.getString("name");
+                                    if (object.has("name")) {
+                                        name = object.getString("name");
+                                    }
+                                    if (object.has("id")) {
+                                        id = object.getString("id");
+                                    }
+
+                                    Log.i("TAG", "key" + id + "///" + name);
+
                                     Intent i = new Intent(Login.this, MainActivity.class);
-                                    i.putExtra("hello", user);
+                                    i.putExtra("email", id);
+                                    i.putExtra("name", name);
+                                    i.putExtra("userName","0");
                                     startActivity(i);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -152,7 +168,7 @@ public class Login extends AppCompatActivity {
                             }
                         });
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,email,birthday,cover,picture.type(large)");
+                parameters.putString("fields", "id,name");
                 request.setParameters(parameters);
                 request.executeAsync();
             }
@@ -203,13 +219,15 @@ public class Login extends AppCompatActivity {
             String personName = acct.getDisplayName();
 //            String personGivenName = acct.getGivenName();
 //            String personFamilyName = acct.getFamilyName();
-//            String personEmail = acct.getEmail();
+            String personEmail = acct.getEmail();
 //            String personId = acct.getId();
             //Uri personPhoto = acct.getPhotoUrl();
             // Signed in successfully, show authenticated UI.
             Toast.makeText(Login.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(Login.this, MainActivity.class);
-            i.putExtra("hello", personName);
+            i.putExtra("email", personEmail);
+            i.putExtra("name", personName);
+            i.putExtra("userName","0");
             startActivity(i);
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
