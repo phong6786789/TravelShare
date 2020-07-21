@@ -35,8 +35,8 @@ public class ShowUserFragment extends Fragment {
     static TextView name, cmnd, email, birthday, phone, address;
     private String namex, cmndx, emailx, birthdayx, phonex, addressx;
     private Dialog dialog;
-    static int position=-1;
-
+    static int position = -1;
+    public static FullUser fullUserOne;
     public ShowUserFragment() {
         // Required empty public constructor
     }
@@ -90,13 +90,13 @@ public class ShowUserFragment extends Fragment {
                 birthday.setFocusable(false);
 
                 //Set dữ liệu lên trước
-                FullUser fullUser = list.get(position);
-                name.setText(fullUser.getUserName());
-                cmnd.setText(fullUser.getCmndUser());
-                email.setText(fullUser.getEmailUser());
-                birthday.setText(fullUser.getBirtdayUser());
-                phone.setText(fullUser.getPhoneUser());
-                address.setText(fullUser.getAddressUser());
+                fullUserOne = list.get(position);
+                name.setText(fullUserOne.getUserName());
+                cmnd.setText(fullUserOne.getCmndUser());
+                email.setText(fullUserOne.getEmailUser());
+                birthday.setText(fullUserOne.getBirtdayUser());
+                phone.setText(fullUserOne.getPhoneUser());
+                address.setText(fullUserOne.getAddressUser());
 
                 //Phân biệt tài khoản đăng nhập bằng fb, gg hay firebase
                 if (MainActivity.userName.matches("0")) {
@@ -194,7 +194,7 @@ public class ShowUserFragment extends Fragment {
 
 
     //Set info lên user
-   public static void setUser() {
+    public static void setUser() {
         position = -1;
         for (int i = 0; i < list.size(); i++) {
             String email = list.get(i).getEmailUser();
@@ -204,13 +204,13 @@ public class ShowUserFragment extends Fragment {
             }
         }
         if (position != -1) {
-            FullUser fullUser = list.get(position);
-            name.setText(fullUser.getUserName());
-            cmnd.setText(fullUser.getCmndUser());
-            email.setText(fullUser.getEmailUser());
-            birthday.setText(fullUser.getBirtdayUser());
-            phone.setText(fullUser.getPhoneUser());
-            address.setText(fullUser.getAddressUser());
+            fullUserOne = list.get(position);
+            name.setText(fullUserOne.getUserName());
+            cmnd.setText(fullUserOne.getCmndUser());
+            email.setText(fullUserOne.getEmailUser());
+            birthday.setText(fullUserOne.getBirtdayUser());
+            phone.setText(fullUserOne.getPhoneUser());
+            address.setText(fullUserOne.getAddressUser());
         }
     }
 }
