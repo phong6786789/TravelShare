@@ -11,11 +11,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.duan.travelshare.firebasedao.FullUserDao;
 import com.duan.travelshare.firebasedao.UserDao;
 import com.duan.travelshare.fragment.GiaoDichFragment;
 import com.duan.travelshare.fragment.HomeFragment;
+import com.duan.travelshare.fragment.ShowDialog;
 import com.duan.travelshare.fragment.ThongBaoFragment;
 import com.duan.travelshare.fragment.UserFragment;
 import com.duan.travelshare.model.FullUser;
@@ -34,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     static ArrayList<FullUser> list;
     public static int position = -1;
     public static FullUser fullUserOne;
-
+  static   ShowDialog showDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,11 +47,10 @@ public class MainActivity extends AppCompatActivity {
         name = i.getStringExtra("name");
         email = i.getStringExtra("email");
         userName = i.getStringExtra("userName");
+         showDialog = new ShowDialog(this);
 
         //Đổ list vào
-
         fullUserDao = new FullUserDao(this);
-
         list = fullUserDao.getAllFullUser();
 
 
@@ -110,16 +111,16 @@ public class MainActivity extends AppCompatActivity {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             return true;
         }
+
         return super.onKeyDown(keyCode, event);
     }
 
 
     //Set info lên user
     public static void setUser() {
-        position = -1;
         for (int i = 0; i < list.size(); i++) {
-            String email = list.get(i).getEmailUser();
-            if (email.matches(email) || userName.matches(email)) {
+            String x = list.get(i).getEmailUser();
+            if (email.matches(x) || userName.matches(x)) {
                 position = i;
                 break;
             }
