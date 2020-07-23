@@ -22,6 +22,7 @@ import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
 import com.duan.travelshare.firebasedao.FullUserDao;
 import com.duan.travelshare.model.FullUser;
+import com.duan.travelshare.model.User;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,13 +30,13 @@ import java.util.Calendar;
 public class ShowUserFragment extends Fragment {
     private ImageView ivEdit, ivCamera, ivStorage, ivAvatar;
     private DatePickerDialog datePickerDialog;
-
     private FullUserDao fullUserDao;
     private ShowDialog showDialog;
     static TextView name, cmnd, email, birthday, phone, address;
     private String namex, cmndx, emailx, birthdayx, phonex, addressx;
     private Dialog dialog;
     private FullUser u;
+    private User user;
 
     public ShowUserFragment() {
         // Required empty public constructor
@@ -53,10 +54,8 @@ public class ShowUserFragment extends Fragment {
         ivCamera = view.findViewById(R.id.ivCamera);
         ivStorage = view.findViewById(R.id.ivStorage);
         ivEdit = view.findViewById(R.id.ivEdit);
-
         //Đổ dữ liệu
         u = MainActivity.fullUserOne;
-
 
 
         //Hiển thị thông tin lên
@@ -69,6 +68,10 @@ public class ShowUserFragment extends Fragment {
 
         //Set user
         setUser();
+
+        //Set hình lên
+
+
         ivEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -197,7 +200,7 @@ public class ShowUserFragment extends Fragment {
 
 
     //Set info lên user
-    public  void setUser() {
+    public void setUser() {
         if (MainActivity.position != -1) {
             name.setText(u.getUserName());
             cmnd.setText(u.getCmndUser());

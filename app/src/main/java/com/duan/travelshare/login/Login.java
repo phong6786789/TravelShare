@@ -301,7 +301,7 @@ public class Login extends AppCompatActivity {
 
         if (!check) {
             //Truyền dữ liệu vào Main
-            userDao.insert(new User(email, "", "0"));
+            userDao.insert(new User(email, "", "0",""));
             fullUserDao.insertFullUser(new FullUser(name, "", email, "", "", ""));
         }
 

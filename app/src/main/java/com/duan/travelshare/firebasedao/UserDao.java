@@ -156,4 +156,28 @@ public class UserDao {
 
     }
 
+    //Set avatar
+    //Đổi mật khẩu ngươi dùng
+    public void setAvatar(final String userName, final String link) {
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    if (data.child("userName").getValue(String.class).equalsIgnoreCase(userName)) {
+                        User u = data.getValue(User.class);
+                        key = data.getKey();
+//                        reference.child(key).child("userName").setValue(userName);
+                        reference.child(key).child("linkImage").setValue(link);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
 }

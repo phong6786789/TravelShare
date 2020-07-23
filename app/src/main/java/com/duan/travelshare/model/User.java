@@ -4,13 +4,29 @@ import java.io.Serializable;
 
 public class User implements Serializable {
     private String userName, password, loaiUser;
+    private String linkImage;
 
     public User() {
     }
-    public User(String userName, String password, String loaiUser) {
+
+    public User(String userName, String password, String loaiUser, String linkImage) {
         this.userName = userName;
         this.password = password;
         this.loaiUser = loaiUser;
+        this.linkImage = linkImage;
+    }
+
+    public User(String userName, String linkImage) {
+        this.userName = userName;
+        this.linkImage = linkImage;
+    }
+
+    public String getLinkImage() {
+        return linkImage;
+    }
+
+    public void setLinkImage(String linkImage) {
+        this.linkImage = linkImage;
     }
 
     public String getUserName() {

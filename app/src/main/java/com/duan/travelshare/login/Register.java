@@ -80,7 +80,7 @@ public class Register extends AppCompatActivity {
                         if (xetTk == true) {
                             if (xetMk == true) {
                                 v.startAnimation(buttonClick);
-                                User user = new User(tk, mk, "0");
+                                User user = new User(tk, mk, "0","");
                                 userDao.insert(user);
                                 fullUserDao.insertFullUser(new FullUser(tk, "",tk,"","",""));
                                 showDialog.toastInfo("Đăng ký tài khoản thành công!");
