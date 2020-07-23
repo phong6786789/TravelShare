@@ -3,6 +3,9 @@ package com.duan.travelshare.model;
 public class HinhPhong {
     String idHinh, linkHinh;
 
+    public HinhPhong() {
+    }
+
     public HinhPhong(String idHinh, String linkHinh) {
         this.idHinh = idHinh;
         this.linkHinh = linkHinh;

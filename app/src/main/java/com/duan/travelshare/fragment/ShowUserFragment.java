@@ -1,5 +1,6 @@
 package com.duan.travelshare.fragment;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.graphics.Color;
@@ -38,6 +39,15 @@ public class ShowUserFragment extends Fragment {
     private FullUser u;
     private User user;
 
+
+    private static final int CAMERA_REQUEST_CODE = 200;
+    private static final int STORAGE_REQUEST_CODE = 300;
+    private static final int IMAGE_PICK_GALLERY_CODE = 400;
+    private static final int IMAGE_PICK_CAMERA_CODE = 500;
+
+
+    private String[] cameraPermission;
+    private String[] storagePermission;
     public ShowUserFragment() {
         // Required empty public constructor
     }
@@ -57,7 +67,6 @@ public class ShowUserFragment extends Fragment {
         //Đổ dữ liệu
         u = MainActivity.fullUserOne;
 
-
         //Hiển thị thông tin lên
         name = view.findViewById(R.id.tvFullName);
         cmnd = view.findViewById(R.id.tvCmnd);
@@ -70,6 +79,11 @@ public class ShowUserFragment extends Fragment {
         setUser();
 
         //Set hình lên
+        user = new User();
+
+        //Khai báo xin quyền
+        cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
 
         ivEdit.setOnClickListener(new View.OnClickListener() {

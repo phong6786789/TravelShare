@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
@@ -30,7 +31,7 @@ public class ManegerPhongThueFragment extends Fragment {
     private PhongDao phongDao;
     ShowDialog showDialog;
     FloatingActionButton btnAddPhongThue;
-    private ArrayList<ChiTietPhong> list;
+    ArrayList<ChiTietPhong> list;
     public ManegerPhongThueFragment() {
 
     }
@@ -40,7 +41,6 @@ public class ManegerPhongThueFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_maneger_phong_thue, container, false);
-        phongDao = new PhongDao(getActivity());
         showDialog = new ShowDialog(getActivity());
         btnAddPhongThue = view.findViewById(R.id.btnAddMngPhongThue);
 
@@ -51,8 +51,8 @@ public class ManegerPhongThueFragment extends Fragment {
             }
         });
 
-
         //Đổ list phòng lên
+        phongDao = new PhongDao(getActivity());
         list = phongDao.getAllPhong();
 
         return view;
