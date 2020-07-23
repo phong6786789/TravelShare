@@ -1,11 +1,13 @@
 package com.duan.travelshare.firebasedao;
 
+import android.app.Activity;
 import android.content.Context;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.duan.travelshare.MainActivity;
+import com.duan.travelshare.fragment.ShowDialog;
 import com.duan.travelshare.fragment.ShowUserFragment;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
@@ -25,6 +27,8 @@ public class PhongDao {
     Context context;
     DatabaseReference reference;
     String key = "";
+    Boolean check;
+    ShowDialog showDialog;
 
     public PhongDao() {
     }
@@ -32,6 +36,7 @@ public class PhongDao {
     public PhongDao(Context context) {
         this.context = context;
         reference = FirebaseDatabase.getInstance().getReference("Phong");
+        showDialog = new ShowDialog((Activity) context);
     }
 
     //Lấy toàn bộ tài khoản mật khẩu
@@ -48,7 +53,6 @@ public class PhongDao {
                         DataSnapshot next = (DataSnapshot) iterator.next();
                         ChiTietPhong nd = next.getValue(ChiTietPhong.class);
                         list.add(nd);
-                        MainActivity.setUser();
                     }
                 }
 
@@ -63,32 +67,31 @@ public class PhongDao {
     }
 
     //Thêm Phòng mới
-    public boolean insertPhong(FullUser user) {
-        reference.push().setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+    public void insertPhong(ChiTietPhong chiTietPhong) {
+        reference.push().setValue(chiTietPhong).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
-                    return;
+                    showDialog.toastInfo("Thêm phòng thành công!");
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                showDialog.toastInfo("Thêm phòng thất bại!");
             }
         });
-        return true;
     }
 
     //Cập nhật Phòng
-    public void updatePhong(final FullUser fullUser) {
+    public void updatePhong(final ChiTietPhong chiTietPhong) {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    if (data.child("emailUser").getValue(String.class).equalsIgnoreCase(fullUser.getEmailUser())) {
+                    if (data.child("idPhong").getValue(String.class).equalsIgnoreCase(chiTietPhong.getIdPhong())) {
                         key = data.getKey();
-                        reference.child(key).setValue(fullUser);
+                        reference.child(key).setValue(chiTietPhong);
                     }
                 }
             }
