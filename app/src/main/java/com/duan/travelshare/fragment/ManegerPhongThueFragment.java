@@ -57,7 +57,7 @@ public class ManegerPhongThueFragment extends Fragment {
                 btnThem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        FullUser user = ShowUserFragment.fullUserOne;
+                        FullUser user = MainActivity.fullUserOne;
                         HinhPhong hinhPhong = null;
                         String ten = tenPhong.getText().toString();
                         String gia = giaPhong.getText().toString();

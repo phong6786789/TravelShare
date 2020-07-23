@@ -49,8 +49,8 @@ public class FullUserDao {
                         DataSnapshot next = (DataSnapshot) iterator.next();
                         FullUser nd = next.getValue(FullUser.class);
                         list.add(nd);
-                        ShowUserFragment.setUser();
                     }
+                    MainActivity.setUser();
                 }
 
             }

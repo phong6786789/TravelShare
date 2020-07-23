@@ -29,14 +29,14 @@ import java.util.Calendar;
 public class ShowUserFragment extends Fragment {
     private ImageView ivEdit, ivCamera, ivStorage, ivAvatar;
     private DatePickerDialog datePickerDialog;
-    static ArrayList<FullUser> list;
+
     private FullUserDao fullUserDao;
     private ShowDialog showDialog;
     static TextView name, cmnd, email, birthday, phone, address;
     private String namex, cmndx, emailx, birthdayx, phonex, addressx;
     private Dialog dialog;
-    static int position = -1;
-    public static FullUser fullUserOne;
+    private FullUser u;
+
     public ShowUserFragment() {
         // Required empty public constructor
     }
@@ -54,6 +54,11 @@ public class ShowUserFragment extends Fragment {
         ivStorage = view.findViewById(R.id.ivStorage);
         ivEdit = view.findViewById(R.id.ivEdit);
 
+        //Đổ dữ liệu
+        u = MainActivity.fullUserOne;
+
+
+
         //Hiển thị thông tin lên
         name = view.findViewById(R.id.tvFullName);
         cmnd = view.findViewById(R.id.tvCmnd);
@@ -62,9 +67,8 @@ public class ShowUserFragment extends Fragment {
         phone = view.findViewById(R.id.tvPhone);
         address = view.findViewById(R.id.tvAddress);
 
-        //Đổ list vào
-        list = fullUserDao.getAllFullUser();
-
+        //Set user
+        setUser();
         ivEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,13 +94,12 @@ public class ShowUserFragment extends Fragment {
                 birthday.setFocusable(false);
 
                 //Set dữ liệu lên trước
-                fullUserOne = list.get(position);
-                name.setText(fullUserOne.getUserName());
-                cmnd.setText(fullUserOne.getCmndUser());
-                email.setText(fullUserOne.getEmailUser());
-                birthday.setText(fullUserOne.getBirtdayUser());
-                phone.setText(fullUserOne.getPhoneUser());
-                address.setText(fullUserOne.getAddressUser());
+                name.setText(u.getUserName());
+                cmnd.setText(u.getCmndUser());
+                email.setText(u.getEmailUser());
+                birthday.setText(u.getBirtdayUser());
+                phone.setText(u.getPhoneUser());
+                address.setText(u.getAddressUser());
 
                 //Phân biệt tài khoản đăng nhập bằng fb, gg hay firebase
                 if (MainActivity.userName.matches("0")) {
@@ -194,23 +197,14 @@ public class ShowUserFragment extends Fragment {
 
 
     //Set info lên user
-    public static void setUser() {
-        position = -1;
-        for (int i = 0; i < list.size(); i++) {
-            String email = list.get(i).getEmailUser();
-            if (MainActivity.email.matches(email) || MainActivity.userName.matches(email)) {
-                position = i;
-                break;
-            }
-        }
-        if (position != -1) {
-            fullUserOne = list.get(position);
-            name.setText(fullUserOne.getUserName());
-            cmnd.setText(fullUserOne.getCmndUser());
-            email.setText(fullUserOne.getEmailUser());
-            birthday.setText(fullUserOne.getBirtdayUser());
-            phone.setText(fullUserOne.getPhoneUser());
-            address.setText(fullUserOne.getAddressUser());
+    public  void setUser() {
+        if (MainActivity.position != -1) {
+            name.setText(u.getUserName());
+            cmnd.setText(u.getCmndUser());
+            email.setText(u.getEmailUser());
+            birthday.setText(u.getBirtdayUser());
+            phone.setText(u.getPhoneUser());
+            address.setText(u.getAddressUser());
         }
     }
 }
