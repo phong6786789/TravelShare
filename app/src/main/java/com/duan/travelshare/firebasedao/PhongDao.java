@@ -39,7 +39,7 @@ public class PhongDao {
         showDialog = new ShowDialog((Activity) context);
     }
 
-    //Lấy toàn bộ tài khoản mật khẩu
+    //Lấy toàn bộ phòng
     public ArrayList<ChiTietPhong> getAllPhong() {
         final ArrayList<ChiTietPhong> list = new ArrayList<>();
         reference.addValueEventListener(new ValueEventListener() {
