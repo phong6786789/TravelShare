@@ -24,11 +24,13 @@ import com.duan.travelshare.model.HinhPhong;
 import com.google.android.gms.common.util.Base64Utils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
+
 public class ManegerPhongThueFragment extends Fragment {
     private PhongDao phongDao;
     ShowDialog showDialog;
     FloatingActionButton btnAddPhongThue;
-
+    private ArrayList<ChiTietPhong> list;
     public ManegerPhongThueFragment() {
 
     }
@@ -48,6 +50,11 @@ public class ManegerPhongThueFragment extends Fragment {
                 addRoom();
             }
         });
+
+
+        //Đổ list phòng lên
+        list = phongDao.getAllPhong();
+
         return view;
     }
 

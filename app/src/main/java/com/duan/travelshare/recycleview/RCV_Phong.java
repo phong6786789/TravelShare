@@ -1,4 +1,6 @@
 package com.duan.travelshare.recycleview;
 
-public class RCV_Phong {
+import androidx.recyclerview.widget.RecyclerView;
+
+public class RCV_Phong extends RecyclerView.Adapter<> {
 }
