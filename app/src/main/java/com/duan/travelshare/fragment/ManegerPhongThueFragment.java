@@ -17,6 +17,8 @@ import android.widget.EditText;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
+import com.duan.travelshare.firebasedao.PhongDao;
+import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.HinhPhong;
 import com.google.android.gms.common.util.Base64Utils;
@@ -28,12 +30,14 @@ public class ManegerPhongThueFragment extends Fragment {
 
     }
     FloatingActionButton btnAddPhongThue;
+    PhongDao daoPhong;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_maneger_phong_thue, container, false);
         btnAddPhongThue = view.findViewById(R.id.btnAddMngPhongThue);
+        daoPhong = new PhongDao(getContext());
         btnAddPhongThue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,10 +63,14 @@ public class ManegerPhongThueFragment extends Fragment {
                     public void onClick(View view) {
                         FullUser user = ShowUserFragment.fullUserOne;
                         HinhPhong hinhPhong = null;
+
                         String ten = tenPhong.getText().toString();
                         String gia = giaPhong.getText().toString();
                         String dc = diaChi.getText().toString();
                         String mot = moTa.getText().toString();
+                        if(daoPhong.insertPhong(new ChiTietPhong(null, ten, gia, dc, mot, null, user))){
+
+                        }
 
                     }
                 });

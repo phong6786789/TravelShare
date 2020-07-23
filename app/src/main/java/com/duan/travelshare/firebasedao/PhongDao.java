@@ -33,7 +33,7 @@ public class PhongDao {
         reference = FirebaseDatabase.getInstance().getReference("Phong");
     }
 
-    //Lấy toàn bộ tài khoản mật khẩu
+    //Lấy toàn bộ Phòng
     public ArrayList<ChiTietPhong> getAllPhong() {
         final ArrayList<ChiTietPhong> list = new ArrayList<>();
         reference.addValueEventListener(new ValueEventListener() {
@@ -62,7 +62,7 @@ public class PhongDao {
     }
 
     //Thêm Phòng mới
-    public boolean insertPhong(FullUser user) {
+    public boolean insertPhong(ChiTietPhong user) {
         reference.push().setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
