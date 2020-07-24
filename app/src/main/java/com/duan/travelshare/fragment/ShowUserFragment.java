@@ -1,14 +1,26 @@
 package com.duan.travelshare.fragment;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,26 +30,33 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
 import com.duan.travelshare.firebasedao.FullUserDao;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.User;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import static android.app.Activity.RESULT_OK;
+
 public class ShowUserFragment extends Fragment {
-    private ImageView ivEdit, ivCamera, ivStorage, ivAvatar;
+    private ImageView ivAvatar;
     private DatePickerDialog datePickerDialog;
     private FullUserDao fullUserDao;
     private ShowDialog showDialog;
-    static TextView name, cmnd, email, birthday, phone, address;
+    private Button btnUpdate;
+    static EditText name, cmnd, email, birthday, phone, address;
     private String namex, cmndx, emailx, birthdayx, phonex, addressx;
     private Dialog dialog;
     private FullUser u;
     private User user;
+    Uri image_uri;
+    ImageView imgChonHinh;
 
 
     private static final int CAMERA_REQUEST_CODE = 200;
@@ -48,6 +67,7 @@ public class ShowUserFragment extends Fragment {
 
     private String[] cameraPermission;
     private String[] storagePermission;
+
     public ShowUserFragment() {
         // Required empty public constructor
     }
@@ -61,9 +81,6 @@ public class ShowUserFragment extends Fragment {
         showDialog = new ShowDialog(getActivity());
         fullUserDao = new FullUserDao(getActivity());
         ivAvatar = view.findViewById(R.id.ivAvatar);
-        ivCamera = view.findViewById(R.id.ivCamera);
-        ivStorage = view.findViewById(R.id.ivStorage);
-        ivEdit = view.findViewById(R.id.ivEdit);
         //Đổ dữ liệu
         u = MainActivity.fullUserOne;
 
@@ -74,6 +91,34 @@ public class ShowUserFragment extends Fragment {
         birthday = view.findViewById(R.id.tvBirthday);
         phone = view.findViewById(R.id.tvPhone);
         address = view.findViewById(R.id.tvAddress);
+        btnUpdate = view.findViewById(R.id.btnUpdateUser);
+
+        //Ẩn edit email
+        email.setEnabled(false);
+        birthday.setFocusable(false);
+        //Khi chọn vào ngày
+        birthday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar calendar = Calendar.getInstance();
+                int d = calendar.get(Calendar.DAY_OF_MONTH);
+                int m = calendar.get(Calendar.MONTH);
+                int y = calendar.get(Calendar.YEAR);
+                datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        String ngay = "";
+                        if (String.valueOf(month).length() == 1) {
+                            ngay = dayOfMonth + "/" + "0" + (month + 1) + "/" + year;
+                        } else {
+                            ngay = dayOfMonth + "/" + (month + 1) + "/" + year;
+                        }
+                        birthday.setText(ngay);
+                    }
+                }, y, m, d);
+                datePickerDialog.show();
+            }
+        });
 
         //Set user
         setUser();
@@ -85,75 +130,19 @@ public class ShowUserFragment extends Fragment {
         cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-
-        ivEdit.setOnClickListener(new View.OnClickListener() {
+        //Khi chọn vào avatar
+        ivAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog = new Dialog(getActivity());
-                dialog.setContentView(R.layout.edit_user);
-                dialog.setCancelable(true);
-                Window window = dialog.getWindow();
-                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                if (dialog != null && dialog.getWindow() != null) {
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                }
-                final EditText name, cmnd, email, birthday, phone, address;
-                Button edit, cancle;
-                edit = dialog.findViewById(R.id.btnAddInfo);
-                cancle = dialog.findViewById(R.id.btnCancleInfo);
-                name = dialog.findViewById(R.id.edtName);
-                cmnd = dialog.findViewById(R.id.edtCMND);
-                email = dialog.findViewById(R.id.edtEmail);
-                birthday = dialog.findViewById(R.id.edtBirthday);
-                phone = dialog.findViewById(R.id.edtPhone);
-                address = dialog.findViewById(R.id.edtAddress);
-                email.setEnabled(false);
-                birthday.setFocusable(false);
+                showImagePickDialog();
+            }
+        });
 
-                //Set dữ liệu lên trước
-                name.setText(u.getUserName());
-                cmnd.setText(u.getCmndUser());
-                email.setText(u.getEmailUser());
-                birthday.setText(u.getBirtdayUser());
-                phone.setText(u.getPhoneUser());
-                address.setText(u.getAddressUser());
-
-                //Phân biệt tài khoản đăng nhập bằng fb, gg hay firebase
-                if (MainActivity.userName.matches("0")) {
-                    name.setText(MainActivity.name);
-                    email.setText(MainActivity.email);
-                } else {
-                    email.setText(MainActivity.userName);
-                }
-
-                //Khi chọn vào ngày
-                birthday.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        final Calendar calendar = Calendar.getInstance();
-                        int d = calendar.get(Calendar.DAY_OF_MONTH);
-                        int m = calendar.get(Calendar.MONTH);
-                        int y = calendar.get(Calendar.YEAR);
-                        datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                                String ngay = "";
-                                if (String.valueOf(month).length() == 1) {
-                                    ngay = dayOfMonth + "/" + "0" + (month + 1) + "/" + year;
-                                } else {
-                                    ngay = dayOfMonth + "/" + (month + 1) + "/" + year;
-                                }
-                                birthday.setText(ngay);
-                            }
-                        }, y, m, d);
-                        datePickerDialog.show();
-                    }
-                });
-
-                edit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        try {
+        //Cập nhật thông tin người dùng
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
                             namex = name.getText().toString();
                             cmndx = cmnd.getText().toString();
                             emailx = email.getText().toString();
@@ -167,27 +156,39 @@ public class ShowUserFragment extends Fragment {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
-                    }
-
-
-                });
-
-                cancle.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
-                    }
-                });
-
-
-                dialog.show();
             }
-
-
         });
         return view;
     }
+
+    private void showImagePickDialog() {
+        String option[] = {"Camera", "Thư viện ảnh"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Bạn muốn up ảnh từ đâu?");
+        builder.setItems(option, new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0) {
+                    if (!checkCameraPermission()) {
+                        requestCameraPermission();
+                    } else {
+                        pickFromCamera();
+                    }
+                }
+                if (which == 1) {
+                    if (!checkStoragePermission()) {
+                        requestStoragetPermission();
+                    } else {
+                        pickFromGallery();
+                    }
+                }
+            }
+        });
+        builder.create().show();
+    }
+
 
     private void checkForm() {
         try {
@@ -204,7 +205,7 @@ public class ShowUserFragment extends Fragment {
             } else {
                 FullUser fullUser = new FullUser(namex, cmndx, emailx, birthdayx, phonex, addressx);
                 fullUserDao.updateUser(fullUser);
-                showDialog.toastInfo("Sửa thành công!");
+                showDialog.toastInfo("Cập nhật thành công!");
                 dialog.dismiss();
             }
         } catch (Exception e) {
@@ -223,5 +224,89 @@ public class ShowUserFragment extends Fragment {
             phone.setText(u.getPhoneUser());
             address.setText(u.getAddressUser());
         }
+    }
+
+    private boolean checkStoragePermission() {
+        boolean result = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
+        return result;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestStoragetPermission() {
+        requestPermissions(storagePermission, STORAGE_REQUEST_CODE);
+    }
+
+    private boolean checkCameraPermission() {
+        boolean result = ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.CAMERA) == (PackageManager.PERMISSION_GRANTED);
+        boolean result1 = ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
+        return result && result1;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestCameraPermission() {
+        requestPermissions(cameraPermission, CAMERA_REQUEST_CODE);
+    }
+
+    private void pickFromGallery() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+        galleryIntent.setType("image/*");
+        startActivityForResult(galleryIntent, IMAGE_PICK_GALLERY_CODE);
+    }
+
+    private void pickFromCamera() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MediaStore.Images.Media.TITLE, "Temp Pic");
+        contentValues.put(MediaStore.Images.Media.DESCRIPTION, "Temp Description");
+        image_uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
+        startActivityForResult(intent, IMAGE_PICK_CAMERA_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_REQUEST_CODE: {
+                if (grantResults.length > 0) {
+                    boolean cameraAccept = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean storageAccept = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+
+                    if (cameraAccept && storageAccept) {
+                        pickFromCamera();
+                    } else {
+                        showDialog.toastInfo("Không truy cập được vào camera!");
+                    }
+                }
+            }
+            break;
+            case STORAGE_REQUEST_CODE: {
+                if (grantResults.length > 0) {
+                    boolean writeStorageAccpted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    if (writeStorageAccpted) {
+                        pickFromGallery();
+                    } else {
+                        showDialog.toastInfo("Vui lòng bật quyền thư viện");
+                    }
+                }
+            }
+            break;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == IMAGE_PICK_GALLERY_CODE) {
+                image_uri = data.getData();
+                Picasso.with(getActivity()).load(image_uri).into(imgChonHinh);
+            }
+            if (requestCode == IMAGE_PICK_CAMERA_CODE) {
+                Picasso.with(getActivity()).load(image_uri).into(imgChonHinh);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

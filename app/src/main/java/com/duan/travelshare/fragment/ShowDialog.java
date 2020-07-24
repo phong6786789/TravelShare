@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.duan.travelshare.R;
@@ -32,6 +34,14 @@ public class ShowDialog {
         }
         TextView textInfo = dialog.findViewById(R.id.tvInfo);
         textInfo.setText(text);
+        Button ok = dialog.findViewById(R.id.okDialog);
+
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
         dialog.show();
 
     }
