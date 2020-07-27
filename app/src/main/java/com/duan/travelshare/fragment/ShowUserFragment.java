@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,39 +32,53 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
 import com.duan.travelshare.firebasedao.FullUserDao;
+import com.duan.travelshare.firebasedao.UserDao;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.User;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 import static android.app.Activity.RESULT_OK;
 
 public class ShowUserFragment extends Fragment {
     private ImageView ivAvatar;
     private DatePickerDialog datePickerDialog;
+    private UserDao userDao;
     private FullUserDao fullUserDao;
     private ShowDialog showDialog;
     private Button btnUpdate;
     static EditText name, cmnd, email, birthday, phone, address;
     private String namex, cmndx, emailx, birthdayx, phonex, addressx;
-    private Dialog dialog;
     private FullUser u;
-    private User user;
     Uri image_uri;
-    ImageView imgChonHinh;
-
+    FirebaseAuth firebaseAuth;
+    StorageReference storageReference;
+    StorageReference mref;
+    DatabaseReference databaseReference;
+    ProgressDialog progressDialog;
 
     private static final int CAMERA_REQUEST_CODE = 200;
     private static final int STORAGE_REQUEST_CODE = 300;
     private static final int IMAGE_PICK_GALLERY_CODE = 400;
     private static final int IMAGE_PICK_CAMERA_CODE = 500;
-
 
     private String[] cameraPermission;
     private String[] storagePermission;
@@ -76,13 +91,33 @@ public class ShowUserFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_show_user, container, false);
+
+        //Khi ấn nút back
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_ios_24);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UserFragment userFragment = new UserFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.frame, userFragment)
+                        .commit();
+            }
+        });
+
+        progressDialog = new ProgressDialog(getActivity());
         showDialog = new ShowDialog(getActivity());
         fullUserDao = new FullUserDao(getActivity());
+        userDao = new UserDao(getActivity());
         ivAvatar = view.findViewById(R.id.ivAvatar);
+        //load Image
+        firebaseAuth = FirebaseAuth.getInstance();
         //Đổ dữ liệu
-        u = MainActivity.fullUserOne;
+        u = UserFragment.list;
 
         //Hiển thị thông tin lên
         name = view.findViewById(R.id.tvFullName);
@@ -92,6 +127,13 @@ public class ShowUserFragment extends Fragment {
         phone = view.findViewById(R.id.tvPhone);
         address = view.findViewById(R.id.tvAddress);
         btnUpdate = view.findViewById(R.id.btnUpdateUser);
+
+        //storage firebase
+        storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://truyen-60710.appspot.com");
+        databaseReference = FirebaseDatabase.getInstance().getReference("Fulluser");
+        if (!u.getLinkImage().matches("")) {
+            Picasso.with(getContext()).load(u.getLinkImage()).into(ivAvatar);
+        }
 
         //Ẩn edit email
         email.setEnabled(false);
@@ -124,7 +166,6 @@ public class ShowUserFragment extends Fragment {
         setUser();
 
         //Set hình lên
-        user = new User();
 
         //Khai báo xin quyền
         cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -143,23 +184,24 @@ public class ShowUserFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 try {
-                            namex = name.getText().toString();
-                            cmndx = cmnd.getText().toString();
-                            emailx = email.getText().toString();
-                            birthdayx = birthday.getText().toString();
-                            phonex = phone.getText().toString();
-                            addressx = address.getText().toString();
+                    namex = name.getText().toString();
+                    cmndx = cmnd.getText().toString();
+                    emailx = email.getText().toString();
+                    birthdayx = birthday.getText().toString();
+                    phonex = phone.getText().toString();
+                    addressx = address.getText().toString();
 
-                            //Invailed Form
-                            checkForm();
+                    //Invailed Form
+                    checkForm();
 
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
         return view;
     }
+
 
     private void showImagePickDialog() {
         String option[] = {"Camera", "Thư viện ảnh"};
@@ -203,10 +245,9 @@ public class ShowUserFragment extends Fragment {
             } else if (addressx.length() < 10) {
                 showDialog.toastInfo("Vui lòng nhập đầy đủ địa chỉ!");
             } else {
-                FullUser fullUser = new FullUser(namex, cmndx, emailx, birthdayx, phonex, addressx);
+                FullUser fullUser = new FullUser(namex, cmndx, emailx, birthdayx, phonex, addressx, u.getLinkImage());
                 fullUserDao.updateUser(fullUser);
                 showDialog.toastInfo("Cập nhật thành công!");
-                dialog.dismiss();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -283,7 +324,7 @@ public class ShowUserFragment extends Fragment {
             break;
             case STORAGE_REQUEST_CODE: {
                 if (grantResults.length > 0) {
-                    boolean writeStorageAccpted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    boolean writeStorageAccpted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     if (writeStorageAccpted) {
                         pickFromGallery();
                     } else {
@@ -301,12 +342,45 @@ public class ShowUserFragment extends Fragment {
         if (resultCode == RESULT_OK) {
             if (requestCode == IMAGE_PICK_GALLERY_CODE) {
                 image_uri = data.getData();
-                Picasso.with(getActivity()).load(image_uri).into(imgChonHinh);
+                Picasso.with(getActivity()).load(image_uri).into(ivAvatar);
+                insertImage(image_uri);
             }
             if (requestCode == IMAGE_PICK_CAMERA_CODE) {
-                Picasso.with(getActivity()).load(image_uri).into(imgChonHinh);
+                Picasso.with(getActivity()).load(image_uri).into(ivAvatar);
+                insertImage(image_uri);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+    private void insertImage(Uri uri) {
+        progressDialog.show();
+        progressDialog.setMessage("Đang tải ảnh lên...");
+        final String filePathAndName = "image_" + u.getEmailUser();
+        storageReference.child(filePathAndName).putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                while ((!uriTask.isSuccessful())) ;
+                Uri dowloadUri = uriTask.getResult();
+
+                if (uriTask.isSuccessful()) {
+                    fullUserDao.setLinkImage(MainActivity.email, dowloadUri.toString());
+                    progressDialog.dismiss();
+                    showDialog.toastInfo("Cập nhật ảnh thành công!");
+                } else {
+                    progressDialog.dismiss();
+                    Toast.makeText(getActivity(), "Lỗi", Toast.LENGTH_SHORT).show();
+                    showDialog.toastInfo("Cập nhật ảnh thất bại!");
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
 }

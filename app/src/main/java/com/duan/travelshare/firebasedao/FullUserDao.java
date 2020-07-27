@@ -1,6 +1,8 @@
 package com.duan.travelshare.firebasedao;
 
+import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,7 +28,6 @@ public class FullUserDao {
     Context context;
     DatabaseReference reference;
     String key = "";
-
     public FullUserDao() {
     }
 
@@ -35,7 +36,7 @@ public class FullUserDao {
         reference = FirebaseDatabase.getInstance().getReference("FullUser");
     }
 
-    //Lấy toàn bộ tài khoản mật khẩu
+    //Lấy toàn bộ user
     public ArrayList<FullUser> getAllFullUser() {
         final ArrayList<FullUser> list = new ArrayList<>();
         reference.addValueEventListener(new ValueEventListener() {
@@ -51,6 +52,35 @@ public class FullUserDao {
                         list.add(nd);
                     }
                     MainActivity.setUser();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(context, "Lấy thông tin thất bại!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        return list;
+    }
+
+    //Lấy toàn bộ user
+    public ArrayList<FullUser> getAll() {
+        final ArrayList<FullUser> list = new ArrayList<>();
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    list.clear();
+                    Iterable<DataSnapshot> dataSnapshotIterable = dataSnapshot.getChildren();
+                    Iterator<DataSnapshot> iterator = dataSnapshotIterable.iterator();
+                    while (iterator.hasNext()) {
+                        DataSnapshot next = (DataSnapshot) iterator.next();
+                        FullUser nd = next.getValue(FullUser.class);
+                        list.add(nd);
+                    }
+//                    UserFragment userFragment = new UserFragment();
+//                    userFragment.setAvatar();
                 }
 
             }
@@ -90,6 +120,26 @@ public class FullUserDao {
                     if (data.child("emailUser").getValue(String.class).equalsIgnoreCase(fullUser.getEmailUser())) {
                         key = data.getKey();
                         reference.child(key).setValue(fullUser);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    //Cập nhật link ảnh
+    public void setLinkImage(final String email, final String link) {
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    if (data.child("emailUser").getValue(String.class).equalsIgnoreCase(email)) {
+                        key = data.getKey();
+                        reference.child(key).child("linkImage").setValue(link);
                     }
                 }
             }

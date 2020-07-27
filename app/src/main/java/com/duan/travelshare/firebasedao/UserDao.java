@@ -1,11 +1,14 @@
 package com.duan.travelshare.firebasedao;
 
+import android.app.Activity;
 import android.content.Context;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.duan.travelshare.MainActivity;
+import com.duan.travelshare.fragment.ShowDialog;
+import com.duan.travelshare.fragment.ShowUserFragment;
 import com.duan.travelshare.fragment.UserFragment;
 import com.duan.travelshare.login.Login;
 import com.duan.travelshare.model.User;
@@ -26,13 +29,14 @@ public class UserDao {
     DatabaseReference reference;
     String key = "";
     Login login;
-
+    ShowDialog showDialog;
     public UserDao() {
     }
 
     public UserDao(Context context) {
         this.context = context;
         reference = FirebaseDatabase.getInstance().getReference("User");
+        showDialog = new ShowDialog((Activity) context);
     }
 
     //Lấy toàn bộ tài khoản mật khẩu
@@ -61,6 +65,7 @@ public class UserDao {
         });
         return list;
     }
+
 
     //Lấy toàn bộ tài khoản mật khẩu
     public ArrayList<User> getAllFilter() {
@@ -96,7 +101,7 @@ public class UserDao {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
-                    Toast.makeText(context, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
+                    showDialog.toastInfo("Đăng ký thành công!");
                     return;
                 }
             }
@@ -118,7 +123,6 @@ public class UserDao {
                     if (data.child("userName").getValue(String.class).equalsIgnoreCase(user)) {
                         key = data.getKey();
                         reference.child(key).child("loaiUser").setValue(loaiUser);
-//                        ListNguoiDungActivity.adapter.notifyDataSetChanged();
                     }
                 }
             }
@@ -139,11 +143,9 @@ public class UserDao {
                     if (data.child("userName").getValue(String.class).equalsIgnoreCase(userName)) {
                         User u = data.getValue(User.class);
                         key = data.getKey();
-//                        reference.child(key).child("userName").setValue(userName);
                         reference.child(key).child("password").setValue(password);
-                        Toast.makeText(context, "Đổi mật khẩu thành công!", Toast.LENGTH_SHORT).show();
+                        showDialog.toastInfo("Đổi mật khẩu thành công!");
 
-//                        ListNguoiDungActivity.adapter.notifyDataSetChanged();
                     }
                 }
             }
@@ -156,28 +158,6 @@ public class UserDao {
 
     }
 
-    //Set avatar
-    //Đổi mật khẩu ngươi dùng
-    public void setAvatar(final String userName, final String link) {
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    if (data.child("userName").getValue(String.class).equalsIgnoreCase(userName)) {
-                        User u = data.getValue(User.class);
-                        key = data.getKey();
-//                        reference.child(key).child("userName").setValue(userName);
-                        reference.child(key).child("linkImage").setValue(link);
-                    }
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-    }
 
 }

@@ -3,18 +3,19 @@ package com.duan.travelshare.model;
 import java.io.Serializable;
 
 public class FullUser implements Serializable {
-    private String userName, cmndUser, emailUser, birtdayUser, phoneUser, addressUser;
+    private String userName, cmndUser, emailUser, birtdayUser, phoneUser, addressUser, linkImage;
 
     public FullUser() {
     }
 
-    public FullUser(String userName, String cmndUser, String emailUser, String birtdayUser, String phoneUser, String addressUser) {
+    public FullUser(String userName, String cmndUser, String emailUser, String birtdayUser, String phoneUser, String addressUser, String linkImage) {
         this.userName = userName;
         this.cmndUser = cmndUser;
         this.emailUser = emailUser;
         this.birtdayUser = birtdayUser;
         this.phoneUser = phoneUser;
         this.addressUser = addressUser;
+        this.linkImage = linkImage;
     }
 
     public String getUserName() {
@@ -63,5 +64,13 @@ public class FullUser implements Serializable {
 
     public void setAddressUser(String addressUser) {
         this.addressUser = addressUser;
+    }
+
+    public String getLinkImage() {
+        return linkImage;
+    }
+
+    public void setLinkImage(String linkImage) {
+        this.linkImage = linkImage;
     }
 }

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -32,6 +33,7 @@ public class ManegerPhongThueFragment extends Fragment {
     ShowDialog showDialog;
     FloatingActionButton btnAddPhongThue;
     ArrayList<ChiTietPhong> list;
+
     public ManegerPhongThueFragment() {
 
     }
@@ -41,6 +43,18 @@ public class ManegerPhongThueFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_maneger_phong_thue, container, false);
+        //Khi ấn nút back
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_ios_24);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UserFragment userFragment = new UserFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.frame, userFragment)
+                        .commit();
+            }
+        });
         showDialog = new ShowDialog(getActivity());
         btnAddPhongThue = view.findViewById(R.id.btnAddMngPhongThue);
 
@@ -80,7 +94,7 @@ public class ManegerPhongThueFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FullUser user = MainActivity.fullUserOne;
-                HinhPhong hinhPhong = new HinhPhong("1","http");
+                HinhPhong hinhPhong = new HinhPhong("1", "http");
                 String ten = tenPhong.getText().toString();
                 String gia = giaPhong.getText().toString();
                 String dc = diaChi.getText().toString();

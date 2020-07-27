@@ -1,10 +1,13 @@
 package com.duan.travelshare.fragment;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -15,25 +18,40 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
+import com.duan.travelshare.firebasedao.FullUserDao;
 import com.duan.travelshare.firebasedao.UserDao;
+import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.User;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class UserFragment extends Fragment {
     static CardView fullInfo, roomMng, roomFav, partnerRoom, changePass, logOut;
-    TextView name, email;
+    static ImageView avatar;
+    static TextView name, email;
     static ArrayList<User> users;
     ShowDialog show;
     UserDao userDao;
+    String emailUser = MainActivity.emailUser;
+    public static FullUser list;
 
     public UserFragment() {
-        // Required empty public constructor
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,6 +59,8 @@ public class UserFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user, container, false);
 
+
+        avatar = view.findViewById(R.id.imgAvatar);
 
         show = new ShowDialog(getActivity());
         //Khai báo các id
@@ -53,16 +73,12 @@ public class UserFragment extends Fragment {
         name = view.findViewById(R.id.tvNameUser);
         email = view.findViewById(R.id.tvEmail);
 
-        name.setText(MainActivity.name);
-        email.setText(MainActivity.email);
-        //Set tên và email người dùng
-        if (!MainActivity.userName.matches("0")) {
-            name.setText(MainActivity.userName);
-        }
+        getFullUser();
 
         //Đổ tài khoản vào list
         userDao = new UserDao(getActivity());
         users = userDao.getAllFilter();
+
 
         //Khi chọn thông tin tài khoản
         fullInfo.setOnClickListener(new View.OnClickListener() {
@@ -237,26 +253,47 @@ public class UserFragment extends Fragment {
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().finish();
+                final Dialog dialog = new Dialog(getActivity());
+                dialog.setContentView(R.layout.show2);
+                dialog.setCancelable(true);
+                Window window = dialog.getWindow();
+                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                if (dialog != null && dialog.getWindow() != null) {
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                }
+                TextView text = dialog.findViewById(R.id.tvInfo2);
+                Button ok = dialog.findViewById(R.id.btnOK);
+                Button cancle = dialog.findViewById(R.id.btnCancle);
+
+                text.setText("Bạn có chắc chắn đăng xuất?");
+                ok.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getActivity().finish();
+                    }
+                });
+
+                cancle.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
             }
         });
+
         return view;
     }
+
 
     public static void filterUser() {
         String loaiUser = "0";
         if (MainActivity.userName.matches("0")) {
             for (int i = 0; i < users.size(); i++) {
                 String tk = users.get(i).getUserName();
-                if (MainActivity.email.matches(tk)) {
-                    loaiUser = users.get(i).getLoaiUser();
-                    break;
-                }
-            }
-        } else {
-            for (int i = 0; i < users.size(); i++) {
-                String tk = users.get(i).getUserName();
-                if (MainActivity.userName.matches(tk)) {
+                if (MainActivity.email.matches(tk) || MainActivity.userName.matches(tk)) {
                     loaiUser = users.get(i).getLoaiUser();
                     break;
                 }
@@ -277,4 +314,41 @@ public class UserFragment extends Fragment {
         }
     }
 
+    //Get full user one
+    public void getFullUser() {
+        //Lấy dữ liệu User
+        Query query = FirebaseDatabase.getInstance().getReference("FullUser").orderByChild("emailUser").equalTo(emailUser);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String userName, cmndUser, emailUser, birtdayUser, phoneUser, addressUser, linkImage;
+                    userName = "" + ds.child("userName").getValue();
+                    cmndUser = "" + ds.child("cmndUser").getValue();
+                    emailUser = "" + ds.child("emailUser").getValue();
+                    birtdayUser = "" + ds.child("birtdayUser").getValue();
+                    phoneUser = "" + ds.child("phoneUser").getValue();
+                    addressUser = "" + ds.child("addressUser").getValue();
+                    linkImage = "" + ds.child("linkImage").getValue();
+                    list = new FullUser(userName, cmndUser, emailUser, birtdayUser, phoneUser, addressUser, linkImage);
+
+
+                }
+                try {
+                    name.setText(list.getUserName());
+                    email.setText(list.getEmailUser());
+                    if (!list.getLinkImage().matches("")) {
+                        Picasso.with(getActivity()).load(list.getLinkImage()).into(avatar);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 }

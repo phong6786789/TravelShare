@@ -1,12 +1,9 @@
 package com.duan.travelshare.login;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -60,6 +57,7 @@ public class Login extends AppCompatActivity {
     ArrayList<User> list;
     private FullUserDao fullUserDao;
     private String email = "0", name = "0", userName = "0";
+    ProgressDialog progressDialog;
 
     public Login() {
     }
@@ -69,6 +67,7 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        progressDialog = new ProgressDialog(this);
         fullUserDao = new FullUserDao(Login.this);
         userDao = new UserDao(this);
         users = userDao.getAll();
@@ -79,6 +78,8 @@ public class Login extends AppCompatActivity {
         btLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.show();
+                progressDialog.setMessage("Đang đăng nhập...");
                 boolean xetTk = false;
                 String tenTK = txtTk.getText().toString();
                 String mk = txtMk.getText().toString();
@@ -93,6 +94,7 @@ public class Login extends AppCompatActivity {
                 if (xetTk == true) {
                     saveUser();
                     Toast.makeText(Login.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
                     //Trang mới xuất hiện khi đã đúng tài khoản và mật khẩu
                     //Set tên tk vô cho LoginOk
                     v.startAnimation(buttonClick);
@@ -102,6 +104,7 @@ public class Login extends AppCompatActivity {
                     startActivity(i);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 } else {
+                    progressDialog.dismiss();
                     Toast.makeText(Login.this, "Tên tài khoản hoặc mật khẩu không chính xác!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -123,6 +126,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void loginGG() {
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.server_client_id))
                 .requestEmail()
@@ -136,6 +140,8 @@ public class Login extends AppCompatActivity {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.show();
+                progressDialog.setMessage("Đang đăng nhập...");
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(signInIntent, 0);
             }
@@ -231,7 +237,7 @@ public class Login extends AppCompatActivity {
 //            String personId = acct.getId();
             //Uri personPhoto = acct.getPhotoUrl();
             // Signed in successfully, show authenticated UI.
-
+            progressDialog.dismiss();
             Toast.makeText(Login.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
             //Kiểm tra tài khoản có tồn tại không? Nếu chưa thì đăng ký
             checkUser();
@@ -291,20 +297,19 @@ public class Login extends AppCompatActivity {
 
     public void checkUser() {
         Boolean check = false;
-            for (int i = 0; i < users.size(); i++) {
-                String tk = users.get(i).getUserName();
-                if (email.equalsIgnoreCase(tk)) {
-                    check = true;
-                    break;
-                }
+        for (int i = 0; i < users.size(); i++) {
+            String tk = users.get(i).getUserName();
+            if (email.equalsIgnoreCase(tk)) {
+                check = true;
+                break;
             }
+        }
 
         if (!check) {
             //Truyền dữ liệu vào Main
-            userDao.insert(new User(email, "", "0",""));
-            fullUserDao.insertFullUser(new FullUser(name, "", email, "", "", ""));
+            userDao.insert(new User(email, "", "0"));
+            fullUserDao.insertFullUser(new FullUser(name, "", email, "", "", "", ""));
         }
-
         Intent i = new Intent(Login.this, MainActivity.class);
         i.putExtra("email", email);
         i.putExtra("name", name);

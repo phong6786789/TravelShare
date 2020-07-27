@@ -8,9 +8,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.duan.travelshare.firebasedao.FullUserDao;
@@ -29,14 +31,14 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     public static String name = "0", email = "0", userName = "0";
-    static UserDao userDao;
-    static ArrayList<User> users;
-    static Boolean check = false;
+
     static FullUserDao fullUserDao;
     static ArrayList<FullUser> list;
     public static int position = -1;
     public static FullUser fullUserOne;
-  static   ShowDialog showDialog;
+    static ShowDialog showDialog;
+   public static String emailUser = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +49,10 @@ public class MainActivity extends AppCompatActivity {
         name = i.getStringExtra("name");
         email = i.getStringExtra("email");
         userName = i.getStringExtra("userName");
-         showDialog = new ShowDialog(this);
+        showDialog = new ShowDialog(this);
+
+        //Thống nhất email là gì?(gộp gg, fb hoặc tai khoản thành 1)
+        checkLoginTk();
 
         //Đổ list vào
         fullUserDao = new FullUserDao(this);
@@ -109,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+
             return true;
         }
 
@@ -126,6 +132,15 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         fullUserOne = list.get(position);
+    }
+
+    //Kiểm tra đăng nhập bằng tài khoản hay không?
+    public void checkLoginTk() {
+        if (!MainActivity.userName.matches("0")) {
+            emailUser = userName;
+
+        }
+        emailUser =email;
     }
 
 }
