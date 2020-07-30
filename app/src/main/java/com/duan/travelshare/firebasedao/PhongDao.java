@@ -7,6 +7,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.duan.travelshare.MainActivity;
+import com.duan.travelshare.fragment.HomeFragment;
 import com.duan.travelshare.fragment.ShowDialog;
 import com.duan.travelshare.fragment.ShowUserFragment;
 import com.duan.travelshare.model.ChiTietPhong;
@@ -54,6 +55,7 @@ public class PhongDao {
                         ChiTietPhong nd = next.getValue(ChiTietPhong.class);
                         list.add(nd);
                     }
+                    HomeFragment.phongAdapter.notifyDataSetChanged();
                 }
 
             }
@@ -82,8 +84,8 @@ public class PhongDao {
             }
         });
     }
-
     //Cập nhật Phòng
+
     public void updatePhong(final ChiTietPhong chiTietPhong) {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -95,7 +97,6 @@ public class PhongDao {
                     }
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 

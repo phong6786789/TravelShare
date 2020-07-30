@@ -18,7 +18,7 @@ import com.duan.travelshare.model.ChiTietPhong;
 
 import java.util.List;
 
-public class PhongAdapter extends RecyclerView.Adapter {
+public class PhongAdapter extends RecyclerView.Adapter<PhongAdapter.ViewHolder> {
     List<ChiTietPhong> list;
     Context context;
     PhongDao phongDao;
@@ -27,26 +27,30 @@ public class PhongAdapter extends RecyclerView.Adapter {
     this.context=context;
     phongDao=new PhongDao(context);
     }
+
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(context).inflate(R.layout.one_room,parent,false);
-        phongDao=new PhongDao(context);
-        return new PhongAdapter.ViewHolder(view);
+        return new ViewHolder(view);
     }
-
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.tenPhong.setText(list.get(position).getTenPhong());
+        holder.giaPhong.setText(list.get(position).getGiaPhong());
+        holder.diachiPhong.setText(list.get(position).getDiaChiPhong());
+        holder.imgPhong.setImageResource(R.drawable.facebook);
 
+//
     }
-
     @Override
     public int getItemCount() {
-        return 0;
+
+        return list.size() ;
     }
     public  class ViewHolder extends RecyclerView.ViewHolder{
-        public ImageView imgPhong;
-        public TextView tenPhong,giaPhong, diachiPhong;
+         ImageView imgPhong;
+         TextView tenPhong,giaPhong, diachiPhong;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tenPhong=itemView.findViewById(R.id.titleP);
