@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.fragment.HomeFragment;
+import com.duan.travelshare.fragment.ManegerPhongThueFragment;
 import com.duan.travelshare.fragment.ShowDialog;
 import com.duan.travelshare.fragment.ShowUserFragment;
 import com.duan.travelshare.model.ChiTietPhong;
@@ -39,7 +40,6 @@ public class PhongDao {
         reference = FirebaseDatabase.getInstance().getReference("Phong");
         showDialog = new ShowDialog((Activity) context);
     }
-
     //Lấy toàn bộ phòng
     public ArrayList<ChiTietPhong> getAllPhong() {
         final ArrayList<ChiTietPhong> list = new ArrayList<>();
@@ -55,7 +55,37 @@ public class PhongDao {
                         ChiTietPhong nd = next.getValue(ChiTietPhong.class);
                         list.add(nd);
                     }
+                    ManegerPhongThueFragment.chiTietPhongAdapter.notifyDataSetChanged();
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(context, "Lấy thông tin thất bại!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        return list;
+    }
+
+    //Lấy toàn bộ phòng
+    public ArrayList<ChiTietPhong> getAllPhongHome() {
+        final ArrayList<ChiTietPhong> list = new ArrayList<>();
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    list.clear();
+                    Iterable<DataSnapshot> dataSnapshotIterable = dataSnapshot.getChildren();
+                    Iterator<DataSnapshot> iterator = dataSnapshotIterable.iterator();
+                    while (iterator.hasNext()) {
+                        DataSnapshot next = (DataSnapshot) iterator.next();
+                        ChiTietPhong nd = next.getValue(ChiTietPhong.class);
+                        list.add(nd);
+                    }
                     HomeFragment.phongAdapter.notifyDataSetChanged();
+
                 }
 
             }
@@ -75,6 +105,7 @@ public class PhongDao {
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
                     showDialog.toastInfo("Thêm phòng thành công!");
+                    ManegerPhongThueFragment.chiTietPhongAdapter.notifyDataSetChanged();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -99,7 +130,6 @@ public class PhongDao {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
     }

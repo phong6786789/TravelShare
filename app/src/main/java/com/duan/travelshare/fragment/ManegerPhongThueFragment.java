@@ -8,6 +8,8 @@ import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,8 @@ import android.widget.Toast;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
+import com.duan.travelshare.adapter.ChiTietPhongAdapter;
+import com.duan.travelshare.adapter.PhongAdapter;
 import com.duan.travelshare.firebasedao.PhongDao;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
@@ -33,6 +37,8 @@ public class ManegerPhongThueFragment extends Fragment {
     ShowDialog showDialog;
     FloatingActionButton btnAddPhongThue;
     ArrayList<ChiTietPhong> list;
+    RecyclerView rcvphong;
+   public static ChiTietPhongAdapter chiTietPhongAdapter;
 
     public ManegerPhongThueFragment() {
 
@@ -43,6 +49,7 @@ public class ManegerPhongThueFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_maneger_phong_thue, container, false);
+        rcvphong=view.findViewById(R.id.rec_MngPhongThue);
         //Khi ấn nút back
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_ios_24);
@@ -62,13 +69,27 @@ public class ManegerPhongThueFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 addRoom();
+
             }
         });
 
         //Đổ list phòng lên
-        phongDao = new PhongDao(getActivity());
-        list = phongDao.getAllPhong();
-
+//        phongDao = new PhongDao(getActivity());
+//        list = phongDao.getAllPhong();
+//        return view;
+        list=new ArrayList<>();
+        phongDao=new PhongDao(getActivity());
+        try {
+            list=phongDao.getAllPhong();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        chiTietPhongAdapter=new ChiTietPhongAdapter(list,getActivity());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        rcvphong.setLayoutManager(linearLayoutManager);
+        rcvphong.setAdapter(chiTietPhongAdapter);
+//        chiTietPhongAdapter.notifyDataSetChanged();
         return view;
     }
 
