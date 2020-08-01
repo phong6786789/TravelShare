@@ -33,7 +33,7 @@ public class HomeFragment extends Fragment  {
         list=new ArrayList<>();
         phongDao=new PhongDao(getActivity());
         try {
-            list=phongDao.getAllPhong();
+            list=phongDao.getAllPhongHome();
         }catch (Exception ex){
             ex.printStackTrace();
         }
