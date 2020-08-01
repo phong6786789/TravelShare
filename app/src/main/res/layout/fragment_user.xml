@@ -33,7 +33,6 @@
                     android:src="@drawable/photo" />
 
                 <LinearLayout
-
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
@@ -45,7 +44,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/blue"
-                        android:textSize="25sp"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -85,8 +84,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:text="Quản lý phòng thuê"
-                    android:textColor="@color/black"
-                    android:textSize="20sp" />
+                    android:textColor="@color/black" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -114,8 +112,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:text="Phòng yêu thích"
-                    android:textColor="@color/black"
-                    android:textSize="20sp" />
+                    android:textColor="@color/black" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -144,8 +141,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:text="Đăng ký làm chủ cho thuê"
-                    android:textColor="@color/black"
-                    android:textSize="20sp" />
+                    android:textColor="@color/black"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -169,13 +165,12 @@
                     android:src="@drawable/doimk" />
 
                 <TextView
+                    android:textColor="#000000"
                     android:id="@+id/tvDoiMk"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
-                    android:text="Đổi mật khẩu"
-                    android:textColor="@color/black"
-                    android:textSize="20sp" />
+                    android:text="Đổi mật khẩu" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -205,8 +200,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:text="Đăng xuất"
-                    android:textColor="@color/black"
-                    android:textSize="20sp" />
+                    android:textColor="@color/black"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

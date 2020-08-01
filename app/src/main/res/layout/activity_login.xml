@@ -28,7 +28,7 @@
             android:text="TRAVEL SHARE"
             android:textAlignment="center"
             android:textColor="@color/blue"
-            android:textSize="40sp"
+            android:textSize="30sp"
             android:textStyle="bold"
             android:theme="@style/title" />
     </LinearLayout>
@@ -37,7 +37,7 @@
     <EditText
         android:id="@+id/edtUserName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_below="@id/line"
         android:layout_marginTop="23dp"
         android:layout_marginBottom="20dp"
@@ -47,13 +47,12 @@
         android:hint="Nhập tên tài khoản"
         android:inputType="text"
         android:padding="10dp"
-        android:paddingLeft="30dp"
-        android:textSize="20sp" />
+        android:paddingLeft="30dp"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/pass"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_below="@+id/edtUserName"
         android:layout_marginBottom="20dp"
         app:hintEnabled="false"
@@ -70,8 +69,7 @@
             android:hint="Nhập mật khẩu"
             android:inputType="textPassword"
             android:padding="10dp"
-            android:paddingLeft="30dp"
-            android:textSize="20sp" />
+            android:paddingLeft="30dp"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <CheckBox
@@ -88,13 +86,12 @@
         android:padding="10dp"
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_below="@id/checkbox"
         android:layout_weight="1"
         android:background="@color/blue"
         android:text="Đăng nhập"
         android:textColor="@color/bg"
-        android:textSize="20sp"
         android:textStyle="bold" />
 
 
@@ -106,8 +103,7 @@
         android:layout_marginTop="20dp"
         android:text="Hoặc đăng nhập với"
         android:textAlignment="center"
-        android:textColor="@color/blue"
-        android:textSize="20sp" />
+        android:textColor="@color/blue" />
 
     <LinearLayout
         android:layout_width="match_parent"
