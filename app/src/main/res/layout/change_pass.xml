@@ -21,7 +21,7 @@
         android:layout_marginBottom="20dp"
         android:text="ĐỔI MẬT KHẨU"
         android:textColor="@color/bg"
-        android:textSize="35sp"
+        android:textSize="30sp"
         android:textStyle="bold" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -35,15 +35,14 @@
             android:drawablePadding="10dp"
             android:id="@+id/edtOldPassword"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:background="@drawable/border"
             android:drawableStart="@drawable/pass"
             android:hint="Nhập mật khẩu cũ"
             android:inputType="textPassword"
-            android:padding="10dp"
-            android:textSize="20sp" />
+            android:padding="10dp"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -59,15 +58,14 @@
             android:drawablePadding="10dp"
             android:id="@+id/edtPasswordNew"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:background="@drawable/border"
             android:drawableStart="@drawable/pass"
             android:hint="Nhập mật khẩu mới"
             android:inputType="textPassword"
-            android:padding="10dp"
-            android:textSize="20sp" />
+            android:padding="10dp"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -84,14 +82,13 @@
             android:drawablePadding="10dp"
             android:id="@+id/edtPasswordNew2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_below="@+id/pass"
             android:background="@drawable/border"
             android:drawableStart="@drawable/pass"
             android:hint="Nhập lại mật khẩu mới"
             android:inputType="textPassword"
-            android:padding="10dp"
-            android:textSize="20sp" />
+            android:padding="10dp"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
@@ -110,12 +107,10 @@
             android:layout_weight="1"
             android:background="@color/blue"
             android:text="ĐỔI MẬT KHẨU"
-            android:textColor="@color/bg"
-            android:textSize="20sp" />
+            android:textColor="@color/bg"/>
 
         <Button
             android:padding="10dp"
-            android:textSize="20sp"
             android:textStyle="bold"
             android:id="@+id/btnCanclePass"
             android:layout_width="match_parent"

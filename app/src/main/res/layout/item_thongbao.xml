@@ -7,10 +7,12 @@
     card_view:cardCornerRadius="10dp"
     card_view:cardElevation="10dp">
         <LinearLayout
+            android:layout_margin="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
+                android:layout_marginBottom="8dp"
                 android:id="@+id/nameTB"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -21,13 +23,13 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:layout_marginBottom="8dp"
                 android:id="@+id/chitietTB"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:textColor="@color/black"
                 android:text="@string/tin"
-                android:textSize="20dp"
                  />
 
             <LinearLayout
@@ -41,7 +43,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:textColor="@color/blue"
-                    android:textSize="18sp"
                     android:textStyle="bold" />
                 <TextView
                     android:id="@+id/dateTB"
@@ -50,7 +51,6 @@
                     android:layout_marginLeft="10dp"
                     android:textColor="@color/blue"
                     android:text="23/07/2020"
-                    android:textSize="18sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>

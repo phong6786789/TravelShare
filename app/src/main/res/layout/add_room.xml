@@ -24,7 +24,6 @@
         android:padding="8dp"
         android:layout_marginBottom="20dp"
         android:id="@+id/edtTPTieuDe"
-        android:textSize="20sp"
         android:hint="Nhập tiêu đề"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -34,7 +33,6 @@
         android:padding="8dp"
         android:layout_marginBottom="20dp"
         android:id="@+id/edtTPGiaPhong"
-        android:textSize="20sp"
         android:hint="Giá Phòng/ngày"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -50,7 +48,6 @@
          android:padding="8dp"
          android:layout_marginBottom="20dp"
          android:id="@+id/edtTPDiaChi"
-         android:textSize="20sp"
          android:hint="Nhập địa chỉ"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"/>
@@ -69,7 +66,6 @@
         android:padding="8dp"
         android:layout_marginBottom="20dp"
         android:id="@+id/edtTPMoTaChiTietPhong"
-        android:textSize="20sp"
         android:hint="Mô tả chi tiết phòng"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -113,12 +109,10 @@
             android:layout_weight="1"
             android:background="@color/blue"
             android:text="THÊM"
-            android:textColor="@color/bg"
-            android:textSize="20sp" />
+            android:textColor="@color/bg" />
 
         <Button
             android:padding="10dp"
-            android:textSize="20sp"
             android:textStyle="bold"
             android:id="@+id/btnTPNhapLai"
             android:layout_width="match_parent"
