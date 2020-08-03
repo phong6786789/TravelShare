@@ -40,6 +40,7 @@ public class PhongDao {
         reference = FirebaseDatabase.getInstance().getReference("Phong");
         showDialog = new ShowDialog((Activity) context);
     }
+
     //Lấy toàn bộ phòng
     public ArrayList<ChiTietPhong> getAllPhong() {
         final ArrayList<ChiTietPhong> list = new ArrayList<>();
@@ -56,7 +57,6 @@ public class PhongDao {
                         list.add(nd);
                     }
                     ManegerPhongThueFragment.chiTietPhongAdapter.notifyDataSetChanged();
-
                 }
 
             }
@@ -98,20 +98,27 @@ public class PhongDao {
         return list;
     }
 
+    //Tự sinh key có sẵn trước
+    public String creatKey() {
+        return reference.push().getKey();
+    }
+
     //Thêm Phòng mới
-    public void insertPhong(ChiTietPhong chiTietPhong) {
+    public void insertPhong(final ChiTietPhong chiTietPhong) {
+//        final String key = reference.push().getKey();
         reference.push().setValue(chiTietPhong).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
-                    showDialog.toastInfo("Thêm phòng thành công!");
+//                    reference.child(key).child("idPhong").setValue(key);
+//                    showDialog.toastInfo("Thêm phòng thành công!");
                     ManegerPhongThueFragment.chiTietPhongAdapter.notifyDataSetChanged();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                showDialog.toastInfo("Thêm phòng thất bại!");
+//                showDialog.toastInfo("Thêm phòng thất bại!");
             }
         });
     }
@@ -123,11 +130,30 @@ public class PhongDao {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     if (data.child("idPhong").getValue(String.class).equalsIgnoreCase(chiTietPhong.getIdPhong())) {
-                        key = data.getKey();
                         reference.child(key).setValue(chiTietPhong);
                     }
                 }
             }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+    //Cập nhật ảnh
+    public void upImage(final String id, final String link) {
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    if (data.child("imgPhong").child("idHinh").getValue(String.class).equalsIgnoreCase(id)) {
+                        key = data.getKey();
+                        reference.child("imgPhong").child("linkHinh").setValue(link);
+                    }
+                }
+            }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
