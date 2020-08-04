@@ -17,8 +17,7 @@
             android:id="@+id/imgP"
             android:layout_width="120dp"
             android:layout_height="100dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/facebook" />
+            android:scaleType="fitXY"/>
 
         <LinearLayout
             android:layout_width="match_parent"
