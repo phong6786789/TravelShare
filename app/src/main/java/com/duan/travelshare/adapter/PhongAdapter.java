@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.duan.travelshare.R;
 import com.duan.travelshare.firebasedao.PhongDao;
 import com.duan.travelshare.model.ChiTietPhong;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class PhongAdapter extends RecyclerView.Adapter<PhongAdapter.ViewHolder> 
         holder.tenPhong.setText(list.get(position).getTenPhong());
         holder.giaPhong.setText(list.get(position).getGiaPhong());
         holder.diachiPhong.setText(list.get(position).getDiaChiPhong());
-        holder.imgPhong.setImageResource(R.drawable.facebook);
+        Picasso.with(context).load(list.get(position).getImgPhong().getLinkHinh()).into(holder.imgPhong);
 
 //
     }
