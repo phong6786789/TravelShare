@@ -7,7 +7,7 @@
 
     <ImageView
         android:layout_marginBottom="8dp"
-        android:id="@+id/ivPhong"
+        android:id="@+id/ivChiTietPhongHinhPhong"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -19,14 +19,14 @@
         android:layout_marginLeft="20dp"
         android:layout_alignParentLeft="true"
         android:id="@+id/line2"
-        android:layout_below="@id/ivPhong"
+        android:layout_below="@id/ivChiTietPhongHinhPhong"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="20dp"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/namephong"
+            android:id="@+id/tvChiTietPhongTenPhong"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Phòng Trọ Thủ Đức"
@@ -34,7 +34,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/giaphong"
+            android:id="@+id/tvChiTietPhongGiaPhong"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="2.000.000VNĐ/Ngày"
@@ -47,7 +47,7 @@
     <LinearLayout
         android:layout_marginRight="20dp"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/ivPhong"
+        android:layout_below="@id/ivChiTietPhongHinhPhong"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -89,6 +89,7 @@
             android:orientation="horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/ivChiTietPhongHinhUser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/person" />
@@ -99,6 +100,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tvChiTietPhongTenUser"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
@@ -108,6 +110,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvChiTietPhongGmailUser"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="10dp"
@@ -172,6 +175,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tvChiTietPhongTenMoTa"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
@@ -180,6 +184,7 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/btnChiTietPhongDatPhong"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_alignParentBottom="true"
