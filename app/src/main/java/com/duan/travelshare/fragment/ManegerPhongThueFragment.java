@@ -1,0 +1,387 @@
+package com.duan.travelshare.fragment;
+
+import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.provider.MediaStore;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.duan.travelshare.MainActivity;
+import com.duan.travelshare.R;
+import com.duan.travelshare.adapter.ChiTietPhongAdapter;
+import com.duan.travelshare.adapter.PhongAdapter;
+import com.duan.travelshare.firebasedao.PhongDao;
+import com.duan.travelshare.model.ChiTietPhong;
+import com.duan.travelshare.model.FullUser;
+import com.duan.travelshare.model.HinhPhong;
+import com.google.android.gms.common.util.Base64Utils;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+
+import static android.app.Activity.RESULT_OK;
+
+public class ManegerPhongThueFragment extends Fragment {
+
+    private PhongDao phongDao;
+    ShowDialog showDialog;
+    FloatingActionButton btnAddPhongThue;
+    ArrayList<ChiTietPhong> list;
+    RecyclerView rcvphong;
+    public static ChiTietPhongAdapter chiTietPhongAdapter;
+    ArrayList<HinhPhong> listHinh = new ArrayList<>();
+    private String key = "";
+    private Boolean check = true;
+
+    //Xin quyền chụp ảnh, thư viện
+    Uri image_uri;
+    StorageReference storageReference;
+    ProgressDialog progressDialog;
+    private static final int CAMERA_REQUEST_CODE = 200;
+    private static final int STORAGE_REQUEST_CODE = 300;
+    private static final int IMAGE_PICK_GALLERY_CODE = 400;
+    private static final int IMAGE_PICK_CAMERA_CODE = 500;
+    private String[] cameraPermission;
+    private String[] storagePermission;
+    ImageView h1, h2, h3;
+
+    private int chooseImage = 0;
+
+    public ManegerPhongThueFragment() {
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_maneger_phong_thue, container, false);
+        rcvphong = view.findViewById(R.id.rec_MngPhongThue);
+        //Khi ấn nút back
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_ios_24);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UserFragment userFragment = new UserFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.frame, userFragment)
+                        .commit();
+            }
+        });
+        showDialog = new ShowDialog(getActivity());
+        btnAddPhongThue = view.findViewById(R.id.btnAddMngPhongThue);
+        btnAddPhongThue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addRoom();
+
+            }
+        });
+        storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://truyen-60710.appspot.com");
+        progressDialog = new ProgressDialog(getActivity());
+        list = new ArrayList<>();
+        phongDao = new PhongDao(getActivity());
+        try {
+            list = phongDao.getAllPhong();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        chiTietPhongAdapter = new ChiTietPhongAdapter(list, getActivity());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        rcvphong.setLayoutManager(linearLayoutManager);
+        rcvphong.setAdapter(chiTietPhongAdapter);
+        return view;
+    }
+
+    private void addRoom() {
+        check = true;
+        listHinh.clear();
+        listHinh.add(new HinhPhong(key + h1, ""));
+        listHinh.add(new HinhPhong(key + h2, ""));
+        listHinh.add(new HinhPhong(key + h3, ""));
+        key = phongDao.creatKey();
+        camera();
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.add_room);
+        dialog.setCancelable(true);
+        Window window = dialog.getWindow();
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        if (dialog != null && dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+        final EditText tenPhong, giaPhong, diaChi, moTa;
+        Button btnThem, btnNhapLai;
+        btnThem = dialog.findViewById(R.id.btnTPThem);
+        btnNhapLai = dialog.findViewById(R.id.btnTPNhapLai);
+        tenPhong = dialog.findViewById(R.id.edtTPTieuDe);
+        giaPhong = dialog.findViewById(R.id.edtTPGiaPhong);
+        diaChi = dialog.findViewById(R.id.edtTPDiaChi);
+        moTa = dialog.findViewById(R.id.edtTPMoTaChiTietPhong);
+        h1 = dialog.findViewById(R.id.ivH1);
+        h2 = dialog.findViewById(R.id.ivH2);
+        h3 = dialog.findViewById(R.id.ivH3);
+
+
+        h1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chooseImage = 1;
+                showImagePickDialog();
+            }
+        });
+
+        h2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chooseImage = 2;
+                showImagePickDialog();
+            }
+        });
+
+        h3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chooseImage = 3;
+                showImagePickDialog();
+            }
+        });
+
+
+        btnThem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final FullUser user = MainActivity.fullUserOne;
+                final String ten = tenPhong.getText().toString();
+                final String gia = giaPhong.getText().toString();
+                final String dc = diaChi.getText().toString();
+                final String mot = moTa.getText().toString();
+//                showDialog.toastInfo(listHinh.size()+"");
+                progressDialog.show();
+                progressDialog.setMessage("Đang tải ảnh lên...");
+                for (int i = 0; i < listHinh.size(); i++) {
+                    if (!listHinh.get(i).getLinkHinh().matches("")) {
+                        final HinhPhong hinhPhong = listHinh.get(i);
+                        storageReference.child(hinhPhong.getIdHinh()).putFile(Uri.parse(hinhPhong.getLinkHinh())).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                                while ((!uriTask.isSuccessful())) ;
+                                Uri dowloadUri = uriTask.getResult();
+                                if (uriTask.isSuccessful()) {
+                                    hinhPhong.setLinkHinh(dowloadUri.toString());
+                                    ChiTietPhong chiTietPhong = new ChiTietPhong(key, ten, gia, dc, mot, hinhPhong, user);
+                                    //Thêm phòng
+                                    phongDao.insertPhong(chiTietPhong);
+                                    progressDialog.dismiss();
+                                    dialog.dismiss();
+                                } else {
+                                    check = false;
+                                    progressDialog.dismiss();
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                check = false;
+//                                Toast.makeText(getActivity(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+                if(check){
+                    showDialog.toastInfo("Thêm phòng thành công!");
+                }
+                else {
+                    showDialog.toastInfo("Thêm phòng thất bại!");
+                }
+            }
+        });
+
+        //Button nhập lại
+        btnNhapLai.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tenPhong.setText("");
+                giaPhong.setText("");
+                diaChi.setText("");
+                moTa.setText("");
+            }
+        });
+
+        dialog.show();
+    }
+
+
+    private void camera() {
+        //Khai báo xin quyền
+        cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    }
+
+    private void showImagePickDialog() {
+        String option[] = {"Camera", "Thư viện ảnh"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Bạn muốn up ảnh từ đâu?");
+        builder.setItems(option, new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0) {
+                    if (!checkCameraPermission()) {
+                        requestCameraPermission();
+                    } else {
+                        pickFromCamera();
+                    }
+                }
+                if (which == 1) {
+                    if (!checkStoragePermission()) {
+                        requestStoragetPermission();
+                    } else {
+                        pickFromGallery();
+                    }
+                }
+            }
+        });
+        builder.create().show();
+    }
+
+    private boolean checkStoragePermission() {
+        boolean result = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
+        return result;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestStoragetPermission() {
+        requestPermissions(storagePermission, STORAGE_REQUEST_CODE);
+    }
+
+    private boolean checkCameraPermission() {
+        boolean result = ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.CAMERA) == (PackageManager.PERMISSION_GRANTED);
+        boolean result1 = ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
+        return result && result1;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestCameraPermission() {
+        requestPermissions(cameraPermission, CAMERA_REQUEST_CODE);
+    }
+
+    private void pickFromGallery() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+        galleryIntent.setType("image/*");
+        startActivityForResult(galleryIntent, IMAGE_PICK_GALLERY_CODE);
+    }
+
+    private void pickFromCamera() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MediaStore.Images.Media.TITLE, "Temp Pic");
+        contentValues.put(MediaStore.Images.Media.DESCRIPTION, "Temp Description");
+        image_uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
+        startActivityForResult(intent, IMAGE_PICK_CAMERA_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_REQUEST_CODE: {
+                if (grantResults.length > 0) {
+                    boolean cameraAccept = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean storageAccept = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+
+                    if (cameraAccept && storageAccept) {
+                        pickFromCamera();
+                    } else {
+                        showDialog.toastInfo("Không truy cập được vào camera!");
+                    }
+                }
+            }
+            break;
+            case STORAGE_REQUEST_CODE: {
+                if (grantResults.length > 0) {
+                    boolean writeStorageAccpted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    if (writeStorageAccpted) {
+                        pickFromGallery();
+                    } else {
+                        showDialog.toastInfo("Vui lòng bật quyền thư viện");
+                    }
+                }
+            }
+            break;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == IMAGE_PICK_GALLERY_CODE) {
+                image_uri = data.getData();
+                chooseImage();
+//                insertImage(image_uri);
+            }
+            if (requestCode == IMAGE_PICK_CAMERA_CODE) {
+                chooseImage();
+//                insertImage(image_uri);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void chooseImage() {
+        switch (chooseImage) {
+            case 1:
+                Picasso.with(getActivity()).load(image_uri).into(h1);
+                listHinh.set(0, new HinhPhong(key + "h1", image_uri.toString()));
+                break;
+            case 2:
+                Picasso.with(getActivity()).load(image_uri).into(h2);
+                listHinh.set(1, new HinhPhong(key + "h2", image_uri.toString()));
+                break;
+            case 3:
+                Picasso.with(getActivity()).load(image_uri).into(h3);
+                listHinh.set(2, new HinhPhong(key + "h3", image_uri.toString()));
+                break;
+        }
+    }
+}
