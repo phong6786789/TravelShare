@@ -42,7 +42,6 @@ public class PhongAdapter extends RecyclerView.Adapter<PhongAdapter.ViewHolder> 
         holder.diachiPhong.setText(list.get(position).getDiaChiPhong());
         Picasso.with(context).load(list.get(position).getImgPhong().getLinkHinh()).into(holder.imgPhong);
 
-//
     }
     @Override
     public int getItemCount() {
@@ -58,6 +57,11 @@ public class PhongAdapter extends RecyclerView.Adapter<PhongAdapter.ViewHolder> 
             giaPhong=itemView.findViewById(R.id.priceP);
             diachiPhong=itemView.findViewById(R.id.addressP);
             imgPhong=itemView.findViewById(R.id.imgP);
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                    }
+                });
         }
     }
 }
