@@ -38,7 +38,7 @@ public class ChiTietPhongAdapter extends RecyclerView.Adapter<ChiTietPhongAdapte
         holder.ten.setText(list.get(position).getTenPhong());
         holder.gia.setText(list.get(position).getGiaPhong());
         holder.diachi.setText(list.get(position).getDiaChiPhong());
-        holder.img.setImageResource(R.drawable.facebook);
+        holder.img.setImageResource(R.drawable.phongtro);
     }
     @Override
     public int getItemCount() {

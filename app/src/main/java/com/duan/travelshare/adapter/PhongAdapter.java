@@ -39,8 +39,7 @@ public class PhongAdapter extends RecyclerView.Adapter<PhongAdapter.ViewHolder> 
         holder.tenPhong.setText(list.get(position).getTenPhong());
         holder.giaPhong.setText(list.get(position).getGiaPhong());
         holder.diachiPhong.setText(list.get(position).getDiaChiPhong());
-        holder.imgPhong.setImageResource(R.drawable.facebook);
-
+        holder.imgPhong.setImageResource(R.drawable.phongtro);
 //
     }
     @Override
