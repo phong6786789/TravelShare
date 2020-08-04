@@ -3,20 +3,20 @@
         android:id="@+id/home"
         android:enabled="true"
         android:icon="@drawable/ic_home"
-        android:title="Trang chủ"/>
+        android:title=""/>
     <item
         android:id="@+id/giaodich"
         android:enabled="true"
         android:icon="@drawable/ic_giaodich"
-        android:title="Giao dịch"/>
+        android:title=""/>
     <item
         android:id="@+id/thongbao"
         android:enabled="true"
         android:icon="@drawable/ic_notification"
-        android:title="Thông báo"/>
+        android:title=""/>
     <item
         android:id="@+id/user"
         android:enabled="true"
         android:icon="@drawable/user"
-        android:title="Cá nhân"/>
+        android:title=""/>
 </menu>

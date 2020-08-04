@@ -68,18 +68,15 @@ public class ShowUserFragment extends Fragment {
     static EditText name, cmnd, email, birthday, phone, address;
     private String namex, cmndx, emailx, birthdayx, phonex, addressx;
     private FullUser u;
-    Uri image_uri;
-    FirebaseAuth firebaseAuth;
-    StorageReference storageReference;
-    StorageReference mref;
-    DatabaseReference databaseReference;
-    ProgressDialog progressDialog;
 
+    //Xin quyền chụp ảnh
+    Uri image_uri;
+    StorageReference storageReference;
+    ProgressDialog progressDialog;
     private static final int CAMERA_REQUEST_CODE = 200;
     private static final int STORAGE_REQUEST_CODE = 300;
     private static final int IMAGE_PICK_GALLERY_CODE = 400;
     private static final int IMAGE_PICK_CAMERA_CODE = 500;
-
     private String[] cameraPermission;
     private String[] storagePermission;
 
@@ -114,8 +111,6 @@ public class ShowUserFragment extends Fragment {
         fullUserDao = new FullUserDao(getActivity());
         userDao = new UserDao(getActivity());
         ivAvatar = view.findViewById(R.id.ivAvatar);
-        //load Image
-        firebaseAuth = FirebaseAuth.getInstance();
         //Đổ dữ liệu
         u = UserFragment.list;
 
@@ -130,7 +125,6 @@ public class ShowUserFragment extends Fragment {
 
         //storage firebase
         storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://truyen-60710.appspot.com");
-        databaseReference = FirebaseDatabase.getInstance().getReference("Fulluser");
         if (!u.getLinkImage().matches("")) {
             Picasso.with(getContext()).load(u.getLinkImage()).into(ivAvatar);
         }
@@ -165,7 +159,6 @@ public class ShowUserFragment extends Fragment {
         //Set user
         setUser();
 
-        //Set hình lên
 
         //Khai báo xin quyền
         cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
