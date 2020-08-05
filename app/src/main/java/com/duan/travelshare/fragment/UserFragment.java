@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -58,6 +59,9 @@ public class UserFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user, container, false);
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.color.blue);
+
 
 
         avatar = view.findViewById(R.id.imgAvatar);

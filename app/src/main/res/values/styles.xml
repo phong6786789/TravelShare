@@ -11,4 +11,9 @@
     <style name="title" parent="AppTheme">
         <item name="fontFamily">@font/logo</item>
     </style>
+
+    <style name="up_down">
+        <item name="android:windowEnterAnimation">@anim/slide_up</item>
+        <item name="android:windowExitAnimation">@anim/slide_bottom</item>
+    </style>
 </resources>

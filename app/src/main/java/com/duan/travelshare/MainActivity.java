@@ -37,7 +37,8 @@ public class MainActivity extends AppCompatActivity {
     public static int position = -1;
     public static FullUser fullUserOne;
     static ShowDialog showDialog;
-   public static String emailUser = "";
+    public static BottomNavigationView navigation;
+    public static String emailUser = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         list = fullUserDao.getAllFullUser();
 
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
         //Tạo màn hình ban đầu là fragment home đầu tiên
         if (savedInstanceState == null) {
@@ -140,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             emailUser = userName;
 
         }
-        emailUser =email;
+        emailUser = email;
     }
 
 }

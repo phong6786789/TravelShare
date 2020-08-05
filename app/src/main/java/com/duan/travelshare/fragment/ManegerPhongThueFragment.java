@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,14 +35,11 @@ import android.widget.Toast;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
-import com.duan.travelshare.adapter.ChiTietPhongAdapter;
-import com.duan.travelshare.adapter.PhongAdapter;
+import com.duan.travelshare.adapter.PhongManagerAdapter;
 import com.duan.travelshare.firebasedao.PhongDao;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.HinhPhong;
-import com.google.android.gms.common.util.Base64Utils;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -54,9 +50,6 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
@@ -68,12 +61,13 @@ public class ManegerPhongThueFragment extends Fragment {
     FloatingActionButton btnAddPhongThue;
     ArrayList<ChiTietPhong> list;
     RecyclerView rcvphong;
-    public static ChiTietPhongAdapter chiTietPhongAdapter;
+    public static PhongManagerAdapter chiTietPhongAdapter;
     ArrayList<HinhPhong> listHinh = new ArrayList<>();
     private String key = "";
     private Boolean check = true;
     private ArrayList<Uri> listHinhPhong = new ArrayList<>();
     private ArrayList<String> listImageFireBase = new ArrayList<>();
+
 
     //Xin quyền chụp ảnh, thư viện
     Uri image_uri;
@@ -129,7 +123,7 @@ public class ManegerPhongThueFragment extends Fragment {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        chiTietPhongAdapter = new ChiTietPhongAdapter(list, getActivity());
+        chiTietPhongAdapter = new PhongManagerAdapter(list, getActivity());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rcvphong.setLayoutManager(linearLayoutManager);
