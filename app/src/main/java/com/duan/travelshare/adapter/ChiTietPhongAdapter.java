@@ -41,8 +41,9 @@ public class ChiTietPhongAdapter extends RecyclerView.Adapter<ChiTietPhongAdapte
         holder.ten.setText(list.get(position).getTenPhong());
         holder.gia.setText(list.get(position).getGiaPhong());
         holder.diachi.setText(list.get(position).getDiaChiPhong());
-        Picasso.with(context).load(list.get(position).getImgPhong().getLinkHinh()).into(holder.img);
-
+        if(list.get(position).getImgPhong().size()!=0){
+            Picasso.with(context).load(list.get(position).getImgPhong().get(0)).into(holder.img);
+        }
     }
 
     @Override

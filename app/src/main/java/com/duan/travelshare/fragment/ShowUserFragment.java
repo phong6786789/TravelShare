@@ -355,6 +355,7 @@ public class ShowUserFragment extends Fragment {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
                 while ((!uriTask.isSuccessful())) ;
+
                 Uri dowloadUri = uriTask.getResult();
 
                 if (uriTask.isSuccessful()) {

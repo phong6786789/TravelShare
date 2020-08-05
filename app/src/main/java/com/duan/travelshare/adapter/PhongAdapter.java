@@ -40,7 +40,9 @@ public class PhongAdapter extends RecyclerView.Adapter<PhongAdapter.ViewHolder> 
         holder.tenPhong.setText(list.get(position).getTenPhong());
         holder.giaPhong.setText(list.get(position).getGiaPhong());
         holder.diachiPhong.setText(list.get(position).getDiaChiPhong());
-        Picasso.with(context).load(list.get(position).getImgPhong().getLinkHinh()).into(holder.imgPhong);
+        if(list.get(position).getImgPhong().size()!=0){
+            Picasso.with(context).load(list.get(position).getImgPhong().get(0)).into(holder.imgPhong);
+        }
 
     }
     @Override

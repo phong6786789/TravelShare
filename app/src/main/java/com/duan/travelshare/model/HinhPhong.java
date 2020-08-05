@@ -1,12 +1,15 @@
 package com.duan.travelshare.model;
 
+import android.net.Uri;
+
 public class HinhPhong {
-    String idHinh, linkHinh;
+    String idHinh;
+    Uri linkHinh;
 
     public HinhPhong() {
     }
 
-    public HinhPhong(String idHinh, String linkHinh) {
+    public HinhPhong(String idHinh, Uri linkHinh) {
         this.idHinh = idHinh;
         this.linkHinh = linkHinh;
     }
@@ -19,11 +22,11 @@ public class HinhPhong {
         this.idHinh = idHinh;
     }
 
-    public String getLinkHinh() {
+    public Uri getLinkHinh() {
         return linkHinh;
     }
 
-    public void setLinkHinh(String linkHinh) {
+    public void setLinkHinh(Uri linkHinh) {
         this.linkHinh = linkHinh;
     }
 }

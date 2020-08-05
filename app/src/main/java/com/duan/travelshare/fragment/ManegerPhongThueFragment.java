@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,7 @@ import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.HinhPhong;
 import com.google.android.gms.common.util.Base64Utils;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -52,6 +54,10 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -66,6 +72,8 @@ public class ManegerPhongThueFragment extends Fragment {
     ArrayList<HinhPhong> listHinh = new ArrayList<>();
     private String key = "";
     private Boolean check = true;
+    private ArrayList<Uri> listHinhPhong = new ArrayList<>();
+    private ArrayList<String> listImageFireBase = new ArrayList<>();
 
     //Xin quyền chụp ảnh, thư viện
     Uri image_uri;
@@ -117,7 +125,7 @@ public class ManegerPhongThueFragment extends Fragment {
         list = new ArrayList<>();
         phongDao = new PhongDao(getActivity());
         try {
-            list = phongDao.getAllPhong();
+            list = phongDao.getUserByEmail(MainActivity.email);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -130,11 +138,9 @@ public class ManegerPhongThueFragment extends Fragment {
     }
 
     private void addRoom() {
+        listImageFireBase.clear();
+        listHinhPhong.clear();
         check = true;
-        listHinh.clear();
-        listHinh.add(new HinhPhong(key + h1, ""));
-        listHinh.add(new HinhPhong(key + h2, ""));
-        listHinh.add(new HinhPhong(key + h3, ""));
         key = phongDao.creatKey();
         camera();
         final Dialog dialog = new Dialog(getActivity());
@@ -194,41 +200,45 @@ public class ManegerPhongThueFragment extends Fragment {
 //                showDialog.toastInfo(listHinh.size()+"");
                 progressDialog.show();
                 progressDialog.setMessage("Đang tải ảnh lên...");
-                for (int i = 0; i < listHinh.size(); i++) {
-                    if (!listHinh.get(i).getLinkHinh().matches("")) {
-                        final HinhPhong hinhPhong = listHinh.get(i);
-                        storageReference.child(hinhPhong.getIdHinh()).putFile(Uri.parse(hinhPhong.getLinkHinh())).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                                while ((!uriTask.isSuccessful())) ;
-                                Uri dowloadUri = uriTask.getResult();
-                                if (uriTask.isSuccessful()) {
-                                    hinhPhong.setLinkHinh(dowloadUri.toString());
-                                    ChiTietPhong chiTietPhong = new ChiTietPhong(key, ten, gia, dc, mot, hinhPhong, user);
+
+                //Đổ listHinh vào
+                if(!listHinh.isEmpty()){
+                    for(int i=0;i<listHinh.size();i++){
+                        listHinhPhong.add(listHinh.get(i).getLinkHinh());
+                    }
+                }
+
+                for (int i = 0; i < listHinhPhong.size(); i++) {
+                    Uri IndividualImage = listHinhPhong.get(i);
+                    storageReference.child(UUID.randomUUID().toString()).putFile(IndividualImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                            while ((!uriTask.isSuccessful())) ;
+
+                            Uri dowloadUri = uriTask.getResult();
+
+                            if (uriTask.isSuccessful()) {
+                                listImageFireBase.add(String.valueOf(dowloadUri));
+                                if (listImageFireBase.size() == listHinhPhong.size()) {
+                                    ChiTietPhong chiTietPhong = new ChiTietPhong(key, ten, gia, dc, mot, listImageFireBase, user);
                                     //Thêm phòng
                                     phongDao.insertPhong(chiTietPhong);
                                     progressDialog.dismiss();
                                     dialog.dismiss();
-                                } else {
-                                    check = false;
-                                    progressDialog.dismiss();
                                 }
+                            } else {
+                                progressDialog.dismiss();
+                                dialog.dismiss();
                             }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                check = false;
-//                                Toast.makeText(getActivity(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-                if(check){
-                    showDialog.toastInfo("Thêm phòng thành công!");
-                }
-                else {
-                    showDialog.toastInfo("Thêm phòng thất bại!");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getActivity(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
                 }
             }
         });
@@ -368,19 +378,60 @@ public class ManegerPhongThueFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    Boolean checkLink = false;
+
     private void chooseImage() {
         switch (chooseImage) {
             case 1:
+                checkLink = false;
                 Picasso.with(getActivity()).load(image_uri).into(h1);
-                listHinh.set(0, new HinhPhong(key + "h1", image_uri.toString()));
+                if (!listHinh.isEmpty()) {
+                    for (int i = 0; i < listHinh.size(); i++) {
+                        HinhPhong hinhPhong = listHinh.get(i);
+                        if (hinhPhong.getIdHinh().matches("h1")) {
+                            checkLink = true;
+                            listHinh.set(i, new HinhPhong("h1", image_uri));
+                            break;
+                        }
+                    }
+                }
+                if(!checkLink){
+                    listHinh.add(new HinhPhong("h1", image_uri));
+                }
                 break;
             case 2:
+                checkLink = false;
                 Picasso.with(getActivity()).load(image_uri).into(h2);
-                listHinh.set(1, new HinhPhong(key + "h2", image_uri.toString()));
+                if (!listHinh.isEmpty()) {
+                    for (int i = 0; i < listHinh.size(); i++) {
+                        HinhPhong hinhPhong = listHinh.get(i);
+                        if (hinhPhong.getIdHinh().matches("h2")) {
+                            checkLink = true;
+                            listHinh.set(i, new HinhPhong("h2", image_uri));
+                            break;
+                        }
+                    }
+                }
+                if(!checkLink){
+                    listHinh.add(new HinhPhong("h2", image_uri));
+                }
                 break;
             case 3:
+                checkLink = false;
                 Picasso.with(getActivity()).load(image_uri).into(h3);
-                listHinh.set(2, new HinhPhong(key + "h3", image_uri.toString()));
+                if (!listHinh.isEmpty()) {
+                    for (int i = 0; i < listHinh.size(); i++) {
+                        HinhPhong hinhPhong = listHinh.get(i);
+                        if (hinhPhong.getIdHinh().matches("h3")) {
+                            checkLink = true;
+                            listHinh.set(i, new HinhPhong("h3", image_uri));
+                            break;
+                        }
+                    }
+                }
+                if(!checkLink){
+                    listHinh.add(new HinhPhong("h3", image_uri));
+                }
                 break;
         }
     }

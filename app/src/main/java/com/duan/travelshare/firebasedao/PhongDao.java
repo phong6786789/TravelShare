@@ -56,7 +56,6 @@ public class PhongDao {
                         ChiTietPhong nd = next.getValue(ChiTietPhong.class);
                         list.add(nd);
                     }
-                    ManegerPhongThueFragment.chiTietPhongAdapter.notifyDataSetChanged();
                 }
 
             }
@@ -105,25 +104,21 @@ public class PhongDao {
 
     //Thêm Phòng mới
     public void insertPhong(final ChiTietPhong chiTietPhong) {
-//        final String key = reference.push().getKey();
         reference.push().setValue(chiTietPhong).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
-//                    reference.child(key).child("idPhong").setValue(key);
-//                    showDialog.toastInfo("Thêm phòng thành công!");
                     ManegerPhongThueFragment.chiTietPhongAdapter.notifyDataSetChanged();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-//                showDialog.toastInfo("Thêm phòng thất bại!");
             }
         });
     }
-    //Cập nhật Phòng
 
+    //Cập nhật Phòng
     public void updatePhong(final ChiTietPhong chiTietPhong) {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -139,6 +134,37 @@ public class PhongDao {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+    }
+
+    //Lấy toàn bộ phòng
+    public ArrayList<ChiTietPhong> getUserByEmail(final String email) {
+        final ArrayList<ChiTietPhong> list = new ArrayList<>();
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    list.clear();
+                    Iterable<DataSnapshot> dataSnapshotIterable = dataSnapshot.getChildren();
+                    Iterator<DataSnapshot> iterator = dataSnapshotIterable.iterator();
+                    while (iterator.hasNext()) {
+                        DataSnapshot next = (DataSnapshot) iterator.next();
+                        ChiTietPhong nd = next.getValue(ChiTietPhong.class);
+                        if(nd.getFullUser().getEmailUser().matches(email)){
+                            list.add(nd);
+                        }
+                    }
+                    ManegerPhongThueFragment.chiTietPhongAdapter.notifyDataSetChanged();
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(context, "Lấy thông tin thất bại!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        return list;
     }
 
     //Cập nhật ảnh

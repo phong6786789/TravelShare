@@ -1,16 +1,17 @@
 package com.duan.travelshare.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class ChiTietPhong implements Serializable {
     private String idPhong, tenPhong, giaPhong, diaChiPhong, moTaPhong;
+    ArrayList<String> imgPhong;
     FullUser fullUser;
-    HinhPhong imgPhong;
 
     public ChiTietPhong() {
     }
 
-    public ChiTietPhong(String idPhong, String tenPhong, String giaPhong, String diaChiPhong, String moTaPhong, HinhPhong imgPhong, FullUser fullUser) {
+    public ChiTietPhong(String idPhong, String tenPhong, String giaPhong, String diaChiPhong, String moTaPhong, ArrayList<String> imgPhong, FullUser fullUser) {
         this.idPhong = idPhong;
         this.tenPhong = tenPhong;
         this.giaPhong = giaPhong;
@@ -60,11 +61,11 @@ public class ChiTietPhong implements Serializable {
         this.moTaPhong = moTaPhong;
     }
 
-    public HinhPhong getImgPhong() {
+    public ArrayList<String> getImgPhong() {
         return imgPhong;
     }
 
-    public void setImgPhong(HinhPhong imgPhong) {
+    public void setImgPhong(ArrayList<String> imgPhong) {
         this.imgPhong = imgPhong;
     }
 
@@ -76,3 +77,4 @@ public class ChiTietPhong implements Serializable {
         this.fullUser = fullUser;
     }
 }
+

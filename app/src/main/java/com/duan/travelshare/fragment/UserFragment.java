@@ -270,8 +270,8 @@ public class UserFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         getActivity().finish();
-                    }
-                });
+            }
+        });
 
                 cancle.setOnClickListener(new View.OnClickListener() {
                     @Override
