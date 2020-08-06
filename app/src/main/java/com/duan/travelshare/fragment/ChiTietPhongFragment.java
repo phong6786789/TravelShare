@@ -74,9 +74,13 @@ public class ChiTietPhongFragment extends Fragment {
         //            save, call, messenger, star , xem, datPhong;
 
         //Khi ấn nút back
+        //Toolbar
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_ios_24);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        TextView title =toolbar.findViewById(R.id.tbTitle);
+        ImageView back = toolbar.findViewById(R.id.tbBack);
+        title.setText("CHI TIẾT PHÒNG");
+        back.setVisibility(View.VISIBLE);
+        back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 MainActivity.navigation.setVisibility(View.VISIBLE);

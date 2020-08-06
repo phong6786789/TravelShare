@@ -14,8 +14,9 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:adjustViewBounds="true"
             android:id="@+id/imgP"
-            android:layout_width="120dp"
+            android:layout_width="100dp"
             android:layout_height="100dp"
             android:scaleType="centerCrop"/>
 

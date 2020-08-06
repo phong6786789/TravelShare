@@ -76,24 +76,20 @@ public class MainActivity extends AppCompatActivity {
             Fragment fragment = null;
             switch (menuItem.getItemId()) {
                 case R.id.home:
-                    toolbar.setTitle("TRANG CHỦ");
                     fragment = new HomeFragment();
                     loadFragment(fragment);
                     return true;
 
                 case R.id.giaodich:
-                    toolbar.setTitle("GIAO DỊCH");
                     fragment = new GiaoDichFragment();
                     loadFragment(fragment);
                     return true;
                 case R.id.thongbao:
-                    toolbar.setTitle("THÔNG BÁO");
                     fragment = new ThongBaoFragment();
                     loadFragment(fragment);
                     return true;
 
                 case R.id.user:
-                    toolbar.setTitle("CÁ NHÂN");
                     fragment = new UserFragment();
                     loadFragment(fragment);
                     return true;

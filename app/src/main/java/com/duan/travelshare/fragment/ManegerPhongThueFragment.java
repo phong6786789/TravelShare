@@ -31,6 +31,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.duan.travelshare.MainActivity;
@@ -92,13 +93,18 @@ public class ManegerPhongThueFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_maneger_phong_thue, container, false);
+        MainActivity.navigation.setVisibility(View.GONE);
         rcvphong = view.findViewById(R.id.rec_MngPhongThue);
         //Khi ấn nút back
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_ios_24);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        TextView title = toolbar.findViewById(R.id.tbTitle);
+        final ImageView back = toolbar.findViewById(R.id.tbBack);
+        title.setText("QUẢN LÝ PHÒNG");
+        back.setVisibility(View.VISIBLE);
+        back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MainActivity.navigation.setVisibility(View.VISIBLE);
                 UserFragment userFragment = new UserFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.frame, userFragment)

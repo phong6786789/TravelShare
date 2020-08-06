@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.duan.travelshare.R;
 
@@ -21,9 +23,13 @@ public class GiaoDichFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_giao_dich, container, false);
-        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.color.blue);
 
+        //Toolbar
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        TextView title =toolbar.findViewById(R.id.tbTitle);
+        ImageView back = toolbar.findViewById(R.id.tbBack);
+        title.setText("GIAO DỊCH");
+        back.setVisibility(View.INVISIBLE);
 
 
         return view;

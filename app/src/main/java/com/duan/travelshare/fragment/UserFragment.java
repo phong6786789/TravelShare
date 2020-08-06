@@ -59,9 +59,12 @@ public class UserFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user, container, false);
+        //Toolbar
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.color.blue);
-
+        TextView title =toolbar.findViewById(R.id.tbTitle);
+        ImageView back = toolbar.findViewById(R.id.tbBack);
+        title.setText("CÁ NHÂN");
+        back.setVisibility(View.INVISIBLE);
 
 
         avatar = view.findViewById(R.id.imgAvatar);

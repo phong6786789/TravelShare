@@ -32,6 +32,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.widget.Toolbar;
 
 import com.duan.travelshare.MainActivity;
@@ -92,13 +93,17 @@ public class ShowUserFragment extends Fragment {
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_show_user, container, false);
-
+        MainActivity.navigation.setVisibility(View.GONE);
         //Khi ấn nút back
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_ios_24);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        TextView title = toolbar.findViewById(R.id.tbTitle);
+        ImageView back = toolbar.findViewById(R.id.tbBack);
+        title.setText("THÔNG TIN TÀI KHOẢN");
+        back.setVisibility(View.VISIBLE);
+        back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MainActivity.navigation.setVisibility(View.VISIBLE);
                 UserFragment userFragment = new UserFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.frame, userFragment)

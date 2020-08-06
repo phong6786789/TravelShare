@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.duan.travelshare.R;
 import com.duan.travelshare.adapter.PhongHomeAdapter;
@@ -30,8 +32,13 @@ public class HomeFragment extends Fragment  {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_home, container, false);
+        //Toolbar
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.color.blue);
+        TextView title =toolbar.findViewById(R.id.tbTitle);
+        ImageView back = toolbar.findViewById(R.id.tbBack);
+        title.setText("TRANG CHỦ");
+        back.setVisibility(View.INVISIBLE);
+
         rcvPhong=view.findViewById(R.id.listPhong);
         list=new ArrayList<>();
         phongDao=new PhongDao(getActivity());

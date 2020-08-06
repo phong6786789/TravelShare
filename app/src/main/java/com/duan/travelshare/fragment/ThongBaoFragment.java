@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.duan.travelshare.R;
 
@@ -23,9 +25,12 @@ public class ThongBaoFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_thong_bao, container, false);
+        //Toolbar
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.color.blue);
-
+        TextView title =toolbar.findViewById(R.id.tbTitle);
+        ImageView back = toolbar.findViewById(R.id.tbBack);
+        title.setText("THÔNG BÁO");
+        back.setVisibility(View.INVISIBLE);
         return view;
     }
 }
