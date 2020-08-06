@@ -24,6 +24,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,7 +83,7 @@ public class ManegerPhongThueFragment extends Fragment {
     private String[] cameraPermission;
     private String[] storagePermission;
     ImageView h1, h2, h3;
-
+    private EditText textSearch;
     private int chooseImage = 0;
 
     public ManegerPhongThueFragment() {
@@ -134,6 +136,30 @@ public class ManegerPhongThueFragment extends Fragment {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rcvphong.setLayoutManager(linearLayoutManager);
         rcvphong.setAdapter(chiTietPhongAdapter);
+
+        //Tìm kiếm
+        textSearch = view.findViewById(R.id.edtSearch);
+        textSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int
+                    count) {
+                System.out.println("Text [" + s + "] - Start [" + start + "] - Before [" + before + "] - Count [" + count + "]");
+                if (count < before) {
+                    chiTietPhongAdapter.resetData();
+                }
+                chiTietPhongAdapter.getFilter().filter(s.toString());
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
         return view;
     }
 

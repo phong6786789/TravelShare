@@ -12,6 +12,7 @@
         android:orientation="vertical">
 
         <EditText
+            android:inputType="text"
             android:drawablePadding="10dp"
             android:hint="Nhập phòng cần tìm"
             android:id="@+id/edtSearch"

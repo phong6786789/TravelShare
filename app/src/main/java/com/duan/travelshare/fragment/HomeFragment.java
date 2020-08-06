@@ -7,10 +7,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.duan.travelshare.R;
@@ -26,6 +30,7 @@ public class HomeFragment extends Fragment  {
     public  static PhongHomeAdapter phongAdapter;
     List<ChiTietPhong> list;
     PhongDao phongDao;
+    private EditText textSearch;
     public HomeFragment() {
     }
     @Override
@@ -38,6 +43,8 @@ public class HomeFragment extends Fragment  {
         ImageView back = toolbar.findViewById(R.id.tbBack);
         title.setText("TRANG CHỦ");
         back.setVisibility(View.INVISIBLE);
+
+
 
         rcvPhong=view.findViewById(R.id.listPhong);
         list=new ArrayList<>();
@@ -53,6 +60,30 @@ public class HomeFragment extends Fragment  {
         rcvPhong.setLayoutManager(linearLayoutManager);
         rcvPhong.setAdapter(phongAdapter);
         phongAdapter.notifyDataSetChanged();
+
+        //Tìm kiếm
+        textSearch = view.findViewById(R.id.edtSearch);
+        textSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int
+                    count) {
+                System.out.println("Text [" + s + "] - Start [" + start + "] - Before [" + before + "] - Count [" + count + "]");
+                if (count < before) {
+                    phongAdapter.resetData();
+                }
+                phongAdapter.getFilter().filter(s.toString());
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
         return view;
     }
 }

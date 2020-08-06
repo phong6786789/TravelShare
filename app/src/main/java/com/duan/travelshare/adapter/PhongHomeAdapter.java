@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,10 +20,13 @@ import com.duan.travelshare.fragment.ChiTietPhongFragment;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PhongHomeAdapter extends RecyclerView.Adapter<PhongHomeAdapter.ViewHolder> {
     List<ChiTietPhong> list;
+    List<ChiTietPhong> listSort;
+    Filter filter;
     Context context;
     PhongDao phongDao;
 
@@ -30,6 +34,7 @@ public class PhongHomeAdapter extends RecyclerView.Adapter<PhongHomeAdapter.View
         this.list = list;
         this.context = context;
         phongDao = new PhongDao(context);
+        this.listSort = list;
     }
 
     @NonNull
@@ -84,6 +89,48 @@ public class PhongHomeAdapter extends RecyclerView.Adapter<PhongHomeAdapter.View
             fragmentManager.beginTransaction()
                     .replace(R.id.frame, chiTietPhong)
                     .commit();
+        }
+    }
+
+    public void resetData() {
+        list = listSort;
+    }
+
+    public Filter getFilter() {
+        if (filter == null)
+            filter = new CustomFilter();
+        return filter;
+    }
+
+    private class CustomFilter extends Filter {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults results = new FilterResults();
+            // We implement here the filter logic
+            if (constraint == null || constraint.length() == 0) {
+                results.values = listSort;
+                results.count = listSort.size();
+            } else {
+                List<ChiTietPhong> lsChiTietPhong = new ArrayList<ChiTietPhong>();
+                for (ChiTietPhong p : list) {
+                    if
+                    (p.getTenPhong().toUpperCase().contains(constraint.toString().toUpperCase()))
+                        lsChiTietPhong.add(p);
+                }
+                results.values = lsChiTietPhong;
+                results.count = lsChiTietPhong.size();
+            }
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            if (results.count == 0)
+                notifyDataSetChanged();
+            else {
+                list = (List<ChiTietPhong>) results.values;
+                notifyDataSetChanged();
+            }
         }
     }
 }
