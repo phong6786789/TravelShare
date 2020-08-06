@@ -40,22 +40,15 @@ import com.duan.travelshare.R;
 import com.duan.travelshare.firebasedao.FullUserDao;
 import com.duan.travelshare.firebasedao.UserDao;
 import com.duan.travelshare.model.FullUser;
-import com.duan.travelshare.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -67,7 +60,7 @@ public class ShowUserFragment extends Fragment {
     private ShowDialog showDialog;
     private Button btnUpdate;
     static EditText name, cmnd, email, birthday, phone, address;
-    private String namex, cmndx, emailx, birthdayx, phonex, addressx;
+    private String namex, cmndx, emailx, birthdayx, phonex, addressx, link;
     private FullUser u;
 
     //Xin quyền chụp ảnh
@@ -181,20 +174,14 @@ public class ShowUserFragment extends Fragment {
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    namex = name.getText().toString();
-                    cmndx = cmnd.getText().toString();
-                    emailx = email.getText().toString();
-                    birthdayx = birthday.getText().toString();
-                    phonex = phone.getText().toString();
-                    addressx = address.getText().toString();
-
-                    //Invailed Form
-                    checkForm();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                namex = name.getText().toString();
+                cmndx = cmnd.getText().toString();
+                emailx = email.getText().toString();
+                birthdayx = birthday.getText().toString();
+                phonex = phone.getText().toString();
+                addressx = address.getText().toString();
+                //Invailed Form
+                checkForm();
             }
         });
         return view;
@@ -231,24 +218,20 @@ public class ShowUserFragment extends Fragment {
 
 
     private void checkForm() {
-        try {
-            if (namex.isEmpty() || cmndx.isEmpty() || emailx.isEmpty() || birthdayx.isEmpty() || phonex.isEmpty() || addressx.isEmpty()) {
-                showDialog.toastInfo("Các trường không được để trống!");
-            } else if (!namex.matches("^[a-zẠ-ỹA-Z\\s]{4,}")) {
-                showDialog.toastInfo("Tên phải có ít nhất 5 ký tự!");
-            } else if (cmndx.length() != 9 && cmndx.length() != 12) {
-                showDialog.toastInfo("Chứng minh nhân dân phải đủ 9 số hoặc căn cước công dân phải đủ 12 số!");
-            } else if (!phonex.matches("[0-9]{10,11}")) {
-                showDialog.toastInfo("Vui lòng nhập đúng số điện thoại");
-            } else if (addressx.length() < 10) {
-                showDialog.toastInfo("Vui lòng nhập đầy đủ địa chỉ!");
-            } else {
-                FullUser fullUser = new FullUser(namex, cmndx, emailx, birthdayx, phonex, addressx, u.getLinkImage());
-                fullUserDao.updateUser(fullUser);
-                showDialog.toastInfo("Cập nhật thành công!");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (image_uri==null) {
+            showDialog.toastInfo("Vui lòng thêm ảnh đại diện!");
+        } else if (namex.isEmpty() || cmndx.isEmpty() || emailx.isEmpty() || birthdayx.isEmpty() || phonex.isEmpty() || addressx.isEmpty()) {
+            showDialog.toastInfo("Các trường không được để trống!");
+        } else if (namex.length() < 5) {
+            showDialog.toastInfo("Tên phải có ít nhất 5 ký tự!");
+        } else if (cmndx.length()!=9 && cmndx.length()!=12) {
+            showDialog.toastInfo("Chứng minh nhân dân phải đủ 9 số hoặc căn cước công dân phải đủ 12 số!");
+        } else if (!phonex.matches("[0-9]{10,11}")) {
+            showDialog.toastInfo("Vui lòng nhập đúng số điện thoại!");
+        } else if (addressx.length() < 10) {
+            showDialog.toastInfo("Vui lòng nhập đầy đủ địa chỉ!");
+        } else {
+            insertImage(image_uri);
         }
     }
 
@@ -341,11 +324,9 @@ public class ShowUserFragment extends Fragment {
             if (requestCode == IMAGE_PICK_GALLERY_CODE) {
                 image_uri = data.getData();
                 Picasso.with(getActivity()).load(image_uri).into(ivAvatar);
-                insertImage(image_uri);
             }
             if (requestCode == IMAGE_PICK_CAMERA_CODE) {
                 Picasso.with(getActivity()).load(image_uri).into(ivAvatar);
-                insertImage(image_uri);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -353,24 +334,22 @@ public class ShowUserFragment extends Fragment {
 
     private void insertImage(Uri uri) {
         progressDialog.show();
-        progressDialog.setMessage("Đang tải ảnh lên...");
+        progressDialog.setMessage("Đang cập nhật...");
         final String filePathAndName = "image_" + u.getEmailUser();
         storageReference.child(filePathAndName).putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
                 while ((!uriTask.isSuccessful())) ;
-
                 Uri dowloadUri = uriTask.getResult();
-
                 if (uriTask.isSuccessful()) {
-                    fullUserDao.setLinkImage(MainActivity.email, dowloadUri.toString());
+                    FullUser fullUser = new FullUser(namex, cmndx, emailx, birthdayx, phonex, addressx, dowloadUri.toString());
+                    fullUserDao.updateUser(fullUser);
                     progressDialog.dismiss();
-                    showDialog.toastInfo("Cập nhật ảnh thành công!");
+                    showDialog.toastInfo("Cập nhật thành công!");
                 } else {
                     progressDialog.dismiss();
-                    Toast.makeText(getActivity(), "Lỗi", Toast.LENGTH_SHORT).show();
-                    showDialog.toastInfo("Cập nhật ảnh thất bại!");
+                    showDialog.toastInfo("Cập nhật thất bại!");
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {

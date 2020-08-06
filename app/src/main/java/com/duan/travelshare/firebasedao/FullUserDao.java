@@ -140,6 +140,7 @@ public class FullUserDao {
                     if (data.child("emailUser").getValue(String.class).equalsIgnoreCase(email)) {
                         key = data.getKey();
                         reference.child(key).child("linkImage").setValue(link);
+                        break;
                     }
                 }
             }
