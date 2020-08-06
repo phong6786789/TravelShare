@@ -135,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
     public void checkLoginTk() {
         if (!MainActivity.userName.matches("0")) {
             emailUser = userName;
-
         }
         emailUser = email;
     }

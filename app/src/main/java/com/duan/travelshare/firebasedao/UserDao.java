@@ -30,6 +30,7 @@ public class UserDao {
     String key = "";
     Login login;
     ShowDialog showDialog;
+
     public UserDao() {
     }
 
@@ -68,7 +69,7 @@ public class UserDao {
 
 
     //Lấy toàn bộ tài khoản mật khẩu
-    public ArrayList<User> getAllFilter() {
+    public void getAllFilter(final String email) {
         final ArrayList<User> list = new ArrayList<>();
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -80,7 +81,9 @@ public class UserDao {
                     while (iterator.hasNext()) {
                         DataSnapshot next = (DataSnapshot) iterator.next();
                         User nd = next.getValue(User.class);
-                        list.add(nd);
+                        if (nd.getUserName().matches(email)) {
+                            UserFragment.users = nd;
+                        }
                     }
                     UserFragment.filterUser();
                 }
@@ -92,7 +95,6 @@ public class UserDao {
                 Toast.makeText(context, "Lấy thông tin thất bại!", Toast.LENGTH_SHORT).show();
             }
         });
-        return list;
     }
 
     //Thêm User mới
@@ -157,7 +159,6 @@ public class UserDao {
         });
 
     }
-
 
 
 }
