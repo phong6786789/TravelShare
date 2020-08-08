@@ -70,12 +70,12 @@ public class Register extends AppCompatActivity {
                 }
 
                 if (tk.isEmpty()) {
-                    showDialog.toastInfo("Tên tài khoản không được để trống!");
+                    showDialog.show("Tên tài khoản không được để trống!");
                 } else if (tk.length() < 5 || tk.length() > 10) {
-                    showDialog.toastInfo("Tên tài khoản ít nhất có 5 ký tự và nhiều nhất là 10 ký tự!");
+                    showDialog.show("Tên tài khoản ít nhất có 5 ký tự và nhiều nhất là 10 ký tự!");
                 } else {
                     if (mk.isEmpty() || mkk.isEmpty()) {
-                        showDialog.toastInfo("Mật khẩu không được để trống!");
+                        showDialog.show("Mật khẩu không được để trống!");
                     } else {
                         if (xetTk == true) {
                             if (xetMk == true) {
@@ -91,10 +91,10 @@ public class Register extends AppCompatActivity {
                                 setResult(RESULT_OK, i);
                                 finish();
                             } else {
-                                showDialog.toastInfo("Mật khẩu không khớp nhau!");
+                                showDialog.show("Mật khẩu không khớp nhau!");
                             }
                         } else {
-                            showDialog.toastInfo("Tên tài khoản không được trùng!");
+                            showDialog.show("Tên tài khoản không được trùng!");
                         }
                     }
                 }

@@ -19,13 +19,13 @@ import com.duan.travelshare.model.ChiTietPhong;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.squareup.picasso.Picasso;
 
-public class ChiTietPhongFragment extends Fragment {
+public class ChiTietPhongHomeFragment extends Fragment {
     private ImageView phong, user, save, call, messenger;
     private LinearLayout star;
     private TextView tenPhong, giaPhong, tenUser, emailUser, moTa;
     private Button xem, datPhong;
 
-    public ChiTietPhongFragment() {
+    public ChiTietPhongHomeFragment() {
         // Required empty public constructor
     }
 
@@ -71,12 +71,48 @@ public class ChiTietPhongFragment extends Fragment {
         tenUser.setText(chiTietPhong.getFullUser().getUserName());
         emailUser.setText(chiTietPhong.getFullUser().getEmailUser());
         moTa.setText(chiTietPhong.getMoTaPhong());
-        //            save, call, messenger, star , xem, datPhong;
+        //save, call, messenger, star , xem, datPhong;
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        messenger.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        star.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        xem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        datPhong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         //Khi ấn nút back
         //Toolbar
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-        TextView title =toolbar.findViewById(R.id.tbTitle);
+        TextView title = toolbar.findViewById(R.id.tbTitle);
         ImageView back = toolbar.findViewById(R.id.tbBack);
         title.setText("CHI TIẾT PHÒNG");
         back.setVisibility(View.VISIBLE);
@@ -92,6 +128,4 @@ public class ChiTietPhongFragment extends Fragment {
         });
         return view;
     }
-
-
 }

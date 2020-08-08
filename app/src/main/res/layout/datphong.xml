@@ -6,117 +6,99 @@
     android:orientation="vertical">
 
     <ImageView
-        android:layout_alignParentTop="true"
         android:id="@+id/ivDatPhong"
-        android:layout_marginBottom="8dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="250dp"
+        android:layout_alignParentTop="true"
         android:src="@drawable/phongtro" />
 
     <LinearLayout
-        android:layout_below="@id/ivDatPhong"
         android:id="@+id/line1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_below="@id/ivDatPhong"
+        android:layout_margin="8dp"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/namephong"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:text="Phòng Trọ Thủ Đức"
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/namephong"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="20dp"
-                android:text="Phòng Trọ Thủ Đức"
-                android:textSize="20dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/giaphong"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="20dp"
-                android:text="2.000.000VNĐ/Ngày"
-                android:textColor="@color/red"
-                android:textSize="20dp"
-                android:textStyle="bold" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/giaphong"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2.000.000VNĐ/Ngày"
+            android:textColor="@color/red"
+            android:textSize="20dp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <View
         android:id="@+id/line"
-        android:layout_below="@id/line1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="8dp"
+        android:layout_below="@id/line1"
         android:layout_marginBottom="8dp"
-        android:background="@color/black" />
+        android:background="@color/blue" />
+
 
     <LinearLayout
+        android:id="@+id/lin1"
         android:layout_below="@id/line"
-        android:id="@+id/line2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_marginRight="8dp"
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="20dp"
-                android:gravity="center"
-                android:text="Họ và Tên"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="20dp"
-                android:gravity="center"
-                android:text="CMND"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/border"
-                android:inputType="text"
-                android:paddingLeft="10dp"
-                android:text="NGUYỄN VĂN TUYỂN" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/border"
-                android:inputType="text"
-                android:paddingLeft="10dp"
-                android:text="187854858" />
-        </LinearLayout>
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:text="Họ và Tên"
+            android:textColor="@color/black"/>
+        <EditText
+            android:layout_marginLeft="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/border"
+            android:inputType="text"
+            android:paddingLeft="10dp"
+            android:text="NGUYỄN VĂN TUYỂN" />
     </LinearLayout>
 
     <LinearLayout
-        android:layout_below="@id/line2"
+        android:layout_marginTop="8dp"
+        android:id="@+id/lin2"
+        android:layout_below="@id/lin1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:text="CMND"
+            android:textColor="@color/black"/>
+
+        <EditText
+            android:layout_marginLeft="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/border"
+            android:inputType="text"
+            android:paddingLeft="10dp"
+            android:text="187854858" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="8dp"
+        android:layout_below="@id/lin2"
         android:id="@+id/line3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -130,9 +112,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_marginTop="20dp"
                 android:gravity="center"
-                android:padding="10dp"
+                android:paddingRight="8dp"
                 android:text="Từ"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
@@ -140,10 +121,9 @@
             <EditText
                 android:layout_width="150dp"
                 android:layout_height="48dp"
-                android:layout_marginTop="20dp"
                 android:background="@drawable/border"
                 android:inputType="text"
-                android:paddingLeft="10dp"
+                android:paddingLeft="8dp"
                 android:text="187854858" />
         </LinearLayout>
 
@@ -155,55 +135,52 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:layout_marginTop="20dp"
                 android:gravity="center"
-                android:padding="10dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
                 android:text="Đến"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
+                android:textColor="@color/black" />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_marginTop="20dp"
                 android:background="@drawable/border"
                 android:inputType="text"
-                android:paddingLeft="10dp"
+                android:paddingLeft="8dp"
                 android:text="187854858" />
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_below="@id/line3"
+        android:layout_marginTop="8dp"
         android:id="@+id/line4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/line3"
         android:orientation="vertical">
 
         <TextView
+            android:layout_marginBottom="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:text="Ghi Chú!"
-            android:textColor="@color/black"
-            android:textStyle="bold" />
+            android:textColor="@color/black"/>
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/border"
             android:inputType="text"
-            android:paddingLeft="10dp"
+            android:paddingLeft="8dp"
             android:text="Ở 100 người nhé!" />
     </LinearLayout>
 
     <Button
         android:id="@+id/btnDatPhong"
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
         android:background="@color/blue"
         android:gravity="center"
         android:text="ĐẶT PHÒNG"

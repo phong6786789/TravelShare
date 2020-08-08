@@ -23,7 +23,7 @@ public class ShowDialog {
         this.activity = activity;
     }
 
-    public void toastInfo(String text) {
+    public void show(String text) {
         dialog = new Dialog(activity);
         dialog.setContentView(R.layout.show);
         dialog.setCancelable(true);
@@ -46,7 +46,7 @@ public class ShowDialog {
 
     }
 
-    public void dismisToast() {
+    public void dismiss() {
         dialog.dismiss();
     }
 }

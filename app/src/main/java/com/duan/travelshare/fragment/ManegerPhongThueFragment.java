@@ -166,6 +166,7 @@ public class ManegerPhongThueFragment extends Fragment {
     private void addRoom() {
         listImageFireBase.clear();
         listHinhPhong.clear();
+        listHinh.clear();
         check = true;
         key = phongDao.creatKey();
         camera();
@@ -223,9 +224,9 @@ public class ManegerPhongThueFragment extends Fragment {
                 final String gia = giaPhong.getText().toString();
                 final String dc = diaChi.getText().toString();
                 final String mot = moTa.getText().toString();
-//                showDialog.toastInfo(listHinh.size()+"");
+//                showDialog.show();(listHinh.size()+"");
                 progressDialog.show();
-                progressDialog.setMessage("Đang tải ảnh lên...");
+                progressDialog.setMessage("Đang cập nhật...");
 
                 //Đổ listHinh vào
                 if(!listHinh.isEmpty()){
@@ -236,7 +237,7 @@ public class ManegerPhongThueFragment extends Fragment {
 
                 for (int i = 0; i < listHinhPhong.size(); i++) {
                     Uri IndividualImage = listHinhPhong.get(i);
-                    storageReference.child(UUID.randomUUID().toString()).putFile(IndividualImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    storageReference.child(key+"h"+(i+1)).putFile(IndividualImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
@@ -368,7 +369,7 @@ public class ManegerPhongThueFragment extends Fragment {
                     if (cameraAccept && storageAccept) {
                         pickFromCamera();
                     } else {
-                        showDialog.toastInfo("Không truy cập được vào camera!");
+                        showDialog.show("Không truy cập được vào camera!");
                     }
                 }
             }
@@ -379,7 +380,7 @@ public class ManegerPhongThueFragment extends Fragment {
                     if (writeStorageAccpted) {
                         pickFromGallery();
                     } else {
-                        showDialog.toastInfo("Vui lòng bật quyền thư viện");
+                        showDialog.show("Vui lòng bật quyền thư viện");
                     }
                 }
             }

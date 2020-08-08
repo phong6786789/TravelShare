@@ -21,7 +21,7 @@
            android:layout_marginBottom="20dp"
            android:text="THÔNG BÁO"
            android:textColor="@color/bg"
-           android:textSize="30sp"
+           android:textSize="25sp"
            android:textStyle="bold" />
 
        <TextView
@@ -37,12 +37,11 @@
            android:id="@+id/okDialog"
            android:text="Đồng ý"
            android:textStyle="bold"
-           android:textSize="20dp"
            android:textColor="@color/bg"
            android:background="@color/blue"
            android:layout_gravity="center"
            android:layout_width="wrap_content"
-           android:layout_marginBottom="20dp"
+           android:layout_marginBottom="8dp"
            android:layout_height="wrap_content"/>
    </LinearLayout>
 

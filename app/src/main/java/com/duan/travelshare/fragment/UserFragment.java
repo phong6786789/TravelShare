@@ -66,17 +66,15 @@ public class UserFragment extends Fragment {
         title.setText("CÁ NHÂN");
         back.setVisibility(View.INVISIBLE);
 
-
-        avatar = view.findViewById(R.id.imgAvatar);
-
         show = new ShowDialog(getActivity());
         //Khai báo các id
+        avatar = view.findViewById(R.id.imgAvatar);
         fullInfo = view.findViewById(R.id.cvUserInfo);
         roomFav = view.findViewById(R.id.cvRoomFavorite);
         roomMng = view.findViewById(R.id.cvRoomManager);
         partnerRoom = view.findViewById(R.id.cvPartner);
         changePass = view.findViewById(R.id.cvChangePass);
-        logOut = view.findViewById(R.id.cvLogOut);
+        logOut = view.findViewById(R.id.cvDangXuat);
         name = view.findViewById(R.id.tvNameUser);
         email = view.findViewById(R.id.tvEmail);
 
@@ -145,7 +143,7 @@ public class UserFragment extends Fragment {
                                 userDao.changeLoaiUser(MainActivity.userName, "1");
                             }
                             filterUser();
-                            show.toastInfo("Chúc mừng bạn đã trở thành chủ cho thuê!");
+                            show.show("Chúc mừng bạn đã trở thành chủ cho thuê!");
                             dialog.dismiss();
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -168,7 +166,7 @@ public class UserFragment extends Fragment {
             @Override
             public void onClick(final View view) {
                 if (MainActivity.userName.matches("0")) {
-                    show.toastInfo("Bạn đang dùng Google hoặc Facebook nên không thể đổi mật khẩu!");
+                    show.show("Bạn đang dùng Google hoặc Facebook nên không thể đổi mật khẩu!");
                 } else {
                     final Dialog dialog = new Dialog(getActivity());
                     dialog.setContentView(R.layout.change_pass);
@@ -201,19 +199,19 @@ public class UserFragment extends Fragment {
                             try {
 
                                 if (passOld.isEmpty() || passNew.isEmpty() || passNew2.isEmpty()) {
-                                    show.toastInfo("Bạn không được để trống!");
+                                    show.show("Bạn không được để trống!");
                                 } else {
 
                                     if (passNew.matches(passNew2)) {
                                         if (users.getPassword().matches(passOld)) {
                                             userDao.changePass(MainActivity.name, passNew);
-                                            show.toastInfo("Đổi mật khẩu thành công!");
+                                            show.show("Đổi mật khẩu thành công!");
                                             dialog.dismiss();
                                         } else {
-                                            show.toastInfo("Mật khẩu cũ không đúng!");
+                                            show.show("Mật khẩu cũ không đúng!");
                                         }
                                     } else {
-                                        show.toastInfo("Mật khẩu mới không khớp nhau!");
+                                        show.show("Mật khẩu mới không khớp nhau!");
                                     }
                                 }
                             } catch (Exception e) {
@@ -229,41 +227,41 @@ public class UserFragment extends Fragment {
                             dialog.show();
                         }
                     });
-
-                    logOut.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            final Dialog dialog = new Dialog(getActivity());
-                            dialog.setContentView(R.layout.show2);
-                            dialog.setCancelable(true);
-                            Window window = dialog.getWindow();
-                            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                            if (dialog != null && dialog.getWindow() != null) {
-                                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                            }
-                            TextView text = dialog.findViewById(R.id.tvInfo2);
-                            Button ok = dialog.findViewById(R.id.btnOK);
-                            Button cancle = dialog.findViewById(R.id.btnCancle);
-
-                            text.setText("Bạn có chắc chắn đăng xuất?");
-                            ok.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    getActivity().finish();
-                                }
-                            });
-
-                            cancle.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    dialog.dismiss();
-                                }
-                            });
-
-                            dialog.show();
-                        }
-                    });
                 }
+            }
+        });
+
+        logOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Dialog dialog = new Dialog(getActivity());
+                dialog.setContentView(R.layout.show2);
+                dialog.setCancelable(true);
+                Window window = dialog.getWindow();
+                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                if (dialog != null && dialog.getWindow() != null) {
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                }
+                TextView text = dialog.findViewById(R.id.tvInfo2);
+                Button ok = dialog.findViewById(R.id.btnOK);
+                Button cancle = dialog.findViewById(R.id.btnCancle);
+
+                text.setText("Bạn có chắc chắn muốn đăng xuất?");
+                ok.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getActivity().finish();
+                    }
+                });
+
+                cancle.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
             }
         });
         return view;
@@ -272,16 +270,12 @@ public class UserFragment extends Fragment {
 
     public static void filterUser() {
         String loaiUser = users.getLoaiUser();
-        try {
-            if (loaiUser.matches("0")) {
-                roomMng.setVisibility(View.GONE);
-                partnerRoom.setVisibility(View.VISIBLE);
-            } else if (loaiUser.matches("1")) {
-                roomMng.setVisibility(View.VISIBLE);
-                partnerRoom.setVisibility(View.GONE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (loaiUser.matches("0")) {
+            roomMng.setVisibility(View.GONE);
+            partnerRoom.setVisibility(View.VISIBLE);
+        } else if (loaiUser.matches("1")) {
+            roomMng.setVisibility(View.VISIBLE);
+            partnerRoom.setVisibility(View.GONE);
         }
     }
 

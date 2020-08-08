@@ -1,19 +1,12 @@
 package com.duan.travelshare.adapter;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.Filter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,8 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.duan.travelshare.R;
 import com.duan.travelshare.firebasedao.PhongDao;
-import com.duan.travelshare.fragment.ChiTietPhongFragment;
-import com.duan.travelshare.fragment.ManegerPhongThueFragment;
+import com.duan.travelshare.fragment.ChiTietPhongHomeFragment;
+import com.duan.travelshare.fragment.ChiTietPhongManagerFragment;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.squareup.picasso.Picasso;
 
@@ -37,6 +30,7 @@ public class PhongManagerAdapter extends RecyclerView.Adapter<PhongManagerAdapte
     PhongDao phongDao;
     List<ChiTietPhong> listSort;
     Filter filter;
+
     public PhongManagerAdapter(List<ChiTietPhong> list, Context context) {
         this.list = list;
         this.context = context;
@@ -84,7 +78,7 @@ public class PhongManagerAdapter extends RecyclerView.Adapter<PhongManagerAdapte
             int position = getLayoutPosition();
             ChiTietPhong listP = list.get(position);
 
-            ChiTietPhongFragment chiTietPhong = new ChiTietPhongFragment();
+            ChiTietPhongManagerFragment chiTietPhong = new ChiTietPhongManagerFragment();
 
             Bundle bundle = new Bundle();
             bundle.putSerializable("list", listP);
@@ -97,6 +91,7 @@ public class PhongManagerAdapter extends RecyclerView.Adapter<PhongManagerAdapte
 
         }
     }
+
     public void resetData() {
         list = listSort;
     }

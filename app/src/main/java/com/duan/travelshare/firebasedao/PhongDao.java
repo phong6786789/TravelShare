@@ -84,9 +84,7 @@ public class PhongDao {
                         list.add(nd);
                     }
                     HomeFragment.phongAdapter.notifyDataSetChanged();
-
                 }
-
             }
 
             @Override
@@ -125,7 +123,9 @@ public class PhongDao {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     if (data.child("idPhong").getValue(String.class).equalsIgnoreCase(chiTietPhong.getIdPhong())) {
+                        key = data.getKey();
                         reference.child(key).setValue(chiTietPhong);
+                        break;
                     }
                 }
             }
@@ -135,6 +135,7 @@ public class PhongDao {
             }
         });
     }
+
 
     //Lấy toàn bộ phòng
     public ArrayList<ChiTietPhong> getUserByEmail(final String email) {
@@ -149,7 +150,7 @@ public class PhongDao {
                     while (iterator.hasNext()) {
                         DataSnapshot next = (DataSnapshot) iterator.next();
                         ChiTietPhong nd = next.getValue(ChiTietPhong.class);
-                        if(nd.getFullUser().getEmailUser().matches(email)){
+                        if (nd.getFullUser().getEmailUser().matches(email)) {
                             list.add(nd);
                         }
                     }

@@ -8,6 +8,7 @@
     tools:context=".login.Login">
 
     <LinearLayout
+        android:layout_alignParentTop="true"
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,11 +25,10 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
             android:text="TRAVEL SHARE"
             android:textAlignment="center"
             android:textColor="@color/blue"
-            android:textSize="30sp"
+            android:textSize="40sp"
             android:textStyle="bold"
             android:theme="@style/title" />
     </LinearLayout>

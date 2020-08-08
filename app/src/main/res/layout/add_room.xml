@@ -6,6 +6,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <TextView
+        android:id="@+id/tvTitle"
         android:background="@color/blue"
         android:theme="@style/title"
         android:textAlignment="center"
@@ -16,7 +17,7 @@
         android:layout_marginBottom="20dp"
         android:text="THÊM PHÒNG"
         android:textColor="@color/bg"
-        android:textSize="35sp"
+        android:textSize="25sp"
         android:textStyle="bold" />
     <EditText
         android:inputType="text"

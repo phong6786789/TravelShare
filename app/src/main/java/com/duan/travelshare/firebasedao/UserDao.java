@@ -103,7 +103,7 @@ public class UserDao {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
-                    showDialog.toastInfo("Đăng ký thành công!");
+                    showDialog.show("Đăng ký thành công!");
                     return;
                 }
             }
@@ -146,7 +146,7 @@ public class UserDao {
                         User u = data.getValue(User.class);
                         key = data.getKey();
                         reference.child(key).child("password").setValue(password);
-                        showDialog.toastInfo("Đổi mật khẩu thành công!");
+                        showDialog.show("Đổi mật khẩu thành công!");
 
                     }
                 }
