@@ -56,7 +56,6 @@
         android:layout_below="@+id/edtUserName"
         android:layout_marginBottom="20dp"
         app:hintEnabled="false"
-
         app:passwordToggleEnabled="true">
 
         <EditText

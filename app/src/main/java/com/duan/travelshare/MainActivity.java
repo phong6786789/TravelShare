@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     public static String name = "0", email = "0", userName = "0";
 
     static FullUserDao fullUserDao;
-    static ArrayList<FullUser> list;
+    public static ArrayList<FullUser> list;
     public static int position = -1;
     public static FullUser fullUserOne;
     static ShowDialog showDialog;

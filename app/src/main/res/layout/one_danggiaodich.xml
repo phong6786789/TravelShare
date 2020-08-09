@@ -32,7 +32,7 @@
                 android:id="@+id/titleP"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="8dp"
                 android:text="Phòng sạch giá rẻ"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -41,7 +41,7 @@
                 android:id="@+id/priceP"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="8dp"
                 android:text="200,000 đồng/ngày"
                 android:textColor="@color/red"
                 android:textSize="20sp"
@@ -51,11 +51,29 @@
                 android:id="@+id/addressP"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="8dp"
                 android:maxLength="50"
                 android:text="86/244 Tân Chánh Hiệp 26, phường 25, Quận 12"
                 android:textColor="@color/hint"
                 android:textStyle="bold" />
+            <LinearLayout
+                android:layout_marginLeft="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:text="Trạng thái: "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:id="@+id/tvTrangThaiGG"
+                    android:layout_marginLeft="8dp"
+                    android:text="ĐANG XÁC NHẬN"
+                    android:textColor="@color/red"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
         </LinearLayout>
 
 
