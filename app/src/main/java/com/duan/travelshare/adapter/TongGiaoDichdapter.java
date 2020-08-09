@@ -1,11 +1,16 @@
 package com.duan.travelshare.adapter;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -85,6 +90,70 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
         public void onClick(View view) {
             int position = getLayoutPosition();
             GiaoDich listP = list.get(position);
+
+            final Dialog dialog = new Dialog(context);
+            dialog.setContentView(R.layout.giaodich);
+            dialog.setCancelable(true);
+            Window window = dialog.getWindow();
+            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+            ImageView phong;
+            TextView tenP, giaP, hten, cmnd, tu, den, ghichu, trangThai;
+            LinearLayout erro, lnButton;
+            Button ok, huy;
+
+            phong = dialog.findViewById(R.id.ivimgPhongGG);
+            tenP = dialog.findViewById(R.id.tvTenPhongGG);
+            giaP = dialog.findViewById(R.id.tvGiaphongGG);
+            trangThai = dialog.findViewById(R.id.tvTrangThai);
+            hten = dialog.findViewById(R.id.tvHoTenGG);
+            cmnd = dialog.findViewById(R.id.tvCmndGG);
+            tu = dialog.findViewById(R.id.tvTuNgayGG);
+            den = dialog.findViewById(R.id.tvDenNgayGG);
+            ghichu = dialog.findViewById(R.id.tvGhiChuGG);
+            erro = dialog.findViewById(R.id.lnErro);
+            lnButton = dialog.findViewById(R.id.lnXacNhan);
+            ok = dialog.findViewById(R.id.btnOkGG);
+            huy = dialog.findViewById(R.id.btnCancleGG);
+
+            if (!listP.getChiTietPhong().getImgPhong().isEmpty()) {
+                Picasso.with(context).load(listP.getChiTietPhong().getImgPhong().get(0)).into(phong);
+            }
+            tenP.setText(listP.getChiTietPhong().getTenPhong());
+            giaP.setText(listP.getChiTietPhong().getGiaPhong());
+            hten.setText(listP.getHoTen());
+            cmnd.setText(listP.getCmnd());
+            tu.setText(listP.getTuNgay());
+            den.setText(listP.getDenNgay());
+            ghichu.setText(listP.getGhiChu());
+            switch (listP.getTrangThai()) {
+                case 0:
+                    trangThai.setText("ĐANG XÁC NHẬN");
+                    break;
+                case 1:
+                    trangThai.setText("ĐÃ XÁC NHẬN");
+                    break;
+                case 2:
+                    trangThai.setText("ĐÃ HỦY");
+                    break;
+            }
+
+            erro.setVisibility(View.GONE);
+            ok.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(context, "CLick xác nhận", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            huy.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+
+                }
+            });
+            dialog.show();
 
 
 
