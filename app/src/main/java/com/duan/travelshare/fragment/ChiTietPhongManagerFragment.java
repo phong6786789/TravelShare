@@ -311,8 +311,18 @@ public class ChiTietPhongManagerFragment extends Fragment {
                 }
             }
         };
+        call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Dialog dialog=new Dialog(getActivity());
+                dialog.setContentView(R.layout.dialog_callphone);
+                dialog.setCancelable(true);
+                Window window = dialog.getWindow();
+                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                dialog.show();
+            }
+        });
         save.setOnClickListener(listener);
-        call.setOnClickListener(listener);
         messenger.setOnClickListener(listener);
         star.setOnClickListener(listener);
         xem.setOnClickListener(listener);
@@ -512,4 +522,8 @@ public class ChiTietPhongManagerFragment extends Fragment {
         cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
     }
+    private void requestContactsPermissions(){
+
+
+    };
 }
