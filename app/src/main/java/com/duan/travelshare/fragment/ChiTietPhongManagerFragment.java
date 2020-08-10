@@ -317,8 +317,9 @@ public class ChiTietPhongManagerFragment extends Fragment {
                 Dialog dialog=new Dialog(getActivity());
                 dialog.setContentView(R.layout.dialog_callphone);
                 dialog.setCancelable(true);
-                Window window = dialog.getWindow();
-                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                TextView phone=dialog.findViewById(R.id.number);
+                //  phone.setText("0962280703");
+                phone.setText(chiTietPhong.getFullUser().getUserName());
                 dialog.show();
             }
         });
