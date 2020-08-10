@@ -133,30 +133,34 @@ public class ChiTietPhongHomeFragment extends Fragment {
                 dialog1.setCancelable(true);
                final EditText sms=dialog1.findViewById(R.id.edtsms);
                 final TextView phone1=dialog1.findViewById(R.id.so);
+                final TextView sendsms=dialog1.findViewById(R.id.sendsms);
                 phone1.setText(chiTietPhong.getFullUser().getPhoneUser());
-
-//
-                dialog1.findViewById(R.id.sendsms).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if(checkPermission(Manifest.permission.SEND_SMS)) {
+                sendsms.setEnabled(false);
+                if(checkPermission(Manifest.permission.SEND_SMS)) {
+                    sendsms.setEnabled(true);
                 }else {
                     ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.SEND_SMS},
                             SEND_SMS_PERMISSION_REQUEST_CODE);
                 }
-                        String mesage=sms.getText().toString();
-                        String phoneNo=phone1.getText().toString();
-                        if(!TextUtils.isEmpty(mesage) && !TextUtils.isEmpty(phoneNo)) {
-                            if(checkPermission(Manifest.permission.SEND_SMS)) {
-                                SmsManager smsManager = SmsManager.getDefault();
-                                smsManager.sendTextMessage(phoneNo, null, mesage, null, null);
-                            }else {
-                                Toast.makeText(getActivity(), "Permission denied", Toast.LENGTH_SHORT).show();
-                            }
+                sendsms.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String s=phone1.getText().toString();
+                        String ed=sms.getText().toString();
+                        if (s==null||s.length()==0||ed==null||ed.length()==0){
+                            return;
                         }
-
+                        if (checkPermission(Manifest.permission.SEND_SMS)){
+                            SmsManager smsManager=SmsManager.getDefault();
+                            smsManager.sendTextMessage(s,null, String.valueOf(smsManager),null,null);
+                            Toast.makeText(getActivity(), "Send OK", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            Toast.makeText(getActivity(), "Không Được", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
+
                 dialog1.findViewById(R.id.huysms).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -235,21 +239,9 @@ public class ChiTietPhongHomeFragment extends Fragment {
                 Toast.makeText(getActivity(), "Permission DENIED", Toast.LENGTH_SHORT).show();
             }
         }
-        switch (requestCode) {
-
-            case SEND_SMS_PERMISSION_REQUEST_CODE: {
-                if (grantResults.length > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    final  Dialog dialog1=new Dialog(getActivity());
-                    dialog1.setContentView(R.layout.send_sms);
-                    dialog1.setCancelable(true);
-                }
-                return;
-            }
-        }
     }
     private boolean checkPermission(String permission) {
         int checkPermission = ContextCompat.checkSelfPermission(getActivity(), permission);
         return (checkPermission == PackageManager.PERMISSION_GRANTED);
     }
-
 }
