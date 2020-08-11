@@ -150,13 +150,8 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
             ok.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
-                    if (giaoDichDao.updatePhong(listP, 1)) {
-                        showDialog.show("Xác nhận đơn thành công!");
-                    }
-                    else {
-                        showDialog.show("Xác nhận đơn thất bại!");
-                    }
+                    giaoDichDao.updatePhong(listP, 1);
+                    dialog.dismiss();
                 }
 
             });
@@ -164,13 +159,8 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
             huy.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    giaoDichDao.updatePhong(listP, 2);
                     dialog.dismiss();
-                    if (giaoDichDao.updatePhong(listP, 2)) {
-                        showDialog.show("Hủy đơn thành công!");
-                    }
-                    else {
-                        showDialog.show("Hủy đơn thất bại!");
-                    }
                 }
             });
             dialog.show();
