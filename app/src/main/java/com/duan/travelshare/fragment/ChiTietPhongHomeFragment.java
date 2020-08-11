@@ -128,13 +128,13 @@ public class ChiTietPhongHomeFragment extends Fragment {
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              makePhoneCall();
+                makePhoneCall();
             }
         });
         messenger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               sendSMS();
+                sendSMS();
             }
         });
         star.setOnClickListener(new View.OnClickListener() {
@@ -146,7 +146,55 @@ public class ChiTietPhongHomeFragment extends Fragment {
         xem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final Dialog dialog1 = new Dialog(getActivity());
+                dialog1.setContentView(R.layout.fragment_show_user);
+//                dialog1.setCancelable(true);
+                Window window = dialog1.getWindow();
+                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                if (dialog1 != null && dialog1.getWindow() != null) {
+                    dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                }
+                FullUser userChuThue = chiTietPhong.getFullUser();
+                ImageView ivQR, ivAvt;
+                EditText name, email, birthday, phone, address, cmndUser;
+                Button btnDong;
 
+                ivQR = dialog1.findViewById(R.id.ivQRUser);
+                ivAvt = dialog1.findViewById(R.id.ivAvatar);
+
+                btnDong = dialog1.findViewById(R.id.btnUpdateUser);
+
+                name = dialog1.findViewById(R.id.tvFullName);
+                cmndUser = dialog1.findViewById(R.id.tvCmnd);
+                email = dialog1.findViewById(R.id.tvEmail);
+                birthday = dialog1.findViewById(R.id.tvBirthday);
+                phone = dialog1.findViewById(R.id.tvPhone);
+                address = dialog1.findViewById(R.id.tvAddress);
+                if (!userChuThue.getLinkImage().isEmpty()) {
+                    Picasso.with(getContext()).load(userChuThue.getLinkImage()).into(ivAvt);
+                }
+                name.setText(userChuThue.getUserName());
+                cmndUser.setText(userChuThue.getCmndUser());
+                email.setText(userChuThue.getEmailUser());
+                birthday.setText(userChuThue.getBirtdayUser());
+                phone.setText(userChuThue.getPhoneUser());
+                address.setText(userChuThue.getAddressUser());
+                btnDong.setText("Đóng");
+                btnDong.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog1.dismiss();
+                    }
+                });
+
+                name.setFocusable(false);
+                cmndUser.setFocusable(false);
+                email.setFocusable(false);
+                birthday.setFocusable(false);
+                phone.setFocusable(false);
+                address.setFocusable(false);
+
+                dialog1.show();
             }
         });
 
@@ -194,7 +242,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
         final TextView phone1 = dialog1.findViewById(R.id.so);
         final TextView sendsms = dialog1.findViewById(R.id.sendsms);
         phone1.setText(chiTietPhong.getFullUser().getPhoneUser());
-        sms.setText("Xin chào, "+chiTietPhong.getTenPhong()+" còn không ạ?");
+        sms.setText("Xin chào, " + chiTietPhong.getTenPhong() + " còn không ạ?");
         sendsms.setEnabled(false);
         if (checkPermission(Manifest.permission.SEND_SMS)) {
             sendsms.setEnabled(true);
