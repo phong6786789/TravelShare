@@ -1,13 +1,27 @@
 package com.duan.travelshare.fragment;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DownloadManager;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.telephony.SmsManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +32,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
+import com.duan.travelshare.model.ChiTietChuChoThue;
+import com.duan.travelshare.model.ChiTietKH;
+import com.duan.travelshare.model.ChiTietPhong;
+import com.duan.travelshare.model.FullUser;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.duan.travelshare.firebasedao.GiaoDichDao;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.GiaoDich;
@@ -31,6 +51,9 @@ import java.text.DecimalFormat;
 import java.util.Calendar;
 
 public class ChiTietPhongHomeFragment extends Fragment {
+    final int SEND_SMS_PERMISSION_REQUEST_CODE = 111;
+    private  Button sendSMS;
+    private static final int REQUEST_CALL = 1;
     private ImageView phong, user, save, call, messenger;
     private LinearLayout star;
     private TextView tenPhong, giaPhong, tenUser, emailUser, moTa;
@@ -103,13 +126,70 @@ public class ChiTietPhongHomeFragment extends Fragment {
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final Dialog dialog=new Dialog(getActivity());
+                dialog.setContentView(R.layout.dialog_callphone);
+                dialog.setCancelable(true);
+                final TextView phone=dialog.findViewById(R.id.number);
+                phone.setText(chiTietPhong.getFullUser().getPhoneUser());
+                dialog.findViewById(R.id.goi).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        makePhoneCall();
+                    }
+                });
+                dialog.findViewById(R.id.huy).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
 
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
             }
         });
         messenger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final  Dialog dialog1=new Dialog(getActivity());
+                dialog1.setContentView(R.layout.send_sms);
+                dialog1.setCancelable(true);
+               final EditText sms=dialog1.findViewById(R.id.edtsms);
+                final TextView phone1=dialog1.findViewById(R.id.so);
+                final TextView sendsms=dialog1.findViewById(R.id.sendsms);
+                phone1.setText(chiTietPhong.getFullUser().getPhoneUser());
+                sendsms.setEnabled(false);
+                if(checkPermission(Manifest.permission.SEND_SMS)) {
+                    sendsms.setEnabled(true);
+                }else {
+                    ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.SEND_SMS},
+                            SEND_SMS_PERMISSION_REQUEST_CODE);
+                }
+                sendsms.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String s=phone1.getText().toString();
+                        String ed=sms.getText().toString();
+                        if (s==null||s.length()==0||ed==null||ed.length()==0){
+                            return;
+                        }
+                        if (checkPermission(Manifest.permission.SEND_SMS)){
+                            SmsManager smsManager=SmsManager.getDefault();
+                            smsManager.sendTextMessage(s,null, String.valueOf(smsManager),null,null);
+                            Toast.makeText(getActivity(), "Send OK", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            Toast.makeText(getActivity(), "Không Được", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
+                dialog1.findViewById(R.id.huysms).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog1.dismiss();
+                    }
+                });
+                dialog1.show();
             }
         });
         star.setOnClickListener(new View.OnClickListener() {
@@ -153,6 +233,41 @@ public class ChiTietPhongHomeFragment extends Fragment {
         });
         return view;
     }
+    private void makePhoneCall() {
+        Bundle bundle = getArguments();
+        final ChiTietPhong chiTietPhong = (ChiTietPhong) bundle.getSerializable("list");
+        final Dialog dialog=new Dialog(getActivity());
+        dialog.setContentView(R.layout.dialog_callphone);
+        dialog.setCancelable(true);
+        final TextView phone=dialog.findViewById(R.id.number);
+        phone.setText(chiTietPhong.getFullUser().getPhoneUser());
+        String number =phone.getText().toString();
+        if (number.trim().length() > 0) {
+            if (ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CALL);
+            } else {
+                String dial = "tel:" + number;
+                startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
+            }
+        } else {
+            Toast.makeText(getActivity(), "Enter Phone Number", Toast.LENGTH_SHORT).show();
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CALL) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                makePhoneCall();
+            } else {
+                Toast.makeText(getActivity(), "Permission DENIED", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    private boolean checkPermission(String permission) {
+        int checkPermission = ContextCompat.checkSelfPermission(getActivity(), permission);
+        return (checkPermission == PackageManager.PERMISSION_GRANTED);
 
     private void datPhong() {
         final Dialog dialog = new Dialog(getActivity());

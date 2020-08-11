@@ -7,29 +7,36 @@
         android:background="@drawable/border"
         android:layout_width="300dp"
         android:orientation="vertical"
-        android:layout_height="80dp">
+        android:layout_height="160dp">
         <TextView
-            android:id="@+id/number"
-            android:gravity="center"
-            android:textSize="30dp"
-            android:text="0962280702"
+            android:id="@+id/so"
             android:layout_width="match_parent"
-            android:layout_height="50dp"/>
+            android:layout_height="30dp"
+            android:text="0962280702"
+            android:textSize="20dp"
+            />
+        <EditText
+            android:id="@+id/edtsms"
+            android:textSize="20dp"
+            android:inputType="textCapSentences|textMultiLine"
+            android:hint="Tôi muốn thuê phòng trọ ạ "
+            android:layout_width="match_parent"
+            android:layout_height="100dp"/>
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="30dp">
             <TextView
-                android:id="@+id/goi"
+                android:id="@+id/sendsms"
                 android:gravity="center"
                 android:textSize="20dp"
                 android:textColor="@color/blue1"
-                android:text="GỌI"
+                android:text="GỬI"
                 android:background="@drawable/border"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"/>
             <TextView
-                android:id="@+id/huy"
+                android:id="@+id/huysms"
                 android:textSize="20dp"
                 android:gravity="center"
                 android:text="HỦY"
