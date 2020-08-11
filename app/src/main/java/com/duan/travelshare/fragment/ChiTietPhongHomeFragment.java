@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -52,7 +54,7 @@ import java.util.Calendar;
 
 public class ChiTietPhongHomeFragment extends Fragment {
     final int SEND_SMS_PERMISSION_REQUEST_CODE = 111;
-    private  Button sendSMS;
+    private Button sendSMS;
     private static final int REQUEST_CALL = 1;
     private ImageView phong, user, save, call, messenger;
     private LinearLayout star;
@@ -126,70 +128,13 @@ public class ChiTietPhongHomeFragment extends Fragment {
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Dialog dialog=new Dialog(getActivity());
-                dialog.setContentView(R.layout.dialog_callphone);
-                dialog.setCancelable(true);
-                final TextView phone=dialog.findViewById(R.id.number);
-                phone.setText(chiTietPhong.getFullUser().getPhoneUser());
-                dialog.findViewById(R.id.goi).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        makePhoneCall();
-                    }
-                });
-                dialog.findViewById(R.id.huy).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        dialog.dismiss();
-                    }
-                });
-                dialog.show();
+              makePhoneCall();
             }
         });
         messenger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final  Dialog dialog1=new Dialog(getActivity());
-                dialog1.setContentView(R.layout.send_sms);
-                dialog1.setCancelable(true);
-               final EditText sms=dialog1.findViewById(R.id.edtsms);
-                final TextView phone1=dialog1.findViewById(R.id.so);
-                final TextView sendsms=dialog1.findViewById(R.id.sendsms);
-                phone1.setText(chiTietPhong.getFullUser().getPhoneUser());
-                sendsms.setEnabled(false);
-                if(checkPermission(Manifest.permission.SEND_SMS)) {
-                    sendsms.setEnabled(true);
-                }else {
-                    ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.SEND_SMS},
-                            SEND_SMS_PERMISSION_REQUEST_CODE);
-                }
-                sendsms.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String s=phone1.getText().toString();
-                        String ed=sms.getText().toString();
-                        if (s==null||s.length()==0||ed==null||ed.length()==0){
-                            return;
-                        }
-                        if (checkPermission(Manifest.permission.SEND_SMS)){
-                            SmsManager smsManager=SmsManager.getDefault();
-                            smsManager.sendTextMessage(s,null, String.valueOf(smsManager),null,null);
-                            Toast.makeText(getActivity(), "Send OK", Toast.LENGTH_SHORT).show();
-                        }
-                        else {
-                            Toast.makeText(getActivity(), "Không Được", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-
-                dialog1.findViewById(R.id.huysms).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog1.dismiss();
-                    }
-                });
-                dialog1.show();
+               sendSMS();
             }
         });
         star.setOnClickListener(new View.OnClickListener() {
@@ -204,16 +149,18 @@ public class ChiTietPhongHomeFragment extends Fragment {
 
             }
         });
-        if (chiTietPhong.getFullUser().getEmailUser().matches(fullUser.getEmailUser())) {
-            showDialog.show("Bạn không thể đặt phòng của chính bạn!");
-        } else {
-            datPhong.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+
+        datPhong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (chiTietPhong.getFullUser().getEmailUser().matches(fullUser.getEmailUser())) {
+                    showDialog.show("Bạn không thể đặt phòng của chính bạn!");
+                } else {
                     datPhong();
                 }
-            });
-        }
+            }
+        });
+
         //Khi ấn nút back
         //Toolbar
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
@@ -233,28 +180,95 @@ public class ChiTietPhongHomeFragment extends Fragment {
         });
         return view;
     }
-    private void makePhoneCall() {
-        Bundle bundle = getArguments();
-        final ChiTietPhong chiTietPhong = (ChiTietPhong) bundle.getSerializable("list");
-        final Dialog dialog=new Dialog(getActivity());
-        dialog.setContentView(R.layout.dialog_callphone);
-        dialog.setCancelable(true);
-        final TextView phone=dialog.findViewById(R.id.number);
-        phone.setText(chiTietPhong.getFullUser().getPhoneUser());
-        String number =phone.getText().toString();
-        if (number.trim().length() > 0) {
-            if (ContextCompat.checkSelfPermission(getActivity(),
-                    Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CALL);
-            } else {
-                String dial = "tel:" + number;
-                startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
-            }
-        } else {
-            Toast.makeText(getActivity(), "Enter Phone Number", Toast.LENGTH_SHORT).show();
+
+    private void sendSMS() {
+        final Dialog dialog1 = new Dialog(getActivity());
+        dialog1.setContentView(R.layout.sendmasenger);
+        dialog1.setCancelable(true);
+        Window window = dialog1.getWindow();
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        if (dialog1 != null && dialog1.getWindow() != null) {
+            dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
+        final EditText sms = dialog1.findViewById(R.id.edtsms);
+        final TextView phone1 = dialog1.findViewById(R.id.so);
+        final TextView sendsms = dialog1.findViewById(R.id.sendsms);
+        phone1.setText(chiTietPhong.getFullUser().getPhoneUser());
+        sms.setText("Xin chào, "+chiTietPhong.getTenPhong()+" còn không ạ?");
+        sendsms.setEnabled(false);
+        if (checkPermission(Manifest.permission.SEND_SMS)) {
+            sendsms.setEnabled(true);
+        } else {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.SEND_SMS},
+                    SEND_SMS_PERMISSION_REQUEST_CODE);
+        }
+        sendsms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String s = phone1.getText().toString();
+                String ed = sms.getText().toString();
+                if (s == null || s.length() == 0 || ed == null || ed.length() == 0) {
+                    return;
+                }
+                if (checkPermission(Manifest.permission.SEND_SMS)) {
+                    SmsManager smsManager = SmsManager.getDefault();
+                    smsManager.sendTextMessage(s, null, ed, null, null);
+                    showDialog.show("Gửi tin nhắn thành công!");
+                } else {
+                    Toast.makeText(getActivity(), "Gửi tin nhắn thất bại!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        dialog1.findViewById(R.id.huysms).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog1.dismiss();
+            }
+        });
+        dialog1.show();
     }
+
+    private void makePhoneCall() {
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.call);
+        dialog.setCancelable(true);
+        Window window = dialog.getWindow();
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        if (dialog != null && dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+        final TextView phone = dialog.findViewById(R.id.number);
+        phone.setText(chiTietPhong.getFullUser().getPhoneUser());
+        final String number = phone.getText().toString();
+        dialog.findViewById(R.id.goi).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!number.trim().isEmpty()) {
+                    if (ContextCompat.checkSelfPermission(getActivity(),
+                            Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(getActivity(),
+                                new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CALL);
+                    } else {
+                        String dial = "tel:" + number;
+                        startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
+                    }
+                } else {
+                    showDialog.show("Không có số điện thoại!");
+                }
+            }
+        });
+        dialog.findViewById(R.id.huy).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CALL) {
@@ -265,9 +279,11 @@ public class ChiTietPhongHomeFragment extends Fragment {
             }
         }
     }
+
     private boolean checkPermission(String permission) {
         int checkPermission = ContextCompat.checkSelfPermission(getActivity(), permission);
         return (checkPermission == PackageManager.PERMISSION_GRANTED);
+    }
 
     private void datPhong() {
         final Dialog dialog = new Dialog(getActivity());
