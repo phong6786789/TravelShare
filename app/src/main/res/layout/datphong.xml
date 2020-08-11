@@ -60,13 +60,13 @@
             android:text="Họ và Tên"
             android:textColor="@color/black"/>
         <EditText
+            android:id="@+id/edtHTen"
             android:layout_marginLeft="8dp"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="@drawable/border"
             android:inputType="text"
-            android:paddingLeft="10dp"
-            android:text="NGUYỄN VĂN TUYỂN" />
+            android:paddingLeft="10dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -87,13 +87,13 @@
             android:textColor="@color/black"/>
 
         <EditText
+            android:id="@+id/edtCmnd"
             android:layout_marginLeft="8dp"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="@drawable/border"
-            android:inputType="text"
-            android:paddingLeft="10dp"
-            android:text="187854858" />
+            android:inputType="number"
+            android:paddingLeft="10dp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -119,12 +119,11 @@
                 android:textStyle="bold" />
 
             <EditText
+                android:id="@+id/edtTuNgay"
                 android:layout_width="150dp"
                 android:layout_height="48dp"
                 android:background="@drawable/border"
-                android:inputType="text"
-                android:paddingLeft="8dp"
-                android:text="187854858" />
+                android:paddingLeft="8dp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -142,12 +141,11 @@
                 android:textColor="@color/black" />
 
             <EditText
+                android:id="@+id/edtDenNgay"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@drawable/border"
-                android:inputType="text"
-                android:paddingLeft="8dp"
-                android:text="187854858" />
+                android:paddingLeft="8dp"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -167,24 +165,44 @@
             android:textColor="@color/black"/>
 
         <EditText
+            android:padding="9dp"
+            android:id="@+id/edtGhiChu"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="fill_parent"
             android:layout_marginBottom="20dp"
             android:background="@drawable/border"
-            android:inputType="text"
-            android:paddingLeft="8dp"
-            android:text="Ở 100 người nhé!" />
+            android:inputType="textMultiLine"/>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btnDatPhong"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
+    <LinearLayout
         android:layout_alignParentBottom="true"
-        android:background="@color/blue"
-        android:gravity="center"
-        android:text="ĐẶT PHÒNG"
-        android:textColor="@color/bg"
-        android:textSize="20dp"
-        android:textStyle="bold" />
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_marginRight="4dp"
+            android:layout_weight="1"
+            android:id="@+id/btnDatPhong"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:background="@color/blue"
+            android:gravity="center"
+            android:text="ĐẶT PHÒNG"
+            android:textColor="@color/bg"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+        <Button
+            android:layout_marginLeft="4dp"
+            android:layout_weight="1"
+            android:id="@+id/btnHuyDatPhong"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:background="@color/blue"
+            android:gravity="center"
+            android:text="HỦY"
+            android:textColor="@color/bg"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
 </RelativeLayout>
