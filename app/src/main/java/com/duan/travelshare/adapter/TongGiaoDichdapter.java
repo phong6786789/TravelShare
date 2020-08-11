@@ -1,5 +1,6 @@
 package com.duan.travelshare.adapter;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -16,7 +17,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.duan.travelshare.R;
+import com.duan.travelshare.firebasedao.GiaoDichDao;
 import com.duan.travelshare.firebasedao.PhongDao;
+import com.duan.travelshare.fragment.ShowDialog;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.GiaoDich;
 import com.squareup.picasso.Picasso;
@@ -27,11 +30,16 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
     List<GiaoDich> list;
     Context context;
     PhongDao phongDao;
+    GiaoDichDao giaoDichDao;
+    GiaoDich listP;
+    ShowDialog showDialog;
 
     public TongGiaoDichdapter(List<GiaoDich> list, Context context) {
         this.list = list;
         this.context = context;
         phongDao = new PhongDao(context);
+        giaoDichDao = new GiaoDichDao(context);
+        showDialog = new ShowDialog((Activity) context);
     }
 
     @NonNull
@@ -52,7 +60,7 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
         if (chiTietPhong.getImgPhong().size() != 0) {
             Picasso.with(context).load(chiTietPhong.getImgPhong().get(0)).into(holder.imgPhong);
         }
-        switch (giaoDich.getTrangThai()){
+        switch (giaoDich.getTrangThai()) {
             case 0:
                 holder.trangThai.setText("ĐANG XÁC NHẬN");
                 break;
@@ -89,7 +97,7 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
         @Override
         public void onClick(View view) {
             int position = getLayoutPosition();
-            GiaoDich listP = list.get(position);
+            listP = list.get(position);
 
             final Dialog dialog = new Dialog(context);
             dialog.setContentView(R.layout.giaodich);
@@ -123,8 +131,8 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
             giaP.setText(listP.getChiTietPhong().getGiaPhong());
             hten.setText(listP.getHoTen());
             cmnd.setText(listP.getCmnd());
-            tu.setText(listP.getTuNgay());
-            den.setText(listP.getDenNgay());
+            tu.setText(listP.getTuTime() + " " + listP.getTuNgay());
+            den.setText(listP.getDenTime() + " " + listP.getDenNgay());
             ghichu.setText(listP.getGhiChu());
             switch (listP.getTrangThai()) {
                 case 0:
@@ -142,20 +150,30 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
             ok.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(context, "CLick xác nhận", Toast.LENGTH_SHORT).show();
+
+                    if (giaoDichDao.updatePhong(listP, 1)) {
+                        showDialog.show("Xác nhận đơn thành công!");
+                    }
+                    else {
+                        showDialog.show("Xác nhận đơn thất bại!");
+                    }
                 }
+
             });
 
             huy.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     dialog.dismiss();
-
+                    if (giaoDichDao.updatePhong(listP, 2)) {
+                        showDialog.show("Hủy đơn thành công!");
+                    }
+                    else {
+                        showDialog.show("Hủy đơn thất bại!");
+                    }
                 }
             });
             dialog.show();
-
-
 
 
         }

@@ -2,13 +2,13 @@ package com.duan.travelshare.firebasedao;
 
 import android.app.Activity;
 import android.content.Context;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.duan.travelshare.fragment.GiaoDichFragment;
+import com.duan.travelshare.adapter.ThongBaoAdapter;
 import com.duan.travelshare.fragment.ShowDialog;
-import com.duan.travelshare.model.GiaoDich;
+import com.duan.travelshare.fragment.ThongBaoFragment;
+import com.duan.travelshare.model.ThongBao;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -21,25 +21,25 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class GiaoDichDao {
+public class ThongBaoDao {
     Context context;
     DatabaseReference reference;
     String key = "";
     Boolean check;
     ShowDialog showDialog;
 
-    public GiaoDichDao() {
+    public ThongBaoDao() {
     }
 
-    public GiaoDichDao(Context context) {
+    public ThongBaoDao(Context context) {
         this.context = context;
-        reference = FirebaseDatabase.getInstance().getReference("GiaoDich");
+        reference = FirebaseDatabase.getInstance().getReference("ThongBao");
         showDialog = new ShowDialog((Activity) context);
     }
 
     //Lấy toàn bộ phòng
-    public ArrayList<GiaoDich> getAll() {
-        final ArrayList<GiaoDich> list = new ArrayList<>();
+    public ArrayList<ThongBao> getAll() {
+        final ArrayList<ThongBao> list = new ArrayList<>();
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -50,11 +50,11 @@ public class GiaoDichDao {
                         Iterator<DataSnapshot> iterator = dataSnapshotIterable.iterator();
                         while (iterator.hasNext()) {
                             DataSnapshot next = (DataSnapshot) iterator.next();
-                            GiaoDich nd = next.getValue(GiaoDich.class);
+                            ThongBao nd = next.getValue(ThongBao.class);
                             list.add(nd);
                         }
                         //Khi đủ list sẽ notify
-                        GiaoDichFragment.locGiaoDich();
+                        ThongBaoFragment.thongBaoAdapter.notifyDataSetChanged();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -70,8 +70,8 @@ public class GiaoDichDao {
 
 
     //Thêm Phòng mới
-    public void insertPhong(final GiaoDich giaoDich) {
-        reference.push().setValue(giaoDich).addOnCompleteListener(new OnCompleteListener<Void>() {
+    public void themTB(final ThongBao thongBao) {
+        reference.push().setValue(thongBao).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
@@ -86,27 +86,27 @@ public class GiaoDichDao {
     }
 
     //Cập nhật Phòng
-    public boolean updatePhong(final GiaoDich giaoDich, final int id) {
-        check = false;
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    if (data.child("chiTietPhong").child("idPhong").getValue(String.class).equalsIgnoreCase(giaoDich.getChiTietPhong().getIdPhong())) {
-                        key = data.getKey();
-                        reference.child(key).child("trangThai").setValue(id + "");
-                        check = true;
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                check = false;
-            }
-        });
-        return check;
-    }
+//    public boolean updatePhong(final ThongBao giaoDich, final int id) {
+//        check = false;
+//        reference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for (DataSnapshot data : dataSnapshot.getChildren()) {
+//                    if (data.child("chiTietPhong").child("idPhong").getValue(String.class).equalsIgnoreCase(giaoDich.getChiTietPhong().getIdPhong())) {
+//                        key = data.getKey();
+//                        reference.child(key).child("trangThai").setValue(id + "");
+//                        check = true;
+//                        break;
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//                check = false;
+//            }
+//        });
+//        return check;
+//    }
 
 }

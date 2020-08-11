@@ -129,8 +129,8 @@ public class KhachGiaoDichAdapter extends RecyclerView.Adapter<KhachGiaoDichAdap
             giaP.setText(listP.getChiTietPhong().getGiaPhong());
             hten.setText(listP.getHoTen());
             cmnd.setText(listP.getCmnd());
-            tu.setText(listP.getTuNgay());
-            den.setText(listP.getDenNgay());
+            tu.setText(listP.getTuTime()+" " +listP.getTuNgay());
+            den.setText(listP.getDenTime()+" " +listP.getDenNgay());
             ghichu.setText(listP.getGhiChu());
             switch (listP.getTrangThai()) {
                 case 0:
@@ -143,7 +143,14 @@ public class KhachGiaoDichAdapter extends RecyclerView.Adapter<KhachGiaoDichAdap
                     trangThai.setText("ĐÃ HỦY");
                     break;
             }
-            lnButton.setVisibility(View.GONE);
+            ok.setVisibility(View.GONE);
+            huy.setText("ĐÓNG");
+            huy.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
 
             dialog.show();
         }
