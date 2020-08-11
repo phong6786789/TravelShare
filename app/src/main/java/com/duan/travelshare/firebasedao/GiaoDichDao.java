@@ -86,8 +86,7 @@ public class GiaoDichDao {
     }
 
     //Cập nhật Phòng
-    public boolean updatePhong(final GiaoDich giaoDich, final int id) {
-        check = false;
+    public void updatePhong(final GiaoDich giaoDich, final int id) {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -95,18 +94,15 @@ public class GiaoDichDao {
                     if (data.child("chiTietPhong").child("idPhong").getValue(String.class).equalsIgnoreCase(giaoDich.getChiTietPhong().getIdPhong())) {
                         key = data.getKey();
                         reference.child(key).child("trangThai").setValue(id + "");
-                        check = true;
-                        break;
                     }
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                check = false;
+
             }
         });
-        return check;
     }
 
 }
