@@ -187,6 +187,49 @@ public class ShowUserFragment extends Fragment {
     }
 
 
+
+
+
+
+    //Set info lên user
+    public void setUser() {
+        if (MainActivity.position != -1) {
+            name.setText(u.getUserName());
+            cmnd.setText(u.getCmndUser());
+            email.setText(u.getEmailUser());
+            birthday.setText(u.getBirtdayUser());
+            phone.setText(u.getPhoneUser());
+            address.setText(u.getAddressUser());
+            if (!u.getLinkImage().matches("")) {
+                Picasso.with(getContext()).load(u.getLinkImage()).into(ivAvatar);
+                image_uri = Uri.parse(u.getLinkImage());
+            }
+        }
+    }
+    private void checkForm() {
+        if (image_uri == null) {
+            showDialog.show("Vui lòng thêm ảnh đại diện!");
+        } else if (namex.isEmpty() || cmndx.isEmpty() || emailx.isEmpty() || birthdayx.isEmpty() || phonex.isEmpty() || addressx.isEmpty()) {
+            showDialog.show("Các trường không được để trống!");
+        } else if (namex.length() < 5) {
+            showDialog.show("Tên phải có ít nhất 5 ký tự!");
+        } else if (cmndx.length() != 9 && cmndx.length() != 12) {
+            showDialog.show("Chứng minh nhân dân phải đủ 9 số hoặc căn cước công dân phải đủ 12 số!");
+        } else if (!phonex.matches("[0-9]{10,11}")) {
+            showDialog.show("Vui lòng nhập đúng số điện thoại!");
+        } else if (addressx.length() < 10) {
+            showDialog.show("Vui lòng nhập đầy đủ địa chỉ!");
+        } else if (u.getLinkImage().equalsIgnoreCase(image_uri.toString())) {
+            FullUser fullUser = new FullUser(namex, cmndx, emailx, birthdayx, phonex, addressx, u.getLinkImage());
+            fullUserDao.updateUser(fullUser);
+            progressDialog.dismiss();
+            showDialog.show("Cập nhật thành công!");
+        } else {
+            insertImage(image_uri);
+        }
+
+    }
+
     private void showImagePickDialog() {
         String option[] = {"Camera", "Thư viện ảnh"};
 
@@ -215,47 +258,6 @@ public class ShowUserFragment extends Fragment {
         builder.create().show();
     }
 
-
-    private void checkForm() {
-        if (image_uri == null) {
-            showDialog.show("Vui lòng thêm ảnh đại diện!");
-        } else if (namex.isEmpty() || cmndx.isEmpty() || emailx.isEmpty() || birthdayx.isEmpty() || phonex.isEmpty() || addressx.isEmpty()) {
-            showDialog.show("Các trường không được để trống!");
-        } else if (namex.length() < 5) {
-            showDialog.show("Tên phải có ít nhất 5 ký tự!");
-        } else if (cmndx.length() != 9 && cmndx.length() != 12) {
-            showDialog.show("Chứng minh nhân dân phải đủ 9 số hoặc căn cước công dân phải đủ 12 số!");
-        } else if (!phonex.matches("[0-9]{10,11}")) {
-            showDialog.show("Vui lòng nhập đúng số điện thoại!");
-        } else if (addressx.length() < 10) {
-            showDialog.show("Vui lòng nhập đầy đủ địa chỉ!");
-        } else if (u.getLinkImage().equalsIgnoreCase(image_uri.toString())) {
-            FullUser fullUser = new FullUser(namex, cmndx, emailx, birthdayx, phonex, addressx, u.getLinkImage());
-            fullUserDao.updateUser(fullUser);
-            progressDialog.dismiss();
-            showDialog.show("Cập nhật thành công!");
-        } else {
-            insertImage(image_uri);
-        }
-
-    }
-
-
-    //Set info lên user
-    public void setUser() {
-        if (MainActivity.position != -1) {
-            name.setText(u.getUserName());
-            cmnd.setText(u.getCmndUser());
-            email.setText(u.getEmailUser());
-            birthday.setText(u.getBirtdayUser());
-            phone.setText(u.getPhoneUser());
-            address.setText(u.getAddressUser());
-            if (!u.getLinkImage().matches("")) {
-                Picasso.with(getContext()).load(u.getLinkImage()).into(ivAvatar);
-                image_uri = Uri.parse(u.getLinkImage());
-            }
-        }
-    }
 
     private boolean checkStoragePermission() {
         boolean result = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);

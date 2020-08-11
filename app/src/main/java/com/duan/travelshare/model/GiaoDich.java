@@ -6,18 +6,20 @@ public class GiaoDich implements Serializable {
     private ChiTietPhong chiTietPhong;
     private FullUser fullUser;
     private String hoTen, cmnd;
-    private String tuNgay, denNgay, ghiChu;
+    private String tuTime, tuNgay, denTime, denNgay, ghiChu;
     private int trangThai;
     //0 là đang xác nhận, 1 là đã xác nhận, 2 là hủy;
     public GiaoDich() {
     }
 
-    public GiaoDich(ChiTietPhong chiTietPhong, FullUser fullUser, String hoTen, String cmnd, String tuNgay, String denNgay, String ghiChu, int trangThai) {
+    public GiaoDich(ChiTietPhong chiTietPhong, FullUser fullUser, String hoTen, String cmnd, String tuTime, String tuNgay, String denTime, String denNgay, String ghiChu, int trangThai) {
         this.chiTietPhong = chiTietPhong;
         this.fullUser = fullUser;
         this.hoTen = hoTen;
         this.cmnd = cmnd;
+        this.tuTime = tuTime;
         this.tuNgay = tuNgay;
+        this.denTime = denTime;
         this.denNgay = denNgay;
         this.ghiChu = ghiChu;
         this.trangThai = trangThai;
@@ -55,12 +57,28 @@ public class GiaoDich implements Serializable {
         this.cmnd = cmnd;
     }
 
+    public String getTuTime() {
+        return tuTime;
+    }
+
+    public void setTuTime(String tuTime) {
+        this.tuTime = tuTime;
+    }
+
     public String getTuNgay() {
         return tuNgay;
     }
 
     public void setTuNgay(String tuNgay) {
         this.tuNgay = tuNgay;
+    }
+
+    public String getDenTime() {
+        return denTime;
+    }
+
+    public void setDenTime(String denTime) {
+        this.denTime = denTime;
     }
 
     public String getDenNgay() {

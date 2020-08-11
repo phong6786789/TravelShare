@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DownloadManager;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,14 +35,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
+import com.duan.travelshare.firebasedao.ThongBaoDao;
 import com.duan.travelshare.model.ChiTietChuChoThue;
 import com.duan.travelshare.model.ChiTietKH;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
+import com.duan.travelshare.model.ThongBao;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.duan.travelshare.firebasedao.GiaoDichDao;
 import com.duan.travelshare.model.ChiTietPhong;
@@ -50,7 +54,10 @@ import com.duan.travelshare.model.FullUser;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class ChiTietPhongHomeFragment extends Fragment {
     final int SEND_SMS_PERMISSION_REQUEST_CODE = 111;
@@ -65,12 +72,13 @@ public class ChiTietPhongHomeFragment extends Fragment {
     private DatePickerDialog datePickerDialog;
     ImageView img;
     TextView tenPhongDat, gia;
-    EditText hoten, cmnd, tungay, denngay, ghichu;
+    EditText hoten, cmnd, tungay, denngay, ghichu, tutime, dentime;
     Button datPhongDat, huyDat;
     private GiaoDichDao giaoDichDao;
     ShowDialog showDialog;
     private FullUser fullUser = MainActivity.fullUserOne;
-
+    private int  mHour, mMinute;
+    ThongBaoDao thongBaoDao;
     public ChiTietPhongHomeFragment() {
         // Required empty public constructor
     }
@@ -84,6 +92,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
         giaoDichDao = new GiaoDichDao(getActivity());
         MainActivity.navigation.setVisibility(View.GONE);
         showDialog = new ShowDialog(getActivity());
+        thongBaoDao = new ThongBaoDao(getActivity());
         //Nhạn object
         Bundle bundle = getArguments();
         chiTietPhong = (ChiTietPhong) bundle.getSerializable("list");
@@ -307,6 +316,8 @@ public class ChiTietPhongHomeFragment extends Fragment {
         ghichu = dialog.findViewById(R.id.edtGhiChu);
         datPhongDat = dialog.findViewById(R.id.btnDatPhong);
         huyDat = dialog.findViewById(R.id.btnHuyDatPhong);
+        tutime = dialog.findViewById(R.id.edtTuTime);
+        dentime = dialog.findViewById(R.id.edtDenTime);
         //Set dữ liệu
         if (!chiTietPhong.getImgPhong().get(0).isEmpty()) {
             Picasso.with(getActivity()).load(chiTietPhong.getImgPhong().get(0)).into(img);
@@ -345,6 +356,57 @@ public class ChiTietPhongHomeFragment extends Fragment {
             }
         });
 
+        tutime.setFocusable(false);
+        //CHọn giờ
+        tutime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Get Current Time
+                final Calendar c = Calendar.getInstance();
+                mHour = c.get(Calendar.HOUR_OF_DAY);
+                mMinute = c.get(Calendar.MINUTE);
+
+                // Launch Time Picker Dialog
+                TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(),
+                        new TimePickerDialog.OnTimeSetListener() {
+
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay,
+                                                  int minute) {
+
+                                tutime.setText(hourOfDay + ":" + minute);
+                            }
+                        }, mHour, mMinute, false);
+                timePickerDialog.show();
+            }
+        });
+
+        dentime.setFocusable(false);
+        //CHọn giờ
+        dentime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Get Current Time
+                final Calendar c = Calendar.getInstance();
+                mHour = c.get(Calendar.HOUR_OF_DAY);
+                mMinute = c.get(Calendar.MINUTE);
+
+                // Launch Time Picker Dialog
+                TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(),
+                        new TimePickerDialog.OnTimeSetListener() {
+
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay,
+                                                  int minute) {
+
+                                dentime.setText(hourOfDay + ":" + minute);
+                            }
+                        }, mHour, mMinute, false);
+                timePickerDialog.show();
+            }
+        });
+
+
         denngay.setFocusable(false);
         //Khi chọn vào ngày
         denngay.setOnClickListener(new View.OnClickListener() {
@@ -375,20 +437,27 @@ public class ChiTietPhongHomeFragment extends Fragment {
             public void onClick(View view) {
                 //Check email
 
-                String ten, cm, tu, den, ghi;
+                String ten, cm, tu, den, ghi,time1, time2;
                 ten = hoten.getText().toString();
                 cm = cmnd.getText().toString();
                 tu = tungay.getText().toString();
                 den = denngay.getText().toString();
                 ghi = ghichu.getText().toString();
+                time1 = tutime.getText().toString();
+                time2 = dentime.getText().toString();
                 //Check lỗi
                 if (ten.isEmpty() || cm.isEmpty() || tu.isEmpty() || den.isEmpty() || ghi.isEmpty()) {
                     showDialog.show("Các trường không được để trống!");
                 } else {
-                    GiaoDich giaoDich = new GiaoDich(chiTietPhong, fullUser, ten, cm, tu, den, ghi, 0);
+                    GiaoDich giaoDich = new GiaoDich(chiTietPhong, fullUser, ten, cm, time1, tu, time2, den, ghi, 0);
                     giaoDichDao.insertPhong(giaoDich);
                     showDialog.show("Đặt phòng thành công!");
                     dialog.dismiss();
+
+                    //Lấy thông báo ngay thời gian đặt
+                    String ngay = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
+                    String time = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+                    thongBaoDao.themTB(new ThongBao(giaoDich, ngay, time));
 
                     MainActivity.navigation.setVisibility(View.VISIBLE);
                     GiaoDichFragment giaoDichFragment = new GiaoDichFragment();

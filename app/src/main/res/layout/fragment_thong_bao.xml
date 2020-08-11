@@ -3,10 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="8dp"
     tools:context=".fragment.ThongBaoFragment">
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rec_MngPhongThue"
+        android:id="@+id/recThongBao"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="10dp" />
+        android:layout_height="match_parent" />
 </RelativeLayout>
