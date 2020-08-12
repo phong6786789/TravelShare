@@ -150,7 +150,8 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
             ok.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    giaoDichDao.updatePhong(listP, 1);
+                    listP.setTrangThai(1);
+                    giaoDichDao.updateTrangThai(listP);
                     dialog.dismiss();
                 }
 
@@ -159,7 +160,8 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
             huy.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    giaoDichDao.updatePhong(listP, 2);
+                    listP.setTrangThai(2);
+                    giaoDichDao.updateTrangThai(listP);
                     dialog.dismiss();
                 }
             });

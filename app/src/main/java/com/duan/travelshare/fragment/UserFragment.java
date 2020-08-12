@@ -296,8 +296,6 @@ public class UserFragment extends Fragment {
                     addressUser = "" + ds.child("addressUser").getValue();
                     linkImage = "" + ds.child("linkImage").getValue();
                     list = new FullUser(userName, cmndUser, emailUser, birtdayUser, phoneUser, addressUser, linkImage);
-
-
                 }
                 try {
                     name.setText(list.getUserName());

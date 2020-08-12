@@ -2,6 +2,8 @@ package com.duan.travelshare.fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
 import com.duan.travelshare.adapter.ThongBaoAdapter;
 import com.duan.travelshare.firebasedao.ThongBaoDao;
@@ -23,9 +26,10 @@ import java.util.ArrayList;
 public class ThongBaoFragment extends Fragment {
 
     ThongBaoDao thongBaoDao;
-  public static   ThongBaoAdapter thongBaoAdapter;
-    ArrayList<ThongBao> list;
+    public static ThongBaoAdapter thongBaoAdapter;
+    ArrayList<ThongBao> list = new ArrayList<>();
     RecyclerView recThongBao;
+    String email = MainActivity.emailUser;
 
     public ThongBaoFragment() {
         // Required empty public constructor
@@ -44,23 +48,26 @@ public class ThongBaoFragment extends Fragment {
         title.setText("THÔNG BÁO");
         back.setVisibility(View.INVISIBLE);
 
+
+        return view;
+    }
+
+    //Phân biệt thông báo của chủ và khách
+    private void locUser() {
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         //Khai báo
         thongBaoDao = new ThongBaoDao(getActivity());
-        list = thongBaoDao.getAll();
+        list = thongBaoDao.getAll(email);
         recThongBao = view.findViewById(R.id.recThongBao);
         thongBaoAdapter = new ThongBaoAdapter(list, getActivity());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recThongBao.setLayoutManager(linearLayoutManager);
         recThongBao.setAdapter(thongBaoAdapter);
-
-
-
-        return view;
-    }
-
-    //Phân biệt thông báo của chủ và khách
-    private void locUser(){
-
     }
 }

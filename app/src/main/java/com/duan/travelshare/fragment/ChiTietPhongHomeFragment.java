@@ -77,8 +77,9 @@ public class ChiTietPhongHomeFragment extends Fragment {
     private GiaoDichDao giaoDichDao;
     ShowDialog showDialog;
     private FullUser fullUser = MainActivity.fullUserOne;
-    private int  mHour, mMinute;
+    private int mHour, mMinute;
     ThongBaoDao thongBaoDao;
+
     public ChiTietPhongHomeFragment() {
         // Required empty public constructor
     }
@@ -137,13 +138,13 @@ public class ChiTietPhongHomeFragment extends Fragment {
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              makePhoneCall();
+                makePhoneCall();
             }
         });
         messenger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               sendSMS();
+                sendSMS();
             }
         });
         star.setOnClickListener(new View.OnClickListener() {
@@ -162,7 +163,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
         datPhong.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (chiTietPhong.getFullUser().getEmailUser().matches(fullUser.getEmailUser())) {
+                if (emailUser.getText().toString().equalsIgnoreCase(fullUser.getEmailUser())) {
                     showDialog.show("Bạn không thể đặt phòng của chính bạn!");
                 } else {
                     datPhong();
@@ -203,7 +204,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
         final TextView phone1 = dialog1.findViewById(R.id.so);
         final TextView sendsms = dialog1.findViewById(R.id.sendsms);
         phone1.setText(chiTietPhong.getFullUser().getPhoneUser());
-        sms.setText("Xin chào, "+chiTietPhong.getTenPhong()+" còn không ạ?");
+        sms.setText("Xin chào, " + chiTietPhong.getTenPhong() + " còn không ạ?");
         sendsms.setEnabled(false);
         if (checkPermission(Manifest.permission.SEND_SMS)) {
             sendsms.setEnabled(true);
@@ -437,7 +438,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
             public void onClick(View view) {
                 //Check email
 
-                String ten, cm, tu, den, ghi,time1, time2;
+                String ten, cm, tu, den, ghi, time1, time2;
                 ten = hoten.getText().toString();
                 cm = cmnd.getText().toString();
                 tu = tungay.getText().toString();

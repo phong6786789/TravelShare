@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
+            android:visibility="gone"
             android:layout_marginBottom="8dp"
             android:layout_alignParentTop="true"
             android:id="@+id/listDangGiaoDich"
@@ -34,6 +35,7 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
         <LinearLayout
+            android:visibility="gone"
             android:layout_below="@id/listDangGiaoDich"
             android:id="@+id/listTongGiaoDich"
             android:background="@drawable/border2"

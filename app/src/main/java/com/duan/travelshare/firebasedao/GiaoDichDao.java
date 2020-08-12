@@ -52,9 +52,10 @@ public class GiaoDichDao {
                             DataSnapshot next = (DataSnapshot) iterator.next();
                             GiaoDich nd = next.getValue(GiaoDich.class);
                             list.add(nd);
+                            GiaoDichFragment.locGiaoDich();
                         }
                         //Khi đủ list sẽ notify
-                        GiaoDichFragment.locGiaoDich();
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -94,6 +95,26 @@ public class GiaoDichDao {
                     if (data.child("chiTietPhong").child("idPhong").getValue(String.class).equalsIgnoreCase(giaoDich.getChiTietPhong().getIdPhong())) {
                         key = data.getKey();
                         reference.child(key).child("trangThai").setValue(id + "");
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    //Cập nhật Phòng
+    public void updateTrangThai(final GiaoDich giaoDich) {
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    if (data.child("chiTietPhong").child("idPhong").getValue(String.class).equalsIgnoreCase(giaoDich.getChiTietPhong().getIdPhong())) {
+                        key = data.getKey();
+                        reference.child(key).setValue(giaoDich);
                     }
                 }
             }

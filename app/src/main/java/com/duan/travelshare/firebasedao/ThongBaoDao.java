@@ -38,7 +38,7 @@ public class ThongBaoDao {
     }
 
     //Lấy toàn bộ phòng
-    public ArrayList<ThongBao> getAll() {
+    public ArrayList<ThongBao> getAll(final String email) {
         final ArrayList<ThongBao> list = new ArrayList<>();
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -51,7 +51,10 @@ public class ThongBaoDao {
                         while (iterator.hasNext()) {
                             DataSnapshot next = (DataSnapshot) iterator.next();
                             ThongBao nd = next.getValue(ThongBao.class);
-                            list.add(nd);
+//                            email.equalsIgnoreCase(nd.getGiaoDich().getChiTietPhong().getFullUser().getEmailUser())
+                            if(email.equalsIgnoreCase(nd.getGiaoDich().getFullUser().getEmailUser())){
+                                list.add(nd);
+                            }
                         }
                         //Khi đủ list sẽ notify
                         ThongBaoFragment.thongBaoAdapter.notifyDataSetChanged();

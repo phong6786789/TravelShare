@@ -20,6 +20,7 @@ import com.duan.travelshare.firebasedao.UserDao;
 import com.duan.travelshare.fragment.GiaoDichFragment;
 import com.duan.travelshare.fragment.HomeFragment;
 import com.duan.travelshare.fragment.ShowDialog;
+import com.duan.travelshare.fragment.ShowUserFragment;
 import com.duan.travelshare.fragment.ThongBaoFragment;
 import com.duan.travelshare.fragment.UserFragment;
 import com.duan.travelshare.model.FullUser;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     public static String name = "0", email = "0", userName = "0";
 
     static FullUserDao fullUserDao;
-    public static ArrayList<FullUser> list;
+    public static ArrayList<FullUser> list = new ArrayList<>();
     public static int position = -1;
     public static FullUser fullUserOne;
     static ShowDialog showDialog;
