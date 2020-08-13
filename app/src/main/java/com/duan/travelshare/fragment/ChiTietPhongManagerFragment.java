@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -52,7 +53,8 @@ import java.util.UUID;
 import static android.app.Activity.RESULT_OK;
 
 public class ChiTietPhongManagerFragment extends Fragment {
-    private ImageView phong, user, save, call, messenger;
+    private ImageView phong, user,  call, messenger;
+    ToggleButton save;
     private LinearLayout star;
     private TextView tenPhong, giaPhong, tenUser, emailUser, moTa;
     private Button xem, datPhong;
@@ -311,18 +313,7 @@ public class ChiTietPhongManagerFragment extends Fragment {
                 }
             }
         };
-        call.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Dialog dialog=new Dialog(getActivity());
-                dialog.setContentView(R.layout.call);
-                dialog.setCancelable(true);
-                TextView phone=dialog.findViewById(R.id.number);
-                //  phone.setText("0962280703");
-                phone.setText(chiTietPhong.getFullUser().getUserName());
-                dialog.show();
-            }
-        });
+        call.setOnClickListener(listener);
         save.setOnClickListener(listener);
         messenger.setOnClickListener(listener);
         star.setOnClickListener(listener);

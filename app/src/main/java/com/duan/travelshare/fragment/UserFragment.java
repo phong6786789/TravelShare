@@ -110,7 +110,9 @@ public class UserFragment extends Fragment {
         roomFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                SaveFragment saveFragment=new SaveFragment();
+                FragmentManager fragmentManager=getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.frame,saveFragment).commit();
             }
         });
 
