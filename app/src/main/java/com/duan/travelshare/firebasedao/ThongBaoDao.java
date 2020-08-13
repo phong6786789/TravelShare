@@ -51,8 +51,8 @@ public class ThongBaoDao {
                         while (iterator.hasNext()) {
                             DataSnapshot next = (DataSnapshot) iterator.next();
                             ThongBao nd = next.getValue(ThongBao.class);
-//                            email.equalsIgnoreCase(nd.getGiaoDich().getChiTietPhong().getFullUser().getEmailUser())
-                            if(email.equalsIgnoreCase(nd.getGiaoDich().getFullUser().getEmailUser())){
+//                            Thông báo cho chủ thuê biết đang có đơn hàng cần xác nhận
+                            if (email.equalsIgnoreCase(nd.getGiaoDich().getChiTietPhong().getFullUser().getEmailUser())) {
                                 list.add(nd);
                             }
                         }
@@ -88,28 +88,28 @@ public class ThongBaoDao {
         });
     }
 
-    //Cập nhật Phòng
-//    public boolean updatePhong(final ThongBao giaoDich, final int id) {
-//        check = false;
-//        reference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for (DataSnapshot data : dataSnapshot.getChildren()) {
-//                    if (data.child("chiTietPhong").child("idPhong").getValue(String.class).equalsIgnoreCase(giaoDich.getChiTietPhong().getIdPhong())) {
-//                        key = data.getKey();
-//                        reference.child(key).child("trangThai").setValue(id + "");
-//                        check = true;
-//                        break;
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//                check = false;
-//            }
-//        });
-//        return check;
-//    }
+    //    Cập nhật Phòng
+    public boolean updateTT(final String idPhong, final int id) {
+        check = false;
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    if (data.child("giaoDich").child("chiTietPhong").child("idPhong").getValue(String.class).equalsIgnoreCase(idPhong)) {
+                        key = data.getKey();
+                        reference.child(key).child("giaoDich").child("trangThai").setValue(id + "");
+                        check = true;
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                check = false;
+            }
+        });
+        return check;
+    }
 
 }

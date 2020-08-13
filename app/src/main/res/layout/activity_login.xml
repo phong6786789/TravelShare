@@ -48,7 +48,7 @@
                android:layout_width="match_parent"
                android:layout_height="fill_parent"
                android:drawableLeft="@drawable/user"
-               android:drawablePadding="10dp"
+               android:drawablePadding="8dp"
                android:hint="Nhập tên tài khoản"
                android:inputType="text"
                android:padding="8dp"
@@ -61,16 +61,15 @@
            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
            android:layout_width="fill_parent"
            android:layout_height="48dp"
-           android:layout_below="@+id/l2"
            android:layout_marginBottom="8dp"
            app:passwordToggleEnabled="true">
 
-           <EditText
+           <com.google.android.material.textfield.TextInputEditText
                android:id="@+id/edtPassword"
                android:layout_width="match_parent"
                android:layout_height="fill_parent"
                android:drawableStart="@drawable/pass"
-               android:drawablePadding="10dp"
+               android:drawablePadding="8dp"
                android:hint="Nhập mật khẩu"
                android:inputType="textPassword"
                android:padding="8dp"
