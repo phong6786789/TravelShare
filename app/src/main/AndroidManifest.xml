@@ -26,15 +26,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!--
-             The API key for Google Maps-based APIs is defined as a string resource.
-             (See the file "res/values/google_maps_api.xml").
-             Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/.
-        -->
-
 
         <uses-library
             android:name="com.google.android.wearable"
@@ -73,10 +64,10 @@
             android:authorities="com.facebook.app.FacebookContentProvider302924064240826"
             android:exported="true" />
 
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".login.Hello"></activity>
         <activity android:name=".login.Login" />
         <activity android:name=".login.Register" />
-        <activity android:name=".login.Hello">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
