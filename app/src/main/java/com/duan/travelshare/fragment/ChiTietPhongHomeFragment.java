@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -37,14 +38,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
+import com.duan.travelshare.firebasedao.SaveDao;
 import com.duan.travelshare.firebasedao.ThongBaoDao;
 import com.duan.travelshare.model.ChiTietChuChoThue;
 import com.duan.travelshare.model.ChiTietKH;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
+import com.duan.travelshare.model.Save;
 import com.duan.travelshare.model.ThongBao;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.duan.travelshare.firebasedao.GiaoDichDao;
@@ -63,7 +67,8 @@ public class ChiTietPhongHomeFragment extends Fragment {
     final int SEND_SMS_PERMISSION_REQUEST_CODE = 111;
     private Button sendSMS;
     private static final int REQUEST_CALL = 1;
-    private ImageView phong, user, save, call, messenger;
+    private ImageView phong, user, call, messenger;
+    private ToggleButton save;
     private LinearLayout star;
     private TextView tenPhong, giaPhong, tenUser, emailUser, moTa;
     private Button xem, datPhong;
@@ -73,6 +78,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
     ImageView img;
     TextView tenPhongDat, gia;
     EditText hoten, cmnd, tungay, denngay, ghichu, tutime, dentime;
+
     Button datPhongDat, huyDat;
     private GiaoDichDao giaoDichDao;
     ShowDialog showDialog;
@@ -128,12 +134,22 @@ public class ChiTietPhongHomeFragment extends Fragment {
         emailUser.setText(chiTietPhong.getFullUser().getEmailUser());
         moTa.setText(chiTietPhong.getMoTaPhong());
         //save, call, messenger, star , xem, datPhong;
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-            }
-        });
+        //Kiểm tra trạng thái trong lưu, nêu chưa
+
+
+//        save.setChecked(false);
+       save.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               if (save.isChecked()){
+                   save.setChecked(true);
+                   SaveDao saveDao=new SaveDao(getActivity());
+                   saveDao.insertSave(new Save(chiTietPhong));
+
+               }
+           }
+       });
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

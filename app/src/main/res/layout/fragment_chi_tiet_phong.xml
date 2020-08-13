@@ -26,14 +26,16 @@
             android:layout_alignParentRight="true"
             android:orientation="vertical">
 
-            <ImageView
+            <ToggleButton
+                android:checked="false"
+                android:textOn=""
+                android:textOff=""
                 android:id="@+id/ivSave"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:src="@drawable/heart" />
-
+                android:background="@drawable/toggle_selector" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
