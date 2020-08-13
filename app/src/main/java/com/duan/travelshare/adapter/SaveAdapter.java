@@ -81,7 +81,7 @@ public class SaveAdapter extends RecyclerView.Adapter<SaveAdapter.ViewHolder> {
             ChiTietPhongHomeFragment Save = new ChiTietPhongHomeFragment();
 
             Bundle bundle = new Bundle();
-            bundle.putSerializable("list", listP);
+            bundle.putSerializable("list", listP.getChiTietPhong());
             Save.setArguments(bundle);
 
             FragmentManager fragmentManager = ((AppCompatActivity) view.getContext()).getSupportFragmentManager();

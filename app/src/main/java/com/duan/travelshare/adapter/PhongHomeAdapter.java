@@ -16,8 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.duan.travelshare.R;
 import com.duan.travelshare.firebasedao.PhongDao;
+import com.duan.travelshare.firebasedao.SaveDao;
 import com.duan.travelshare.fragment.ChiTietPhongHomeFragment;
 import com.duan.travelshare.model.ChiTietPhong;
+import com.duan.travelshare.model.Save;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -78,9 +80,7 @@ public class PhongHomeAdapter extends RecyclerView.Adapter<PhongHomeAdapter.View
         public void onClick(View view) {
             int position = getLayoutPosition();
             ChiTietPhong listP = list.get(position);
-
             ChiTietPhongHomeFragment chiTietPhong = new ChiTietPhongHomeFragment();
-
             Bundle bundle = new Bundle();
             bundle.putSerializable("list", listP);
             chiTietPhong.setArguments(bundle);

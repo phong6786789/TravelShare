@@ -59,6 +59,7 @@ import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -66,9 +67,10 @@ import java.util.Locale;
 public class ChiTietPhongHomeFragment extends Fragment {
     final int SEND_SMS_PERMISSION_REQUEST_CODE = 111;
     private Button sendSMS;
+    SaveDao saveDao;
     private static final int REQUEST_CALL = 1;
     private ImageView phong, user, call, messenger;
-    private ToggleButton save;
+    static ToggleButton save;
     private LinearLayout star;
     private TextView tenPhong, giaPhong, tenUser, emailUser, moTa;
     private Button xem, datPhong;
@@ -78,13 +80,14 @@ public class ChiTietPhongHomeFragment extends Fragment {
     ImageView img;
     TextView tenPhongDat, gia;
     EditText hoten, cmnd, tungay, denngay, ghichu, tutime, dentime;
-
+    static ArrayList<Save> modelsave;
     Button datPhongDat, huyDat;
     private GiaoDichDao giaoDichDao;
     ShowDialog showDialog;
     private FullUser fullUser = MainActivity.fullUserOne;
     private int mHour, mMinute;
     ThongBaoDao thongBaoDao;
+    static String idPhong;
 
     public ChiTietPhongHomeFragment() {
         // Required empty public constructor
@@ -96,6 +99,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chi_tiet_phong, container, false);
         //Ẩn navigation
+        saveDao = new SaveDao(getActivity());
         giaoDichDao = new GiaoDichDao(getActivity());
         MainActivity.navigation.setVisibility(View.GONE);
         showDialog = new ShowDialog(getActivity());
@@ -103,6 +107,9 @@ public class ChiTietPhongHomeFragment extends Fragment {
         //Nhạn object
         Bundle bundle = getArguments();
         chiTietPhong = (ChiTietPhong) bundle.getSerializable("list");
+        idPhong = chiTietPhong.getIdPhong();
+        modelsave = saveDao.checkSave();
+
         //Khai báo
         phong = view.findViewById(R.id.ivPhong);
         user = view.findViewById(R.id.ivUser);
@@ -140,17 +147,18 @@ public class ChiTietPhongHomeFragment extends Fragment {
 
 
 //        save.setChecked(false);
-       save.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               if (save.isChecked()){
-                   save.setChecked(true);
-                   SaveDao saveDao=new SaveDao(getActivity());
-                   saveDao.insertSave(new Save(chiTietPhong));
-
-               }
-           }
-       });
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (save.isChecked()) {
+                    save.setChecked(true);
+                    SaveDao saveDao = new SaveDao(getActivity());
+                    saveDao.insertSave(new Save(MainActivity.email,chiTietPhong));
+                } else {
+                    //delete
+                }
+            }
+        });
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -543,5 +551,14 @@ public class ChiTietPhongHomeFragment extends Fragment {
 
         //Khi ấn nút đặt
         dialog.show();
+    }
+
+    public static void setsave() {
+        for (int i = 0; i < modelsave.size(); i++) {
+            if (idPhong.equalsIgnoreCase(modelsave.get(i).getChiTietPhong().getIdPhong())) {
+                save.setChecked(true);
+                break;
+            }
+        }
     }
 }
