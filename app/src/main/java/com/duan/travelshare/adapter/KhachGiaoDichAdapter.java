@@ -59,13 +59,13 @@ public class KhachGiaoDichAdapter extends RecyclerView.Adapter<KhachGiaoDichAdap
             Picasso.with(context).load(chiTietPhong.getImgPhong().get(0)).into(holder.imgPhong);
         }
         switch (giaoDich.getTrangThai()) {
-            case 0:
+            case "0":
                 holder.trangThai.setText("ĐANG XÁC NHẬN");
                 break;
-            case 1:
+            case "1":
                 holder.trangThai.setText("ĐÃ XÁC NHẬN");
                 break;
-            case 2:
+            case "2":
                 holder.trangThai.setText("ĐÃ HỦY");
                 break;
         }
@@ -133,13 +133,13 @@ public class KhachGiaoDichAdapter extends RecyclerView.Adapter<KhachGiaoDichAdap
             den.setText(listP.getDenTime()+" " +listP.getDenNgay());
             ghichu.setText(listP.getGhiChu());
             switch (listP.getTrangThai()) {
-                case 0:
+                case "0":
                     trangThai.setText("ĐANG XÁC NHẬN");
                     break;
-                case 1:
+                case "1":
                     trangThai.setText("ĐÃ XÁC NHẬN");
                     break;
-                case 2:
+                case "2":
                     trangThai.setText("ĐÃ HỦY");
                     break;
             }

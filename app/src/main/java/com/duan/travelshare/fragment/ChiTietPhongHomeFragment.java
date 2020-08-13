@@ -522,7 +522,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
                 if (ten.isEmpty() || cm.isEmpty() || tu.isEmpty() || den.isEmpty() || ghi.isEmpty()) {
                     showDialog.show("Các trường không được để trống!");
                 } else {
-                    GiaoDich giaoDich = new GiaoDich(chiTietPhong, fullUser, ten, cm, time1, tu, time2, den, ghi, 0);
+                    GiaoDich giaoDich = new GiaoDich(chiTietPhong, fullUser, ten, cm, time1, tu, time2, den, ghi, "0");
                     giaoDichDao.insertPhong(giaoDich);
                     showDialog.show("Đặt phòng thành công!");
                     dialog.dismiss();

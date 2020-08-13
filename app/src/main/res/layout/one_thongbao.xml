@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    android:id="@+id/cvOneTB"
     card_view:cardCornerRadius="10dp"
     card_view:cardElevation="10dp">
 
@@ -32,6 +33,7 @@
             android:textColor="@color/red" />
 
         <TextView
+            android:id="@+id/tvClickXem"
             android:layout_marginBottom="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

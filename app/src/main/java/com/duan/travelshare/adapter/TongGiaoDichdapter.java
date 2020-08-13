@@ -64,13 +64,13 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
             Picasso.with(context).load(chiTietPhong.getImgPhong().get(0)).into(holder.imgPhong);
         }
         switch (giaoDich.getTrangThai()) {
-            case 0:
+            case "0":
                 holder.trangThai.setText("ĐANG XÁC NHẬN");
                 break;
-            case 1:
+            case "1":
                 holder.trangThai.setText("ĐÃ XÁC NHẬN");
                 break;
-            case 2:
+            case "2":
                 holder.trangThai.setText("ĐÃ HỦY");
                 break;
         }
@@ -138,18 +138,18 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
             den.setText(listP.getDenTime() + " " + listP.getDenNgay());
             ghichu.setText(listP.getGhiChu());
             switch (listP.getTrangThai()) {
-                case 0:
+                case "0":
                     ok.setVisibility(View.VISIBLE);
                     huy.setVisibility(View.VISIBLE);
                     trangThai.setText("CHỜ XÁC NHẬN");
                     break;
-                case 1:
+                case "1":
                     dong.setVisibility(View.VISIBLE);
                     ok.setVisibility(View.GONE);
                     huy.setVisibility(View.GONE);
                     trangThai.setText("ĐÃ XÁC NHẬN");
                     break;
-                case 2:
+                case "2":
                     dong.setVisibility(View.VISIBLE);
                     ok.setVisibility(View.GONE);
                     huy.setVisibility(View.GONE);
@@ -161,8 +161,8 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
             ok.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    thongBaoDao.updateTT(listP.getChiTietPhong().getIdPhong(), 1);
-                    listP.setTrangThai(1);
+                    thongBaoDao.updateTT(listP.getChiTietPhong().getIdPhong(), "1");
+                    listP.setTrangThai("1");
                     giaoDichDao.updateTrangThai(listP);
                     dong.setVisibility(View.VISIBLE);
                     ok.setVisibility(View.GONE);
@@ -174,8 +174,8 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
             huy.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    thongBaoDao.updateTT(listP.getChiTietPhong().getIdPhong(), 2);
-                    listP.setTrangThai(2);
+                    thongBaoDao.updateTT(listP.getChiTietPhong().getIdPhong(), "2");
+                    listP.setTrangThai("2");
                     giaoDichDao.updateTrangThai(listP);
                     dong.setVisibility(View.VISIBLE);
                     ok.setVisibility(View.GONE);
