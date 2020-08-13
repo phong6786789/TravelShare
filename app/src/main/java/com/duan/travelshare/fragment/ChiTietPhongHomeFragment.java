@@ -55,6 +55,11 @@ import com.duan.travelshare.firebasedao.GiaoDichDao;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.GiaoDich;
 import com.duan.travelshare.model.FullUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -146,19 +151,17 @@ public class ChiTietPhongHomeFragment extends Fragment {
         //Kiểm tra trạng thái trong lưu, nêu chưa
 
 
-//        save.setChecked(false);
-        save.setOnClickListener(new View.OnClickListener() {
+        save.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                if (save.isChecked()) {
-                    save.setChecked(true);
-                    SaveDao saveDao = new SaveDao(getActivity());
-                    saveDao.insertSave(new Save(MainActivity.email,chiTietPhong));
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    saveDao.insertSave(new Save(MainActivity.email, chiTietPhong));
                 } else {
-                    //delete
+                    saveDao.delete(new Save(MainActivity.email, chiTietPhong));
                 }
             }
         });
+
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -554,11 +557,18 @@ public class ChiTietPhongHomeFragment extends Fragment {
     }
 
     public static void setsave() {
+        Boolean check = false;
         for (int i = 0; i < modelsave.size(); i++) {
             if (idPhong.equalsIgnoreCase(modelsave.get(i).getChiTietPhong().getIdPhong())) {
-                save.setChecked(true);
+                check = true;
                 break;
             }
+        }
+
+        if (check) {
+            save.setChecked(true);
+        } else {
+            save.setChecked(false);
         }
     }
 }

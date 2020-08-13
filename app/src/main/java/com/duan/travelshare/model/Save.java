@@ -3,7 +3,7 @@ package com.duan.travelshare.model;
 import java.io.Serializable;
 
 public class Save implements Serializable {
-    private String email;
+    public String email;
    private   ChiTietPhong chiTietPhong;
 
     public Save() {
