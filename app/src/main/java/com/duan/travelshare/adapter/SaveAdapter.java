@@ -15,27 +15,25 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.duan.travelshare.R;
-import com.duan.travelshare.firebasedao.PhongDao;
 import com.duan.travelshare.firebasedao.SaveDao;
 import com.duan.travelshare.fragment.ChiTietPhongHomeFragment;
-import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.Save;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PhongHomeAdapter extends RecyclerView.Adapter<PhongHomeAdapter.ViewHolder> {
-    List<ChiTietPhong> list;
-    List<ChiTietPhong> listSort;
+public class SaveAdapter extends RecyclerView.Adapter<SaveAdapter.ViewHolder> {
+    List<Save> list;
+    List<Save> listSort;
     Filter filter;
     Context context;
-    PhongDao phongDao;
+    SaveDao SaveDao;
 
-    public PhongHomeAdapter(List<ChiTietPhong> list, Context context) {
+    public SaveAdapter(List<Save> list, Context context) {
         this.list = list;
         this.context = context;
-        phongDao = new PhongDao(context);
+        this.SaveDao = new SaveDao(context);
         this.listSort = list;
     }
 
@@ -48,11 +46,11 @@ public class PhongHomeAdapter extends RecyclerView.Adapter<PhongHomeAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.tenPhong.setText(list.get(position).getTenPhong());
-        holder.giaPhong.setText(list.get(position).getGiaPhong());
-        holder.diachiPhong.setText(list.get(position).getDiaChiPhong());
-        if (list.get(position).getImgPhong().size() != 0) {
-            Picasso.with(context).load(list.get(position).getImgPhong().get(0)).into(holder.imgPhong);
+        holder.tenPhong.setText(list.get(position).getChiTietPhong().getTenPhong());
+        holder.giaPhong.setText(list.get(position).getChiTietPhong().getGiaPhong());
+        holder.diachiPhong.setText(list.get(position).getChiTietPhong().getDiaChiPhong());
+        if (list.get(position).getChiTietPhong().getImgPhong().size() != 0) {
+            Picasso.with(context).load(list.get(position).getChiTietPhong().getImgPhong().get(0)).into(holder.imgPhong);
         }
 
     }
@@ -66,7 +64,6 @@ public class PhongHomeAdapter extends RecyclerView.Adapter<PhongHomeAdapter.View
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView imgPhong;
         TextView tenPhong, giaPhong, diachiPhong;
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tenPhong = itemView.findViewById(R.id.titleP);
@@ -79,15 +76,17 @@ public class PhongHomeAdapter extends RecyclerView.Adapter<PhongHomeAdapter.View
         @Override
         public void onClick(View view) {
             int position = getLayoutPosition();
-            ChiTietPhong listP = list.get(position);
-            ChiTietPhongHomeFragment chiTietPhong = new ChiTietPhongHomeFragment();
+            Save listP = list.get(position);
+
+            ChiTietPhongHomeFragment Save = new ChiTietPhongHomeFragment();
+
             Bundle bundle = new Bundle();
-            bundle.putSerializable("list", listP);
-            chiTietPhong.setArguments(bundle);
+            bundle.putSerializable("list", listP.getChiTietPhong());
+            Save.setArguments(bundle);
 
             FragmentManager fragmentManager = ((AppCompatActivity) view.getContext()).getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.frame, chiTietPhong)
+                    .replace(R.id.frame, Save)
                     .commit();
         }
     }
@@ -111,14 +110,14 @@ public class PhongHomeAdapter extends RecyclerView.Adapter<PhongHomeAdapter.View
                 results.values = listSort;
                 results.count = listSort.size();
             } else {
-                List<ChiTietPhong> lsChiTietPhong = new ArrayList<ChiTietPhong>();
-                for (ChiTietPhong p : list) {
+                List<Save> save = new ArrayList<Save>();
+                for (Save p : list) {
                     if
-                    (p.getTenPhong().toUpperCase().contains(constraint.toString().toUpperCase()))
-                        lsChiTietPhong.add(p);
+                    (p.getChiTietPhong().getTenPhong().toUpperCase().contains(constraint.toString().toUpperCase()))
+                        save.add(p);
                 }
-                results.values = lsChiTietPhong;
-                results.count = lsChiTietPhong.size();
+                results.values = save;
+                results.count = save.size();
             }
             return results;
         }
@@ -128,7 +127,7 @@ public class PhongHomeAdapter extends RecyclerView.Adapter<PhongHomeAdapter.View
             if (results.count == 0)
                 notifyDataSetChanged();
             else {
-                list = (List<ChiTietPhong>) results.values;
+                list = (List<Save>) results.values;
                 notifyDataSetChanged();
             }
         }

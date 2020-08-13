@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -37,24 +38,33 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
+import com.duan.travelshare.firebasedao.SaveDao;
 import com.duan.travelshare.firebasedao.ThongBaoDao;
 import com.duan.travelshare.model.ChiTietChuChoThue;
 import com.duan.travelshare.model.ChiTietKH;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
+import com.duan.travelshare.model.Save;
 import com.duan.travelshare.model.ThongBao;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.duan.travelshare.firebasedao.GiaoDichDao;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.GiaoDich;
 import com.duan.travelshare.model.FullUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -62,8 +72,10 @@ import java.util.Locale;
 public class ChiTietPhongHomeFragment extends Fragment {
     final int SEND_SMS_PERMISSION_REQUEST_CODE = 111;
     private Button sendSMS;
+    SaveDao saveDao;
     private static final int REQUEST_CALL = 1;
-    private ImageView phong, user, save, call, messenger;
+    private ImageView phong, user, call, messenger;
+    static ToggleButton save;
     private LinearLayout star;
     private TextView tenPhong, giaPhong, tenUser, emailUser, moTa;
     private Button xem, datPhong;
@@ -73,12 +85,14 @@ public class ChiTietPhongHomeFragment extends Fragment {
     ImageView img;
     TextView tenPhongDat, gia;
     EditText hoten, cmnd, tungay, denngay, ghichu, tutime, dentime;
+    static ArrayList<Save> modelsave;
     Button datPhongDat, huyDat;
     private GiaoDichDao giaoDichDao;
     ShowDialog showDialog;
     private FullUser fullUser = MainActivity.fullUserOne;
     private int mHour, mMinute;
     ThongBaoDao thongBaoDao;
+    static String idPhong;
 
     public ChiTietPhongHomeFragment() {
         // Required empty public constructor
@@ -90,6 +104,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chi_tiet_phong, container, false);
         //Ẩn navigation
+        saveDao = new SaveDao(getActivity());
         giaoDichDao = new GiaoDichDao(getActivity());
         MainActivity.navigation.setVisibility(View.GONE);
         showDialog = new ShowDialog(getActivity());
@@ -97,6 +112,9 @@ public class ChiTietPhongHomeFragment extends Fragment {
         //Nhạn object
         Bundle bundle = getArguments();
         chiTietPhong = (ChiTietPhong) bundle.getSerializable("list");
+        idPhong = chiTietPhong.getIdPhong();
+        modelsave = saveDao.checkSave();
+
         //Khai báo
         phong = view.findViewById(R.id.ivPhong);
         user = view.findViewById(R.id.ivUser);
@@ -129,12 +147,21 @@ public class ChiTietPhongHomeFragment extends Fragment {
         emailUser.setText(chiTietPhong.getFullUser().getEmailUser());
         moTa.setText(chiTietPhong.getMoTaPhong());
         //save, call, messenger, star , xem, datPhong;
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
+        //Kiểm tra trạng thái trong lưu, nêu chưa
+
+
+        save.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    saveDao.insertSave(new Save(MainActivity.email, chiTietPhong));
+                } else {
+                    saveDao.delete(new Save(MainActivity.email, chiTietPhong));
+                }
             }
         });
+
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -156,7 +183,55 @@ public class ChiTietPhongHomeFragment extends Fragment {
         xem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final Dialog dialog1 = new Dialog(getActivity());
+                dialog1.setContentView(R.layout.fragment_show_user);
+//                dialog1.setCancelable(true);
+                Window window = dialog1.getWindow();
+                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                if (dialog1 != null && dialog1.getWindow() != null) {
+                    dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                }
+                FullUser userChuThue = chiTietPhong.getFullUser();
+                ImageView ivQR, ivAvt;
+                EditText name, email, birthday, phone, address, cmndUser;
+                Button btnDong;
 
+                ivQR = dialog1.findViewById(R.id.ivQRUser);
+                ivAvt = dialog1.findViewById(R.id.ivAvatar);
+
+                btnDong = dialog1.findViewById(R.id.btnUpdateUser);
+
+                name = dialog1.findViewById(R.id.tvFullName);
+                cmndUser = dialog1.findViewById(R.id.tvCmnd);
+                email = dialog1.findViewById(R.id.tvEmail);
+                birthday = dialog1.findViewById(R.id.tvBirthday);
+                phone = dialog1.findViewById(R.id.tvPhone);
+                address = dialog1.findViewById(R.id.tvAddress);
+                if (!userChuThue.getLinkImage().isEmpty()) {
+                    Picasso.with(getContext()).load(userChuThue.getLinkImage()).into(ivAvt);
+                }
+                name.setText(userChuThue.getUserName());
+                cmndUser.setText(userChuThue.getCmndUser());
+                email.setText(userChuThue.getEmailUser());
+                birthday.setText(userChuThue.getBirtdayUser());
+                phone.setText(userChuThue.getPhoneUser());
+                address.setText(userChuThue.getAddressUser());
+                btnDong.setText("Đóng");
+                btnDong.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog1.dismiss();
+                    }
+                });
+
+                name.setFocusable(false);
+                cmndUser.setFocusable(false);
+                email.setFocusable(false);
+                birthday.setFocusable(false);
+                phone.setFocusable(false);
+                address.setFocusable(false);
+
+                dialog1.show();
             }
         });
 
@@ -479,5 +554,21 @@ public class ChiTietPhongHomeFragment extends Fragment {
 
         //Khi ấn nút đặt
         dialog.show();
+    }
+
+    public static void setsave() {
+        Boolean check = false;
+        for (int i = 0; i < modelsave.size(); i++) {
+            if (idPhong.equalsIgnoreCase(modelsave.get(i).getChiTietPhong().getIdPhong())) {
+                check = true;
+                break;
+            }
+        }
+
+        if (check) {
+            save.setChecked(true);
+        } else {
+            save.setChecked(false);
+        }
     }
 }
