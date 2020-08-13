@@ -2,6 +2,8 @@ package com.duan.travelshare.firebasedao;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -43,7 +45,6 @@ public class ThongBaoDao {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                try {
                     if (dataSnapshot.exists()) {
                         list.clear();
                         Iterable<DataSnapshot> dataSnapshotIterable = dataSnapshot.getChildren();
@@ -51,17 +52,16 @@ public class ThongBaoDao {
                         while (iterator.hasNext()) {
                             DataSnapshot next = (DataSnapshot) iterator.next();
                             ThongBao nd = next.getValue(ThongBao.class);
+                            list.add(nd);
 //                            Thông báo cho chủ thuê biết đang có đơn hàng cần xác nhận
-                            if (email.equalsIgnoreCase(nd.getGiaoDich().getChiTietPhong().getFullUser().getEmailUser())) {
-                                list.add(nd);
+                            if (email.equalsIgnoreCase(nd.getGiaoDich().getChiTietPhong().getFullUser().getEmailUser()) ||
+                                    email.equalsIgnoreCase(nd.getGiaoDich().getFullUser().getEmailUser())) {
+                                Log.i("TAG", "subi: 0+" + list.size());
                             }
+                            //Khi đủ list sẽ notify
+                            ThongBaoFragment.thongBaoAdapter.notifyDataSetChanged();
                         }
-                        //Khi đủ list sẽ notify
-                        ThongBaoFragment.thongBaoAdapter.notifyDataSetChanged();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
 
             @Override
@@ -89,7 +89,7 @@ public class ThongBaoDao {
     }
 
     //    Cập nhật Phòng
-    public boolean updateTT(final String idPhong, final int id) {
+    public boolean updateTT(final String idPhong, final String id) {
         check = false;
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -97,7 +97,7 @@ public class ThongBaoDao {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     if (data.child("giaoDich").child("chiTietPhong").child("idPhong").getValue(String.class).equalsIgnoreCase(idPhong)) {
                         key = data.getKey();
-                        reference.child(key).child("giaoDich").child("trangThai").setValue(id + "");
+                        reference.child(key).child("giaoDich").child("trangThai").setValue(id);
                         check = true;
                         break;
                     }

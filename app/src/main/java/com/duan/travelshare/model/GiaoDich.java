@@ -7,12 +7,12 @@ public class GiaoDich implements Serializable {
     private FullUser fullUser;
     private String hoTen, cmnd;
     private String tuTime, tuNgay, denTime, denNgay, ghiChu;
-    private int trangThai;
+    private String trangThai;
     //0 là đang xác nhận, 1 là đã xác nhận, 2 là hủy;
     public GiaoDich() {
     }
 
-    public GiaoDich(ChiTietPhong chiTietPhong, FullUser fullUser, String hoTen, String cmnd, String tuTime, String tuNgay, String denTime, String denNgay, String ghiChu, int trangThai) {
+    public GiaoDich(ChiTietPhong chiTietPhong, FullUser fullUser, String hoTen, String cmnd, String tuTime, String tuNgay, String denTime, String denNgay, String ghiChu, String trangThai) {
         this.chiTietPhong = chiTietPhong;
         this.fullUser = fullUser;
         this.hoTen = hoTen;
@@ -97,11 +97,11 @@ public class GiaoDich implements Serializable {
         this.ghiChu = ghiChu;
     }
 
-    public int getTrangThai() {
+    public String getTrangThai() {
         return trangThai;
     }
 
-    public void setTrangThai(int trangThai) {
+    public void setTrangThai(String trangThai) {
         this.trangThai = trangThai;
     }
 }

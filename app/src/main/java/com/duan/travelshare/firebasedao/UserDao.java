@@ -103,7 +103,6 @@ public class UserDao {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isComplete()) {
-                    showDialog.show("Đăng ký thành công!");
                     return;
                 }
             }
