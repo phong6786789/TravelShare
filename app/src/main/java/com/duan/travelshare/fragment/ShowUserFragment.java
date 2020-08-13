@@ -44,6 +44,11 @@ import com.duan.travelshare.model.FullUser;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -62,7 +67,7 @@ public class ShowUserFragment extends Fragment {
     private Button btnUpdate;
     static EditText name, cmnd, email, birthday, phone, address;
     private String namex, cmndx, emailx, birthdayx, phonex, addressx, link;
-    private FullUser u;
+    public static FullUser listFull = new FullUser();
 
     //Xin quyền chụp ảnh
     Uri image_uri;
@@ -74,6 +79,9 @@ public class ShowUserFragment extends Fragment {
     private static final int IMAGE_PICK_CAMERA_CODE = 500;
     private String[] cameraPermission;
     private String[] storagePermission;
+    private View view;
+    private String emailUser = MainActivity.emailUser;
+    private ImageView back;
 
     public ShowUserFragment() {
         // Required empty public constructor
@@ -86,14 +94,15 @@ public class ShowUserFragment extends Fragment {
 
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_show_user, container, false);
+        view = inflater.inflate(R.layout.fragment_show_user, container, false);
+        init();
         MainActivity.navigation.setVisibility(View.GONE);
         //Khi ấn nút back
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         TextView title = toolbar.findViewById(R.id.tbTitle);
-        ImageView back = toolbar.findViewById(R.id.tbBack);
+        back = toolbar.findViewById(R.id.tbBack);
         title.setText("THÔNG TIN TÀI KHOẢN");
-        back.setVisibility(View.VISIBLE);
+        checkFullUser();
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,19 +120,6 @@ public class ShowUserFragment extends Fragment {
         userDao = new UserDao(getActivity());
         ivAvatar = view.findViewById(R.id.ivAvatar);
         //Đổ dữ liệu
-        u = UserFragment.list;
-
-        //Hiển thị thông tin lên
-        name = view.findViewById(R.id.tvFullName);
-        cmnd = view.findViewById(R.id.tvCmnd);
-        email = view.findViewById(R.id.tvEmail);
-        birthday = view.findViewById(R.id.tvBirthday);
-        phone = view.findViewById(R.id.tvPhone);
-        address = view.findViewById(R.id.tvAddress);
-        btnUpdate = view.findViewById(R.id.btnUpdateUser);
-
-        //storage firebase
-        storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://truyen-60710.appspot.com");
 
 
         //Ẩn edit email
@@ -152,9 +148,6 @@ public class ShowUserFragment extends Fragment {
                 datePickerDialog.show();
             }
         });
-
-        //Set user
-        setUser();
 
 
         //Khai báo xin quyền
@@ -186,26 +179,27 @@ public class ShowUserFragment extends Fragment {
         return view;
     }
 
-
-
-
-
-
     //Set info lên user
     public void setUser() {
+        if (listFull.getCmndUser().isEmpty()) {
+            back.setVisibility(View.INVISIBLE);
+        } else {
+            back.setVisibility(View.VISIBLE);
+        }
         if (MainActivity.position != -1) {
-            name.setText(u.getUserName());
-            cmnd.setText(u.getCmndUser());
-            email.setText(u.getEmailUser());
-            birthday.setText(u.getBirtdayUser());
-            phone.setText(u.getPhoneUser());
-            address.setText(u.getAddressUser());
-            if (!u.getLinkImage().matches("")) {
-                Picasso.with(getContext()).load(u.getLinkImage()).into(ivAvatar);
-                image_uri = Uri.parse(u.getLinkImage());
+            name.setText(listFull.getUserName());
+            cmnd.setText(listFull.getCmndUser());
+            email.setText(listFull.getEmailUser());
+            birthday.setText(listFull.getBirtdayUser());
+            phone.setText(listFull.getPhoneUser());
+            address.setText(listFull.getAddressUser());
+            if (!listFull.getLinkImage().matches("")) {
+                Picasso.with(getContext()).load(listFull.getLinkImage()).into(ivAvatar);
+                image_uri = Uri.parse(listFull.getLinkImage());
             }
         }
     }
+
     private void checkForm() {
         if (image_uri == null) {
             showDialog.show("Vui lòng thêm ảnh đại diện!");
@@ -219,8 +213,8 @@ public class ShowUserFragment extends Fragment {
             showDialog.show("Vui lòng nhập đúng số điện thoại!");
         } else if (addressx.length() < 10) {
             showDialog.show("Vui lòng nhập đầy đủ địa chỉ!");
-        } else if (u.getLinkImage().equalsIgnoreCase(image_uri.toString())) {
-            FullUser fullUser = new FullUser(namex, cmndx, emailx, birthdayx, phonex, addressx, u.getLinkImage());
+        } else if (listFull.getLinkImage().equalsIgnoreCase(image_uri.toString())) {
+            FullUser fullUser = new FullUser(namex, cmndx, emailx, birthdayx, phonex, addressx, listFull.getLinkImage());
             fullUserDao.updateUser(fullUser);
             progressDialog.dismiss();
             showDialog.show("Cập nhật thành công!");
@@ -346,7 +340,7 @@ public class ShowUserFragment extends Fragment {
     private void insertImage(Uri uri) {
         progressDialog.show();
         progressDialog.setMessage("Đang cập nhật...");
-        final String filePathAndName = "image_" + u.getEmailUser();
+        final String filePathAndName = "image_" + listFull.getEmailUser();
         storageReference.child(filePathAndName).putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -357,7 +351,9 @@ public class ShowUserFragment extends Fragment {
                     FullUser fullUser = new FullUser(namex, cmndx, emailx, birthdayx, phonex, addressx, dowloadUri.toString());
                     fullUserDao.updateUser(fullUser);
                     progressDialog.dismiss();
+
                     showDialog.show("Cập nhật thành công!");
+                    back.setVisibility(View.VISIBLE);
                 } else {
                     progressDialog.dismiss();
                     showDialog.show("Cập nhật thất bại!");
@@ -371,5 +367,45 @@ public class ShowUserFragment extends Fragment {
         });
     }
 
+    public void checkFullUser() {
+        //Lấy dữ liệu User
+        Query query = FirebaseDatabase.getInstance().getReference("FullUser").orderByChild("emailUser").equalTo(emailUser);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String userName, cmndUser, emailUser, birtdayUser, phoneUser, addressUser, linkImage;
+                    userName = "" + ds.child("userName").getValue();
+                    cmndUser = "" + ds.child("cmndUser").getValue();
+                    emailUser = "" + ds.child("emailUser").getValue();
+                    birtdayUser = "" + ds.child("birtdayUser").getValue();
+                    phoneUser = "" + ds.child("phoneUser").getValue();
+                    addressUser = "" + ds.child("addressUser").getValue();
+                    linkImage = "" + ds.child("linkImage").getValue();
+                    listFull = new FullUser(userName, cmndUser, emailUser, birtdayUser, phoneUser, addressUser, linkImage);
+                }
+                setUser();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void init() {
+        //Hiển thị thông tin lên
+        name = view.findViewById(R.id.tvFullName);
+        cmnd = view.findViewById(R.id.tvCmnd);
+        email = view.findViewById(R.id.tvEmail);
+        birthday = view.findViewById(R.id.tvBirthday);
+        phone = view.findViewById(R.id.tvPhone);
+        address = view.findViewById(R.id.tvAddress);
+        btnUpdate = view.findViewById(R.id.btnUpdateUser);
+        //storage firebase
+        storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://truyen-60710.appspot.com");
+    }
 
 }

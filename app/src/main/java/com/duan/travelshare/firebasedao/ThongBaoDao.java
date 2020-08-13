@@ -38,7 +38,7 @@ public class ThongBaoDao {
     }
 
     //Lấy toàn bộ phòng
-    public ArrayList<ThongBao> getAll() {
+    public ArrayList<ThongBao> getAll(final String email) {
         final ArrayList<ThongBao> list = new ArrayList<>();
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -51,7 +51,10 @@ public class ThongBaoDao {
                         while (iterator.hasNext()) {
                             DataSnapshot next = (DataSnapshot) iterator.next();
                             ThongBao nd = next.getValue(ThongBao.class);
-                            list.add(nd);
+//                            Thông báo cho chủ thuê biết đang có đơn hàng cần xác nhận
+                            if (email.equalsIgnoreCase(nd.getGiaoDich().getChiTietPhong().getFullUser().getEmailUser())) {
+                                list.add(nd);
+                            }
                         }
                         //Khi đủ list sẽ notify
                         ThongBaoFragment.thongBaoAdapter.notifyDataSetChanged();
@@ -85,28 +88,28 @@ public class ThongBaoDao {
         });
     }
 
-    //Cập nhật Phòng
-//    public boolean updatePhong(final ThongBao giaoDich, final int id) {
-//        check = false;
-//        reference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for (DataSnapshot data : dataSnapshot.getChildren()) {
-//                    if (data.child("chiTietPhong").child("idPhong").getValue(String.class).equalsIgnoreCase(giaoDich.getChiTietPhong().getIdPhong())) {
-//                        key = data.getKey();
-//                        reference.child(key).child("trangThai").setValue(id + "");
-//                        check = true;
-//                        break;
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//                check = false;
-//            }
-//        });
-//        return check;
-//    }
+    //    Cập nhật Phòng
+    public boolean updateTT(final String idPhong, final int id) {
+        check = false;
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    if (data.child("giaoDich").child("chiTietPhong").child("idPhong").getValue(String.class).equalsIgnoreCase(idPhong)) {
+                        key = data.getKey();
+                        reference.child(key).child("giaoDich").child("trangThai").setValue(id + "");
+                        check = true;
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                check = false;
+            }
+        });
+        return check;
+    }
 
 }

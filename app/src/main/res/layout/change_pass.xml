@@ -25,17 +25,18 @@
         android:textStyle="bold" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="8dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_below="@+id/edtRegUser"
         app:passwordToggleEnabled="true">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:drawablePadding="10dp"
             android:id="@+id/edtOldPassword"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="fill_parent"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:background="@drawable/border"
@@ -48,17 +49,18 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/pass"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="8dp"
         android:layout_width="fill_parent"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_height="wrap_content"
         android:layout_below="@+id/edtRegUser"
         app:passwordToggleEnabled="true">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:drawablePadding="10dp"
             android:id="@+id/edtPasswordNew"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="fill_parent"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:background="@drawable/border"
@@ -75,14 +77,15 @@
         android:drawablePadding="10dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_below="@+id/pass"
         app:passwordToggleEnabled="true">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:drawablePadding="10dp"
             android:id="@+id/edtPasswordNew2"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="fill_parent"
             android:layout_below="@+id/pass"
             android:background="@drawable/border"
             android:drawableStart="@drawable/pass"

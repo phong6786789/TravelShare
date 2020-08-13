@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.duan.travelshare.R;
 import com.duan.travelshare.firebasedao.GiaoDichDao;
 import com.duan.travelshare.firebasedao.PhongDao;
+import com.duan.travelshare.firebasedao.ThongBaoDao;
 import com.duan.travelshare.fragment.ShowDialog;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.GiaoDich;
@@ -33,6 +34,7 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
     GiaoDichDao giaoDichDao;
     GiaoDich listP;
     ShowDialog showDialog;
+    ThongBaoDao thongBaoDao;
 
     public TongGiaoDichdapter(List<GiaoDich> list, Context context) {
         this.list = list;
@@ -40,6 +42,7 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
         phongDao = new PhongDao(context);
         giaoDichDao = new GiaoDichDao(context);
         showDialog = new ShowDialog((Activity) context);
+        thongBaoDao = new ThongBaoDao(context);
     }
 
     @NonNull
@@ -108,7 +111,7 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
             ImageView phong;
             TextView tenP, giaP, hten, cmnd, tu, den, ghichu, trangThai;
             LinearLayout erro, lnButton;
-            Button ok, huy;
+            final Button ok, huy, dong;
 
             phong = dialog.findViewById(R.id.ivimgPhongGG);
             tenP = dialog.findViewById(R.id.tvTenPhongGG);
@@ -123,7 +126,7 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
             lnButton = dialog.findViewById(R.id.lnXacNhan);
             ok = dialog.findViewById(R.id.btnOkGG);
             huy = dialog.findViewById(R.id.btnCancleGG);
-
+            dong = dialog.findViewById(R.id.btnDongGD);
             if (!listP.getChiTietPhong().getImgPhong().isEmpty()) {
                 Picasso.with(context).load(listP.getChiTietPhong().getImgPhong().get(0)).into(phong);
             }
@@ -136,12 +139,20 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
             ghichu.setText(listP.getGhiChu());
             switch (listP.getTrangThai()) {
                 case 0:
-                    trangThai.setText("ĐANG XÁC NHẬN");
+                    ok.setVisibility(View.VISIBLE);
+                    huy.setVisibility(View.VISIBLE);
+                    trangThai.setText("CHỜ XÁC NHẬN");
                     break;
                 case 1:
+                    dong.setVisibility(View.VISIBLE);
+                    ok.setVisibility(View.GONE);
+                    huy.setVisibility(View.GONE);
                     trangThai.setText("ĐÃ XÁC NHẬN");
                     break;
                 case 2:
+                    dong.setVisibility(View.VISIBLE);
+                    ok.setVisibility(View.GONE);
+                    huy.setVisibility(View.GONE);
                     trangThai.setText("ĐÃ HỦY");
                     break;
             }
@@ -150,8 +161,12 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
             ok.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    giaoDichDao.updatePhong(listP, 1);
-                    dialog.dismiss();
+                    thongBaoDao.updateTT(listP.getChiTietPhong().getIdPhong(), 1);
+                    listP.setTrangThai(1);
+                    giaoDichDao.updateTrangThai(listP);
+                    dong.setVisibility(View.VISIBLE);
+                    ok.setVisibility(View.GONE);
+                    huy.setVisibility(View.GONE);
                 }
 
             });
@@ -159,7 +174,17 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
             huy.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    giaoDichDao.updatePhong(listP, 2);
+                    thongBaoDao.updateTT(listP.getChiTietPhong().getIdPhong(), 2);
+                    listP.setTrangThai(2);
+                    giaoDichDao.updateTrangThai(listP);
+                    dong.setVisibility(View.VISIBLE);
+                    ok.setVisibility(View.GONE);
+                    huy.setVisibility(View.GONE);
+                }
+            });
+            dong.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
                     dialog.dismiss();
                 }
             });

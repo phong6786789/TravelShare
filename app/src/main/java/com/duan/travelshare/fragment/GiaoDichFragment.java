@@ -35,7 +35,7 @@ import java.util.Iterator;
 
 public class GiaoDichFragment extends Fragment {
     private GiaoDichDao giaoDichDao;
-    public static ArrayList<GiaoDich> list;
+    public static ArrayList<GiaoDich> list = new ArrayList<>();
     public static ArrayList<GiaoDich> listDangGG = new ArrayList<>();
     public static ArrayList<GiaoDich> lisTongGG = new ArrayList<>();
     private RecyclerView DangGG, TongGG;
@@ -84,43 +84,34 @@ public class GiaoDichFragment extends Fragment {
 
 
     public static void locGiaoDich() {
-        if (list.isEmpty()) {
-            lnTongGG.setVisibility(View.GONE);
-            lnDangGG.setVisibility(View.GONE);
-        } else {
-            listDangGG.clear();
-            lisTongGG.clear();
-            String email = MainActivity.emailUser;
-            for (int i = 0; i < list.size(); i++) {
-                String emailUser = list.get(i).getFullUser().getEmailUser();
-                if (emailUser.equalsIgnoreCase(email)) {
-                    listDangGG.add(list.get(i));
-                    Log.i("TAG", "email của người đặt: " + emailUser);
-                    khachGiaoDichAdapter.notifyDataSetChanged();
-                    break;
-                }
+        listDangGG.clear();
+        lisTongGG.clear();
+        String email = MainActivity.emailUser;
+        for (int i = 0; i < list.size(); i++) {
+            String emailUser = list.get(i).getFullUser().getEmailUser();
+            if (emailUser.equalsIgnoreCase(email)) {
+                listDangGG.add(list.get(i));
+                Log.i("TAG", "email của người đặt: " + emailUser);
+                khachGiaoDichAdapter.notifyDataSetChanged();
+                break;
             }
+        }
 
-            for (int i = 0; i < list.size(); i++) {
-                String emailChu = list.get(i).getChiTietPhong().getFullUser().getEmailUser();
+        for (int i = 0; i < list.size(); i++) {
+            String emailChu = list.get(i).getChiTietPhong().getFullUser().getEmailUser();
 
-                if (emailChu.equalsIgnoreCase(email)) {
-                    lisTongGG.add(list.get(i));
-                    Log.i("TAG", "email của chủ: " + emailChu);
-                    tongGiaoDichdapter.notifyDataSetChanged();
-                }
+            if (emailChu.equalsIgnoreCase(email)) {
+                lisTongGG.add(list.get(i));
+                Log.i("TAG", "email của chủ: " + emailChu);
+                tongGiaoDichdapter.notifyDataSetChanged();
             }
+        }
 
-            if (listDangGG.isEmpty()) {
-                lnDangGG.setVisibility(View.GONE);
-            } else {
-                lnDangGG.setVisibility(View.VISIBLE);
-            }
-            if (lisTongGG.isEmpty()) {
-                lnTongGG.setVisibility(View.GONE);
-            } else {
-                lnTongGG.setVisibility(View.VISIBLE);
-            }
+        if (!listDangGG.isEmpty()) {
+            lnDangGG.setVisibility(View.VISIBLE);
+        }
+        if (!lisTongGG.isEmpty()) {
+            lnTongGG.setVisibility(View.VISIBLE);
         }
     }
 }

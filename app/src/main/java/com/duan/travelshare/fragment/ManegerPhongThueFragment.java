@@ -215,29 +215,26 @@ public class ManegerPhongThueFragment extends Fragment {
             }
         });
 
-
         btnThem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final FullUser user = MainActivity.fullUserOne;
                 final String ten = tenPhong.getText().toString();
                 final String gia = giaPhong.getText().toString();
                 final String dc = diaChi.getText().toString();
                 final String mot = moTa.getText().toString();
-//                showDialog.show();(listHinh.size()+"");
                 progressDialog.show();
                 progressDialog.setMessage("Đang cập nhật...");
 
                 //Đổ listHinh vào
-                if(!listHinh.isEmpty()){
-                    for(int i=0;i<listHinh.size();i++){
+                if (!listHinh.isEmpty()) {
+                    for (int i = 0; i < listHinh.size(); i++) {
                         listHinhPhong.add(listHinh.get(i).getLinkHinh());
                     }
                 }
 
                 for (int i = 0; i < listHinhPhong.size(); i++) {
                     Uri IndividualImage = listHinhPhong.get(i);
-                    storageReference.child(key+"h"+(i+1)).putFile(IndividualImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    storageReference.child(key + "h" + (i + 1)).putFile(IndividualImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
@@ -248,7 +245,7 @@ public class ManegerPhongThueFragment extends Fragment {
                             if (uriTask.isSuccessful()) {
                                 listImageFireBase.add(String.valueOf(dowloadUri));
                                 if (listImageFireBase.size() == listHinhPhong.size()) {
-                                    ChiTietPhong chiTietPhong = new ChiTietPhong(key, ten, gia, dc, mot, listImageFireBase, user);
+                                    ChiTietPhong chiTietPhong = new ChiTietPhong(key, ten, gia, dc, mot, listImageFireBase, UserFragment.list);
                                     //Thêm phòng
                                     phongDao.insertPhong(chiTietPhong);
                                     progressDialog.dismiss();
@@ -422,7 +419,7 @@ public class ManegerPhongThueFragment extends Fragment {
                         }
                     }
                 }
-                if(!checkLink){
+                if (!checkLink) {
                     listHinh.add(new HinhPhong("h1", image_uri));
                 }
                 break;
@@ -439,7 +436,7 @@ public class ManegerPhongThueFragment extends Fragment {
                         }
                     }
                 }
-                if(!checkLink){
+                if (!checkLink) {
                     listHinh.add(new HinhPhong("h2", image_uri));
                 }
                 break;
@@ -456,7 +453,7 @@ public class ManegerPhongThueFragment extends Fragment {
                         }
                     }
                 }
-                if(!checkLink){
+                if (!checkLink) {
                     listHinh.add(new HinhPhong("h3", image_uri));
                 }
                 break;

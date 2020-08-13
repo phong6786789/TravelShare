@@ -134,7 +134,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
                 android:text="Nguyễn Thanh Phong"
-                android:textColor="@color/blue"/>
+                android:textColor="@color/blue" />
         </LinearLayout>
 
         <LinearLayout
@@ -202,6 +202,7 @@
                 android:text="12h00 ngày 17/07/2020"
                 android:textColor="@color/blue" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -216,13 +217,13 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:textStyle="bold"
                 android:id="@+id/tvGhiChuGG"
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
                 android:layout_marginLeft="8dp"
                 android:text="12h00 ngày 17/07/2020"
-                android:textColor="@color/red" />
+                android:textColor="@color/red"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 
@@ -232,6 +233,17 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnDongGD"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/blue"
+            android:padding="10dp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:text="ĐÓNG"
+            android:textColor="@color/bg" />
 
         <Button
             android:id="@+id/btnOkGG"

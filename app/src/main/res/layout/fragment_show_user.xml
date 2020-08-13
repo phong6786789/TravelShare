@@ -54,6 +54,7 @@
                             android:textColor="@color/black" />
 
                         <EditText
+                            android:inputType="text"
                             android:id="@+id/tvFullName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -72,6 +73,7 @@
                             android:textColor="@color/black" />
 
                         <EditText
+                            android:inputType="number"
                             android:id="@+id/tvCmnd"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -92,6 +94,7 @@
                             android:textSize="20sp" />
 
                         <EditText
+                            android:inputType="text"
                             android:id="@+id/tvEmail"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -132,6 +135,7 @@
                             android:textSize="20sp" />
 
                         <EditText
+                            android:inputType="number"
                             android:id="@+id/tvPhone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -152,6 +156,7 @@
                             android:textSize="20sp" />
 
                         <EditText
+                            android:inputType="text"
                             android:id="@+id/tvAddress"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

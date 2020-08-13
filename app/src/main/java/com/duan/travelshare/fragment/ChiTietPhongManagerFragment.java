@@ -315,7 +315,7 @@ public class ChiTietPhongManagerFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Dialog dialog=new Dialog(getActivity());
-                dialog.setContentView(R.layout.dialog_callphone);
+                dialog.setContentView(R.layout.call);
                 dialog.setCancelable(true);
                 TextView phone=dialog.findViewById(R.id.number);
                 //  phone.setText("0962280703");

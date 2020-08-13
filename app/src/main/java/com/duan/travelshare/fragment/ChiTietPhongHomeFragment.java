@@ -83,8 +83,9 @@ public class ChiTietPhongHomeFragment extends Fragment {
     private GiaoDichDao giaoDichDao;
     ShowDialog showDialog;
     private FullUser fullUser = MainActivity.fullUserOne;
-    private int  mHour, mMinute;
+    private int mHour, mMinute;
     ThongBaoDao thongBaoDao;
+
     public ChiTietPhongHomeFragment() {
         // Required empty public constructor
     }
@@ -226,7 +227,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
         datPhong.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (chiTietPhong.getFullUser().getEmailUser().matches(fullUser.getEmailUser())) {
+                if (emailUser.getText().toString().equalsIgnoreCase(fullUser.getEmailUser())) {
                     showDialog.show("Bạn không thể đặt phòng của chính bạn!");
                 } else {
                     datPhong();
@@ -501,7 +502,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
             public void onClick(View view) {
                 //Check email
 
-                String ten, cm, tu, den, ghi,time1, time2;
+                String ten, cm, tu, den, ghi, time1, time2;
                 ten = hoten.getText().toString();
                 cm = cmnd.getText().toString();
                 tu = tungay.getText().toString();
