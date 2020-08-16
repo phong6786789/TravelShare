@@ -24,6 +24,7 @@ import com.duan.travelshare.adapter.TongGiaoDichdapter;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.GiaoDich;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,7 +47,7 @@ public class GiaoDichFragment extends Fragment {
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference databaseReferencePhong = firebaseDatabase.getReference("Phong");
     DatabaseReference databaseReferenceGD = firebaseDatabase.getReference("GiaoDich");
-
+    ShimmerFrameLayout container;
     String uID;
     private FirebaseAuth mAuth;
     FullUser fullUser;
@@ -90,6 +91,8 @@ public class GiaoDichFragment extends Fragment {
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getActivity());
         linearLayoutManager2.setOrientation(LinearLayoutManager.VERTICAL);
         TongGG.setLayoutManager(linearLayoutManager2);
+        container = (ShimmerFrameLayout) view.findViewById(R.id.shimmer_GD);
+        container.startShimmerAnimation();
     }
 
 
@@ -138,6 +141,7 @@ public class GiaoDichFragment extends Fragment {
                     GiaoDich gd = postSnapshot.getValue(GiaoDich.class);
                     list.add(gd);
                 }
+                container.setVisibility(View.GONE);
                 locGiaoDich();
             }
 

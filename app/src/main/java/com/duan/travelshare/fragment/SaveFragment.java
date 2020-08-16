@@ -23,6 +23,7 @@ import com.duan.travelshare.R;
 import com.duan.travelshare.adapter.SaveAdapter;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.Save;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,7 +42,7 @@ public class SaveFragment extends Fragment {
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference databaseReferenceSave = firebaseDatabase.getReference("Save");
     private FirebaseAuth mAuth;
-
+    ShimmerFrameLayout containerx;
     public SaveFragment() {
     }
 
@@ -50,6 +51,8 @@ public class SaveFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         //Toolbar
+        containerx = (ShimmerFrameLayout) view.findViewById(R.id.shimmer_view_container);
+        containerx.startShimmerAnimation();
         mAuth = FirebaseAuth.getInstance();
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         TextView title = toolbar.findViewById(R.id.tbTitle);
@@ -113,6 +116,7 @@ public class SaveFragment extends Fragment {
                     Save s = postSnapshot.getValue(Save.class);
                     list.add(s);
                 }
+                containerx.setVisibility(View.GONE);
                 saveAdapter.notifyDataSetChanged();
             }
 

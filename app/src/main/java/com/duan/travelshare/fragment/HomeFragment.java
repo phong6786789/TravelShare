@@ -40,6 +40,7 @@ import com.duan.travelshare.model.User;
 import com.duan.travelshare.notification.Data;
 import com.duan.travelshare.notification.Sender;
 import com.duan.travelshare.notification.Token;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -53,11 +54,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.facebook.FacebookSdk.getCacheDir;
 
 public class HomeFragment extends Fragment {
     RecyclerView rcvPhong;
@@ -76,8 +75,7 @@ public class HomeFragment extends Fragment {
     String uID;
     LinearLayout map;
     private View view;
-    RequestQueue requestQueue;
-
+    ShimmerFrameLayout container;
     public HomeFragment() {
     }
 
@@ -111,6 +109,9 @@ public class HomeFragment extends Fragment {
         title.setText("TRANG CHỦ");
         back.setVisibility(View.INVISIBLE);
         showDialog = new ShowDialog(getActivity());
+
+        container = (ShimmerFrameLayout) view.findViewById(R.id.shimmer_view_container);
+        container.startShimmerAnimation();
 
 
         //Tìm kiếm
@@ -153,6 +154,7 @@ public class HomeFragment extends Fragment {
                     ChiTietPhong chiTietPhong = postSnapshot.getValue(ChiTietPhong.class);
                     list.add(chiTietPhong);
                 }
+                container.setVisibility(View.GONE);
                 phongAdapter.notifyDataSetChanged();
             }
 

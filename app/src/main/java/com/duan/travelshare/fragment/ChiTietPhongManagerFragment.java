@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -32,13 +33,16 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
+import com.duan.travelshare.adapter.ImageSlide;
 import com.duan.travelshare.firebasedao.PhongDao;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.HinhPhong;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -61,7 +65,7 @@ import java.util.UUID;
 import static android.app.Activity.RESULT_OK;
 
 public class ChiTietPhongManagerFragment extends Fragment {
-    private ImageView phong, user, call, messenger;
+    private ImageView user, call, messenger;
     ToggleButton save;
     private LinearLayout star;
     private TextView tenPhong, giaPhong, tenUser, emailUser, moTa;
@@ -93,6 +97,9 @@ public class ChiTietPhongManagerFragment extends Fragment {
     private FullUser fullUser;
     private ChiTietPhong chiTietPhong;
     private View view;
+    ShimmerFrameLayout container;
+    RelativeLayout chitiet;
+    ViewPager viewPager;
 
     public ChiTietPhongManagerFragment() {
         // Required empty public constructor
@@ -232,7 +239,7 @@ public class ChiTietPhongManagerFragment extends Fragment {
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             databaseReferencePhong.child(key).setValue(ctPhong);
                                             showDialog.show("Cập nhật phòng thành công!");
-                                            Picasso.with(getActivity()).load(listImageFireBase.get(0)).into(phong);
+                                            setViewPager();
                                             progressDialog.dismiss();
                                         }
 
@@ -259,7 +266,7 @@ public class ChiTietPhongManagerFragment extends Fragment {
                                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                         databaseReferencePhong.child(key).setValue(ctPhong);
                                                         showDialog.show("Cập nhật phòng thành công!");
-                                                        Picasso.with(getActivity()).load(listImageFireBase.get(0)).into(phong);
+                                                        setViewPager();
                                                         progressDialog.dismiss();
                                                     }
 
@@ -342,11 +349,14 @@ public class ChiTietPhongManagerFragment extends Fragment {
     }
 
     private void init() {
+        chitiet = view.findViewById(R.id.layouChiTiet);
+        container = (ShimmerFrameLayout) view.findViewById(R.id.scrimer_CTP);
+        container.startShimmerAnimation();
         MainActivity.navigation.setVisibility(View.GONE);
         showDialog = new ShowDialog(getActivity());
         //Khai báo
         progressDialog = new ProgressDialog(getActivity());
-        phong = view.findViewById(R.id.ivPhong);
+        viewPager = view.findViewById(R.id.viewPager);
         user = view.findViewById(R.id.ivUser);
         save = view.findViewById(R.id.ivSave);
         call = view.findViewById(R.id.ivCall);
@@ -542,12 +552,10 @@ public class ChiTietPhongManagerFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 fullUser = snapshot.getValue(FullUser.class);
                 if (!chiTietPhong.getImgPhong().get(0).isEmpty()) {
-                    Picasso.with(getActivity()).load(chiTietPhong.getImgPhong().get(0)).into(phong);
-                } else {
-                    phong.setImageResource(R.drawable.phongtro);
+                    setViewPager();
                 }
                 tenPhong.setText(chiTietPhong.getTenPhong());
-                giaPhong.setText(fm.format(Integer.parseInt(chiTietPhong.getGiaPhong()))+"/ngày");
+                giaPhong.setText(fm.format(Integer.parseInt(chiTietPhong.getGiaPhong())) + "/ngày");
                 moTa.setText(chiTietPhong.getMoTaPhong());
 
                 //Set cho tài khoản chủ
@@ -557,11 +565,73 @@ public class ChiTietPhongManagerFragment extends Fragment {
                 tenUser.setText(fullUser.getUserName());
                 emailUser.setText(fullUser.getEmailUser());
 
-
+                container.setVisibility(View.GONE);
+                chitiet.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void setViewPager() {
+        final int size = chiTietPhong.getImgPhong().size();
+        LinearLayout pager_indicator  = view.findViewById(R.id.viewPagerCountDots);
+        viewPager = view.findViewById(R.id.viewPager);
+        ArrayList<String> listImage = chiTietPhong.getImgPhong();
+        ImageSlide imageSlide = new ImageSlide(getActivity(), listImage);
+        viewPager.setAdapter(imageSlide);
+        viewPager.setCurrentItem(0);
+        final ImageView dots[] = new ImageView[size];
+        for(int i=0;i<size;i++){
+            dots[i] = new ImageView(getActivity());
+            dots[i].setImageDrawable(getResources().getDrawable(R.drawable.default_dot));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+
+            params.setMargins(6, 0, 6, 0);
+
+            final int presentPosition = i;
+            dots[presentPosition].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    viewPager.setCurrentItem(presentPosition);
+
+                }
+            });
+
+            pager_indicator.addView(dots[i], params);
+        }
+
+        dots[0].setImageDrawable(getResources().getDrawable(R.drawable.selected_dot));
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                for (int i = 0; i <size; i++) {
+                    dots[i].setImageDrawable(getResources().getDrawable(R.drawable.default_dot));
+                }
+
+                dots[position].setImageDrawable(getResources().getDrawable(R.drawable.selected_dot));
+
+                if (position + 1 == size) {
+
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
 
             }
         });

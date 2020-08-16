@@ -83,6 +83,7 @@ public class PhongHomeAdapter extends RecyclerView.Adapter<PhongHomeAdapter.View
             ChiTietPhong listP = list.get(position);
             ChiTietPhongHomeFragment chiTietPhong = new ChiTietPhongHomeFragment();
             Bundle bundle = new Bundle();
+            bundle.putString("from","home");
             bundle.putSerializable("list", listP);
             chiTietPhong.setArguments(bundle);
 

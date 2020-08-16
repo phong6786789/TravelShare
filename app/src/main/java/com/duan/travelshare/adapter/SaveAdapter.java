@@ -108,6 +108,7 @@ public class SaveAdapter extends RecyclerView.Adapter<SaveAdapter.ViewHolder> {
 
             Bundle bundle = new Bundle();
             bundle.putSerializable("list", chiTietPhong);
+            bundle.putString("from","save");
             Save.setArguments(bundle);
 
             FragmentManager fragmentManager = ((AppCompatActivity) view.getContext()).getSupportFragmentManager();

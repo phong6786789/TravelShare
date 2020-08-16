@@ -23,6 +23,7 @@ import com.duan.travelshare.firebasedao.ThongBaoDao;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.GiaoDich;
 import com.duan.travelshare.model.ThongBao;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -47,7 +48,7 @@ public class ThongBaoFragment extends Fragment {
     private FirebaseAuth mAuth;
     String uID;
     FirebaseRecyclerAdapter adapterFirebase;
-
+    ShimmerFrameLayout container;
     public ThongBaoFragment() {
         // Required empty public constructor
     }
@@ -77,12 +78,8 @@ public class ThongBaoFragment extends Fragment {
         back.setVisibility(View.INVISIBLE);
 
         recThongBao = view.findViewById(R.id.recThongBao);
-
-//        thongBaoAdapter = new ThongBaoAdapter(listTB, getActivity());
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-//        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-//        recThongBao.setLayoutManager(linearLayoutManager);
-//        recThongBao.setAdapter(thongBaoAdapter);
+        container = (ShimmerFrameLayout) view.findViewById(R.id.shimmer_view_container);
+        container.startShimmerAnimation();
     }
 
     private void getAllTB() {
@@ -113,6 +110,7 @@ public class ThongBaoFragment extends Fragment {
             @Override
             protected void populateViewHolder(ThongBaoAdapter thongBaoAdapter, ThongBao thongBao, int i) {
                 thongBaoAdapter.bindThongBao(thongBao);
+                container.setVisibility(View.GONE);
             }
 
         };

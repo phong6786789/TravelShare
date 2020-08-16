@@ -5,9 +5,33 @@
     android:layout_height="match_parent"
     android:layout_margin="8dp"
     tools:context=".fragment.ThongBaoFragment">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recThongBao"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:orientation="vertical"
+            android:id="@+id/shimmer_view_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <include layout="@layout/srimmer_thongbao"/>
+                <include layout="@layout/srimmer_thongbao"/>
+                <include layout="@layout/srimmer_thongbao"/>
+                <include layout="@layout/srimmer_thongbao"/>
+                <include layout="@layout/srimmer_thongbao"/>
+            </LinearLayout>
+
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recThongBao"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
 </RelativeLayout>
