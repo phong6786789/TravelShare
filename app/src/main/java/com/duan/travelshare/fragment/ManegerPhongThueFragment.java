@@ -47,6 +47,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -62,12 +68,11 @@ public class ManegerPhongThueFragment extends Fragment {
     private PhongDao phongDao;
     ShowDialog showDialog;
     FloatingActionButton btnAddPhongThue;
-    ArrayList<ChiTietPhong> list;
+    ArrayList<ChiTietPhong> list = new ArrayList<>();
     RecyclerView rcvphong;
     public static PhongManagerAdapter chiTietPhongAdapter;
     ArrayList<HinhPhong> listHinh = new ArrayList<>();
     private String key = "";
-    private Boolean check = true;
     private ArrayList<Uri> listHinhPhong = new ArrayList<>();
     private ArrayList<String> listImageFireBase = new ArrayList<>();
 
@@ -85,6 +90,11 @@ public class ManegerPhongThueFragment extends Fragment {
     ImageView h1, h2, h3;
     private EditText textSearch;
     private int chooseImage = 0;
+    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    DatabaseReference databaseReferencePhong = firebaseDatabase.getReference("Phong");
+    private FirebaseAuth mAuth;
+    String uID;
+    private View view;
 
     public ManegerPhongThueFragment() {
 
@@ -94,7 +104,40 @@ public class ManegerPhongThueFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_maneger_phong_thue, container, false);
+        view = inflater.inflate(R.layout.fragment_maneger_phong_thue, container, false);
+        mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() != null) {
+            uID = mAuth.getCurrentUser().getUid();
+        }
+        init();
+
+        //Tìm kiếm
+        textSearch = view.findViewById(R.id.edtSearch);
+        textSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int
+                    count) {
+                System.out.println("Text [" + s + "] - Start [" + start + "] - Before [" + before + "] - Count [" + count + "]");
+                if (count < before) {
+                    chiTietPhongAdapter.resetData();
+                }
+                chiTietPhongAdapter.getFilter().filter(s.toString());
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        return view;
+    }
+
+    private void init() {
         MainActivity.navigation.setVisibility(View.GONE);
         rcvphong = view.findViewById(R.id.rec_MngPhongThue);
         //Khi ấn nút back
@@ -124,50 +167,18 @@ public class ManegerPhongThueFragment extends Fragment {
         });
         storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://truyen-60710.appspot.com");
         progressDialog = new ProgressDialog(getActivity());
-        list = new ArrayList<>();
         phongDao = new PhongDao(getActivity());
-        try {
-            list = phongDao.getUserByEmail(MainActivity.email);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
         chiTietPhongAdapter = new PhongManagerAdapter(list, getActivity());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rcvphong.setLayoutManager(linearLayoutManager);
         rcvphong.setAdapter(chiTietPhongAdapter);
-
-        //Tìm kiếm
-        textSearch = view.findViewById(R.id.edtSearch);
-        textSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int
-                    count) {
-                System.out.println("Text [" + s + "] - Start [" + start + "] - Before [" + before + "] - Count [" + count + "]");
-                if (count < before) {
-                    chiTietPhongAdapter.resetData();
-                }
-                chiTietPhongAdapter.getFilter().filter(s.toString());
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
-        return view;
     }
 
     private void addRoom() {
         listImageFireBase.clear();
         listHinhPhong.clear();
         listHinh.clear();
-        check = true;
         key = phongDao.creatKey();
         camera();
         final Dialog dialog = new Dialog(getActivity());
@@ -245,11 +256,23 @@ public class ManegerPhongThueFragment extends Fragment {
                             if (uriTask.isSuccessful()) {
                                 listImageFireBase.add(String.valueOf(dowloadUri));
                                 if (listImageFireBase.size() == listHinhPhong.size()) {
-                                    ChiTietPhong chiTietPhong = new ChiTietPhong(key, ten, gia, dc, mot, listImageFireBase, UserFragment.list);
+                                    final ChiTietPhong chiTietPhong = new ChiTietPhong(key, ten, gia, dc, mot, listImageFireBase, uID);
                                     //Thêm phòng
-                                    phongDao.insertPhong(chiTietPhong);
-                                    progressDialog.dismiss();
-                                    dialog.dismiss();
+                                    databaseReferencePhong.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            databaseReferencePhong.child(key).setValue(chiTietPhong);
+
+                                            showDialog.show("Thêm phòng thành công!");
+                                            progressDialog.dismiss();
+                                            dialog.dismiss();
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
                                 }
                             } else {
                                 progressDialog.dismiss();
@@ -264,6 +287,8 @@ public class ManegerPhongThueFragment extends Fragment {
                     });
 
                 }
+
+
             }
         });
 
@@ -458,5 +483,27 @@ public class ManegerPhongThueFragment extends Fragment {
                 }
                 break;
         }
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        databaseReferencePhong.orderByChild("uID").equalTo(uID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list.clear();
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    ChiTietPhong chiTietPhong = postSnapshot.getValue(ChiTietPhong.class);
+                    list.add(chiTietPhong);
+                }
+                chiTietPhongAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

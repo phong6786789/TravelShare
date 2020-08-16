@@ -44,8 +44,10 @@ import com.duan.travelshare.model.FullUser;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -67,8 +69,9 @@ public class ShowUserFragment extends Fragment {
     private Button btnUpdate;
     static EditText name, cmnd, email, birthday, phone, address;
     private String namex, cmndx, emailx, birthdayx, phonex, addressx, link;
-    public static FullUser listFull = new FullUser();
-
+    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    DatabaseReference databaseReferenceFull = firebaseDatabase.getReference("FullUser");
+    private FirebaseAuth mAuth;
     //Xin quyền chụp ảnh
     Uri image_uri;
     StorageReference storageReference;
@@ -82,6 +85,8 @@ public class ShowUserFragment extends Fragment {
     private View view;
     private String emailUser = MainActivity.emailUser;
     private ImageView back;
+    String uID;
+    private FullUser fullUser;
 
     public ShowUserFragment() {
         // Required empty public constructor
@@ -95,14 +100,15 @@ public class ShowUserFragment extends Fragment {
 
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_show_user, container, false);
+        mAuth = FirebaseAuth.getInstance();
+
         init();
-        MainActivity.navigation.setVisibility(View.GONE);
-        //Khi ấn nút back
-        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-        TextView title = toolbar.findViewById(R.id.tbTitle);
-        back = toolbar.findViewById(R.id.tbBack);
-        title.setText("THÔNG TIN TÀI KHOẢN");
-        checkFullUser();
+        if (mAuth.getCurrentUser() != null) {
+            uID = mAuth.getCurrentUser().getUid();
+            getAll();
+        }
+
+//        checkFullUser();
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -179,26 +185,6 @@ public class ShowUserFragment extends Fragment {
         return view;
     }
 
-    //Set info lên user
-    public void setUser() {
-        if (listFull.getCmndUser().isEmpty()) {
-            back.setVisibility(View.INVISIBLE);
-        } else {
-            back.setVisibility(View.VISIBLE);
-        }
-        if (MainActivity.position != -1) {
-            name.setText(listFull.getUserName());
-            cmnd.setText(listFull.getCmndUser());
-            email.setText(listFull.getEmailUser());
-            birthday.setText(listFull.getBirtdayUser());
-            phone.setText(listFull.getPhoneUser());
-            address.setText(listFull.getAddressUser());
-            if (!listFull.getLinkImage().matches("")) {
-                Picasso.with(getContext()).load(listFull.getLinkImage()).into(ivAvatar);
-                image_uri = Uri.parse(listFull.getLinkImage());
-            }
-        }
-    }
 
     private void checkForm() {
         if (image_uri == null) {
@@ -213,9 +199,7 @@ public class ShowUserFragment extends Fragment {
             showDialog.show("Vui lòng nhập đúng số điện thoại!");
         } else if (addressx.length() < 10) {
             showDialog.show("Vui lòng nhập đầy đủ địa chỉ!");
-        } else if (listFull.getLinkImage().equalsIgnoreCase(image_uri.toString())) {
-            FullUser fullUser = new FullUser(namex, cmndx, emailx, birthdayx, phonex, addressx, listFull.getLinkImage());
-            fullUserDao.updateUser(fullUser);
+        } else if (fullUser.getLinkImage().equalsIgnoreCase(image_uri.toString())) {
             progressDialog.dismiss();
             showDialog.show("Cập nhật thành công!");
         } else {
@@ -340,20 +324,17 @@ public class ShowUserFragment extends Fragment {
     private void insertImage(Uri uri) {
         progressDialog.show();
         progressDialog.setMessage("Đang cập nhật...");
-        final String filePathAndName = "image_" + listFull.getEmailUser();
-        storageReference.child(filePathAndName).putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        storageReference.child(uID).putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
                 while ((!uriTask.isSuccessful())) ;
                 if (uriTask.isSuccessful()) {
                     Uri dowloadUri = uriTask.getResult();
-                    FullUser fullUser = new FullUser(namex, cmndx, emailx, birthdayx, phonex, addressx, dowloadUri.toString());
-                    fullUserDao.updateUser(fullUser);
+                    FullUser fullUsers = new FullUser(uID, namex, cmndx, emailx, birthdayx, phonex, addressx, dowloadUri.toString());
+                    databaseReferenceFull.child(uID).setValue(fullUsers);
                     progressDialog.dismiss();
-
                     showDialog.show("Cập nhật thành công!");
-                    back.setVisibility(View.VISIBLE);
                 } else {
                     progressDialog.dismiss();
                     showDialog.show("Cập nhật thất bại!");
@@ -367,35 +348,14 @@ public class ShowUserFragment extends Fragment {
         });
     }
 
-    public void checkFullUser() {
-        //Lấy dữ liệu User
-        Query query = FirebaseDatabase.getInstance().getReference("FullUser").orderByChild("emailUser").equalTo(emailUser);
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    String userName, cmndUser, emailUser, birtdayUser, phoneUser, addressUser, linkImage;
-                    userName = "" + ds.child("userName").getValue();
-                    cmndUser = "" + ds.child("cmndUser").getValue();
-                    emailUser = "" + ds.child("emailUser").getValue();
-                    birtdayUser = "" + ds.child("birtdayUser").getValue();
-                    phoneUser = "" + ds.child("phoneUser").getValue();
-                    addressUser = "" + ds.child("addressUser").getValue();
-                    linkImage = "" + ds.child("linkImage").getValue();
-                    listFull = new FullUser(userName, cmndUser, emailUser, birtdayUser, phoneUser, addressUser, linkImage);
-                }
-                setUser();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-
     private void init() {
+        MainActivity.navigation.setVisibility(View.GONE);
+        //Khi ấn nút back
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        TextView title = toolbar.findViewById(R.id.tbTitle);
+        back = toolbar.findViewById(R.id.tbBack);
+        back.setVisibility(View.VISIBLE);
+        title.setText("THÔNG TIN TÀI KHOẢN");
         //Hiển thị thông tin lên
         name = view.findViewById(R.id.tvFullName);
         cmnd = view.findViewById(R.id.tvCmnd);
@@ -408,4 +368,28 @@ public class ShowUserFragment extends Fragment {
         storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://truyen-60710.appspot.com");
     }
 
+    private void getAll() {
+        if (mAuth.getCurrentUser() != null) {
+            databaseReferenceFull.child(uID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    fullUser = snapshot.getValue(FullUser.class);
+                    name.setText(fullUser.getUserName());
+                    cmnd.setText(fullUser.getCmndUser());
+                    email.setText(fullUser.getEmailUser());
+                    birthday.setText(fullUser.getBirtdayUser());
+                    phone.setText(fullUser.getPhoneUser());
+                    address.setText(fullUser.getAddressUser());
+                    if (!fullUser.getLinkImage().isEmpty()) {
+                        Picasso.with(getContext()).load(fullUser.getLinkImage()).into(ivAvatar);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+    }
 }

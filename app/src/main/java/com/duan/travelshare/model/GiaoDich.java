@@ -3,18 +3,21 @@ package com.duan.travelshare.model;
 import java.io.Serializable;
 
 public class GiaoDich implements Serializable {
-    private ChiTietPhong chiTietPhong;
-    private FullUser fullUser;
+    private String idGD;
+    private String idPhong;
+    private String idUser;
     private String hoTen, cmnd;
     private String tuTime, tuNgay, denTime, denNgay, ghiChu;
     private String trangThai;
+
     //0 là đang xác nhận, 1 là đã xác nhận, 2 là hủy;
     public GiaoDich() {
     }
 
-    public GiaoDich(ChiTietPhong chiTietPhong, FullUser fullUser, String hoTen, String cmnd, String tuTime, String tuNgay, String denTime, String denNgay, String ghiChu, String trangThai) {
-        this.chiTietPhong = chiTietPhong;
-        this.fullUser = fullUser;
+    public GiaoDich(String idGD, String idPhong, String idUser, String hoTen, String cmnd, String tuTime, String tuNgay, String denTime, String denNgay, String ghiChu, String trangThai) {
+        this.idGD = idGD;
+        this.idPhong = idPhong;
+        this.idUser = idUser;
         this.hoTen = hoTen;
         this.cmnd = cmnd;
         this.tuTime = tuTime;
@@ -25,20 +28,28 @@ public class GiaoDich implements Serializable {
         this.trangThai = trangThai;
     }
 
-    public ChiTietPhong getChiTietPhong() {
-        return chiTietPhong;
+    public String getIdGD() {
+        return idGD;
     }
 
-    public void setChiTietPhong(ChiTietPhong chiTietPhong) {
-        this.chiTietPhong = chiTietPhong;
+    public void setIdGD(String idGD) {
+        this.idGD = idGD;
     }
 
-    public FullUser getFullUser() {
-        return fullUser;
+    public String getIdPhong() {
+        return idPhong;
     }
 
-    public void setFullUser(FullUser fullUser) {
-        this.fullUser = fullUser;
+    public void setIdPhong(String idPhong) {
+        this.idPhong = idPhong;
+    }
+
+    public String getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(String idUser) {
+        this.idUser = idUser;
     }
 
     public String getHoTen() {

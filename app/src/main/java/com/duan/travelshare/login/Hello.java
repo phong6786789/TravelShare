@@ -14,6 +14,7 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
 import com.facebook.FacebookSdk;
 
@@ -37,7 +38,7 @@ public class Hello extends AppCompatActivity {
                 } catch (Exception e) {
 
                 } finally {
-                    Intent i = new Intent(Hello.this, Login.class);
+                    Intent i = new Intent(Hello.this, MainActivity.class);
                     startActivity(i);
                 }
             }

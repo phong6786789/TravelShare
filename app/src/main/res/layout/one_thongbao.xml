@@ -19,25 +19,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="THÔNG BÁO GIAO DỊCH THÀNH CÔNG"
             android:textColor="@color/black"
-            android:textSize="20sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/chitietTB"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="@string/tin"
-            android:textColor="@color/red" />
+            android:orientation="horizontal">
+            <TextView
+                android:text="Trạng thái:"
+                android:paddingEnd="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"/>
+            <TextView
+                android:id="@+id/chitietTB"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:textColor="@color/red" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tvClickXem"
             android:layout_marginBottom="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Vui lòng click vào để xem chi tiết!" />
+            android:text="Click để xem chi tiết!" />
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -17,32 +17,45 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.duan.travelshare.R;
-import com.duan.travelshare.firebasedao.GiaoDichDao;
 import com.duan.travelshare.firebasedao.PhongDao;
 import com.duan.travelshare.firebasedao.ThongBaoDao;
 import com.duan.travelshare.fragment.ShowDialog;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.GiaoDich;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.ViewHolder> {
     List<GiaoDich> list;
     Context context;
     PhongDao phongDao;
-    GiaoDichDao giaoDichDao;
     GiaoDich listP;
     ShowDialog showDialog;
     ThongBaoDao thongBaoDao;
-
+    ChiTietPhong chiTietPhong;
+    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    DatabaseReference databaseReferencePhong = firebaseDatabase.getReference("Phong");
+    DatabaseReference databaseReferenceGD = firebaseDatabase.getReference("GiaoDich");
+    DatabaseReference databaseReferenceTB = firebaseDatabase.getReference("ThongBao");
+    private FirebaseAuth mAuth;
+    Locale localeVN = new Locale("vi", "VN");
+    NumberFormat fm = NumberFormat.getCurrencyInstance(localeVN);
     public TongGiaoDichdapter(List<GiaoDich> list, Context context) {
         this.list = list;
         this.context = context;
         phongDao = new PhongDao(context);
-        giaoDichDao = new GiaoDichDao(context);
         showDialog = new ShowDialog((Activity) context);
         thongBaoDao = new ThongBaoDao(context);
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @NonNull
@@ -53,27 +66,38 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ChiTietPhong chiTietPhong = list.get(position).getChiTietPhong();
-        GiaoDich giaoDich = list.get(position);
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+        String iDChiTietPhong = list.get(position).getIdPhong();
+        final GiaoDich giaoDich = list.get(position);
+        databaseReferencePhong.child(iDChiTietPhong).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                chiTietPhong = snapshot.getValue(ChiTietPhong.class);
+                holder.tenPhong.setText(chiTietPhong.getTenPhong());
+                holder.giaPhong.setText(fm.format(Integer.parseInt(chiTietPhong.getGiaPhong())));
+                holder.diachiPhong.setText(chiTietPhong.getDiaChiPhong());
+                if (chiTietPhong.getImgPhong().size() != 0) {
+                    Picasso.with(context).load(chiTietPhong.getImgPhong().get(0)).into(holder.imgPhong);
+                }
+                switch (giaoDich.getTrangThai()) {
+                    case "0":
+                        holder.trangThai.setText("CHỜ XÁC NHẬN");
+                        break;
+                    case "1":
+                        holder.trangThai.setText("ĐÃ XÁC NHẬN");
+                        break;
+                    case "2":
+                        holder.trangThai.setText("ĐÃ HỦY");
+                        break;
+                }
+            }
 
-        holder.tenPhong.setText(chiTietPhong.getTenPhong());
-        holder.giaPhong.setText(chiTietPhong.getGiaPhong());
-        holder.diachiPhong.setText(chiTietPhong.getDiaChiPhong());
-        if (chiTietPhong.getImgPhong().size() != 0) {
-            Picasso.with(context).load(chiTietPhong.getImgPhong().get(0)).into(holder.imgPhong);
-        }
-        switch (giaoDich.getTrangThai()) {
-            case "0":
-                holder.trangThai.setText("ĐANG XÁC NHẬN");
-                break;
-            case "1":
-                holder.trangThai.setText("ĐÃ XÁC NHẬN");
-                break;
-            case "2":
-                holder.trangThai.setText("ĐÃ HỦY");
-                break;
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
     }
 
@@ -101,15 +125,15 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
         public void onClick(View view) {
             int position = getLayoutPosition();
             listP = list.get(position);
-
+            String key = listP.getIdPhong();
             final Dialog dialog = new Dialog(context);
             dialog.setContentView(R.layout.giaodich);
             dialog.setCancelable(true);
             Window window = dialog.getWindow();
             window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-            ImageView phong;
-            TextView tenP, giaP, hten, cmnd, tu, den, ghichu, trangThai;
+            final ImageView phong;
+            final TextView tenP, giaP, hten, cmnd, tu, den, ghichu, trangThai;
             LinearLayout erro, lnButton;
             final Button ok, huy, dong;
 
@@ -127,59 +151,95 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
             ok = dialog.findViewById(R.id.btnOkGG);
             huy = dialog.findViewById(R.id.btnCancleGG);
             dong = dialog.findViewById(R.id.btnDongGD);
-            if (!listP.getChiTietPhong().getImgPhong().isEmpty()) {
-                Picasso.with(context).load(listP.getChiTietPhong().getImgPhong().get(0)).into(phong);
-            }
-            tenP.setText(listP.getChiTietPhong().getTenPhong());
-            giaP.setText(listP.getChiTietPhong().getGiaPhong());
-            hten.setText(listP.getHoTen());
-            cmnd.setText(listP.getCmnd());
-            tu.setText(listP.getTuTime() + " " + listP.getTuNgay());
-            den.setText(listP.getDenTime() + " " + listP.getDenNgay());
-            ghichu.setText(listP.getGhiChu());
-            switch (listP.getTrangThai()) {
-                case "0":
-                    ok.setVisibility(View.VISIBLE);
-                    huy.setVisibility(View.VISIBLE);
-                    trangThai.setText("CHỜ XÁC NHẬN");
-                    break;
-                case "1":
-                    dong.setVisibility(View.VISIBLE);
-                    ok.setVisibility(View.GONE);
-                    huy.setVisibility(View.GONE);
-                    trangThai.setText("ĐÃ XÁC NHẬN");
-                    break;
-                case "2":
-                    dong.setVisibility(View.VISIBLE);
-                    ok.setVisibility(View.GONE);
-                    huy.setVisibility(View.GONE);
-                    trangThai.setText("ĐÃ HỦY");
-                    break;
-            }
+
+            databaseReferencePhong.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    chiTietPhong = snapshot.getValue(ChiTietPhong.class);
+                    if (!chiTietPhong.getImgPhong().isEmpty()) {
+                        Picasso.with(context).load(chiTietPhong.getImgPhong().get(0)).into(phong);
+                    }
+                    tenP.setText(chiTietPhong.getTenPhong());
+                    giaP.setText(chiTietPhong.getGiaPhong());
+                    hten.setText(listP.getHoTen());
+                    cmnd.setText(listP.getCmnd());
+                    tu.setText(listP.getTuTime() + " " + listP.getTuNgay());
+                    den.setText(listP.getDenTime() + " " + listP.getDenNgay());
+                    ghichu.setText(listP.getGhiChu());
+                    switch (listP.getTrangThai()) {
+                        case "0":
+                            ok.setVisibility(View.VISIBLE);
+                            huy.setVisibility(View.VISIBLE);
+                            trangThai.setText("CHỜ XÁC NHẬN");
+                            break;
+                        case "1":
+                            dong.setVisibility(View.VISIBLE);
+                            ok.setVisibility(View.GONE);
+                            huy.setVisibility(View.GONE);
+                            trangThai.setText("ĐÃ XÁC NHẬN");
+                            break;
+                        case "2":
+                            dong.setVisibility(View.VISIBLE);
+                            ok.setVisibility(View.GONE);
+                            huy.setVisibility(View.GONE);
+                            trangThai.setText("ĐÃ HỦY");
+                            break;
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
 
             erro.setVisibility(View.GONE);
             ok.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    thongBaoDao.updateTT(listP.getChiTietPhong().getIdPhong(), "1");
                     listP.setTrangThai("1");
-                    giaoDichDao.updateTrangThai(listP);
-                    dong.setVisibility(View.VISIBLE);
-                    ok.setVisibility(View.GONE);
-                    huy.setVisibility(View.GONE);
-                }
+                    final String idThongBao = listP.getIdGD();
+                    databaseReferenceGD.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            databaseReferenceGD.child(listP.getIdGD()).setValue(listP);
+                            databaseReferenceTB.child(idThongBao).child("trangThai").setValue("1");
+                            trangThai.setText("ĐÃ XÁC NHẬN");
+                            dong.setVisibility(View.VISIBLE);
+                            ok.setVisibility(View.GONE);
+                            huy.setVisibility(View.GONE);
+                        }
 
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
             });
 
             huy.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    thongBaoDao.updateTT(listP.getChiTietPhong().getIdPhong(), "2");
                     listP.setTrangThai("2");
-                    giaoDichDao.updateTrangThai(listP);
-                    dong.setVisibility(View.VISIBLE);
-                    ok.setVisibility(View.GONE);
-                    huy.setVisibility(View.GONE);
+                    final String idThongBao = listP.getIdGD();
+                    databaseReferenceGD.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            databaseReferenceGD.child(listP.getIdPhong()).setValue(listP);
+                            databaseReferenceTB.child(idThongBao).child("trangThai").setValue("2");
+                            dong.setVisibility(View.VISIBLE);
+                            trangThai.setText("ĐÃ HỦY");
+                            ok.setVisibility(View.GONE);
+                            huy.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                 }
             });
             dong.setOnClickListener(new View.OnClickListener() {
@@ -194,4 +254,18 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
         }
     }
 
+    private ChiTietPhong getPhong(String keyPhong) {
+        databaseReferencePhong.child(keyPhong).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                chiTietPhong = snapshot.getValue(ChiTietPhong.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        return chiTietPhong;
+    }
 }

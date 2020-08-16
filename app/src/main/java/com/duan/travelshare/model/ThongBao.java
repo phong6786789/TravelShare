@@ -3,24 +3,60 @@ package com.duan.travelshare.model;
 import java.io.Serializable;
 
 public class ThongBao implements Serializable {
-    private GiaoDich giaoDich;
-    private String ngay, thoiGian;
+    private String idGG, idPhong,  idUser, idChu;
+    private String ngay, thoiGian, trangThai;
 
     public ThongBao() {
     }
 
-    public ThongBao(GiaoDich giaoDich, String ngay, String thoiGian) {
-        this.giaoDich = giaoDich;
+    public ThongBao(String idGG, String idPhong, String idUser, String idChu,  String ngay, String thoiGian,String trangThai) {
+        this.idGG = idGG;
+        this.idPhong = idPhong;
+        this.idUser = idUser;
+        this.idChu = idChu;
+        this.trangThai = trangThai;
         this.ngay = ngay;
         this.thoiGian = thoiGian;
     }
 
-    public GiaoDich getGiaoDich() {
-        return giaoDich;
+    public String getIdGG() {
+        return idGG;
     }
 
-    public void setGiaoDich(GiaoDich giaoDich) {
-        this.giaoDich = giaoDich;
+    public void setIdGG(String idGG) {
+        this.idGG = idGG;
+    }
+
+    public String getIdPhong() {
+        return idPhong;
+    }
+
+    public void setIdPhong(String idPhong) {
+        this.idPhong = idPhong;
+    }
+
+    public String getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(String idUser) {
+        this.idUser = idUser;
+    }
+
+    public String getIdChu() {
+        return idChu;
+    }
+
+    public void setIdChu(String idChu) {
+        this.idChu = idChu;
+    }
+
+    public String getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
     }
 
     public String getNgay() {

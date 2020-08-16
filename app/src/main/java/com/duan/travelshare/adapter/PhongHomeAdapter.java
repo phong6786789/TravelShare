@@ -16,14 +16,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.duan.travelshare.R;
 import com.duan.travelshare.firebasedao.PhongDao;
-import com.duan.travelshare.firebasedao.SaveDao;
 import com.duan.travelshare.fragment.ChiTietPhongHomeFragment;
 import com.duan.travelshare.model.ChiTietPhong;
-import com.duan.travelshare.model.Save;
 import com.squareup.picasso.Picasso;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class PhongHomeAdapter extends RecyclerView.Adapter<PhongHomeAdapter.ViewHolder> {
     List<ChiTietPhong> list;
@@ -31,7 +31,8 @@ public class PhongHomeAdapter extends RecyclerView.Adapter<PhongHomeAdapter.View
     Filter filter;
     Context context;
     PhongDao phongDao;
-
+    Locale localeVN = new Locale("vi", "VN");
+    NumberFormat fm = NumberFormat.getCurrencyInstance(localeVN);
     public PhongHomeAdapter(List<ChiTietPhong> list, Context context) {
         this.list = list;
         this.context = context;
@@ -49,7 +50,7 @@ public class PhongHomeAdapter extends RecyclerView.Adapter<PhongHomeAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.tenPhong.setText(list.get(position).getTenPhong());
-        holder.giaPhong.setText(list.get(position).getGiaPhong());
+        holder.giaPhong.setText(fm.format(Integer.parseInt(list.get(position).getGiaPhong()))+"/ngày");
         holder.diachiPhong.setText(list.get(position).getDiaChiPhong());
         if (list.get(position).getImgPhong().size() != 0) {
             Picasso.with(context).load(list.get(position).getImgPhong().get(0)).into(holder.imgPhong);

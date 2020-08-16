@@ -21,8 +21,10 @@ import com.duan.travelshare.fragment.ChiTietPhongManagerFragment;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.squareup.picasso.Picasso;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class PhongManagerAdapter extends RecyclerView.Adapter<PhongManagerAdapter.ViewHolder> {
     List<ChiTietPhong> list;
@@ -30,7 +32,8 @@ public class PhongManagerAdapter extends RecyclerView.Adapter<PhongManagerAdapte
     PhongDao phongDao;
     List<ChiTietPhong> listSort;
     Filter filter;
-
+    Locale localeVN = new Locale("vi", "VN");
+    NumberFormat fm = NumberFormat.getCurrencyInstance(localeVN);
     public PhongManagerAdapter(List<ChiTietPhong> list, Context context) {
         this.list = list;
         this.context = context;
@@ -48,7 +51,7 @@ public class PhongManagerAdapter extends RecyclerView.Adapter<PhongManagerAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.ten.setText(list.get(position).getTenPhong());
-        holder.gia.setText(list.get(position).getGiaPhong());
+        holder.gia.setText(fm.format(Integer.parseInt(list.get(position).getGiaPhong()))+"/ngày");
         holder.diachi.setText(list.get(position).getDiaChiPhong());
         if (list.get(position).getImgPhong().size() != 0) {
             Picasso.with(context).load(list.get(position).getImgPhong().get(0)).into(holder.img);

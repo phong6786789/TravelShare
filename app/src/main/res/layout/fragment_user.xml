@@ -39,7 +39,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:text="Vui lòng thêm họ tên..."
+                        android:text="Không tên"
                         android:id="@+id/tvNameUser"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -147,6 +147,7 @@
 
         <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:id="@+id/cvChangePass"
@@ -179,7 +180,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:id="@+id/cvDangXuat"
+            android:id="@+id/cvDangNhap"
             card_view:cardCornerRadius="5dp"
             card_view:cardElevation="10dp">
             <LinearLayout
@@ -192,6 +193,36 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:src="@drawable/dangxuat" />
+
+                <TextView
+                    android:id="@+id/tvDangNhap"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:text="Đăng nhập"
+                    android:textColor="@color/black"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:visibility="gone"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:id="@+id/cvDangXuat"
+            card_view:cardCornerRadius="5dp"
+            card_view:cardElevation="10dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="15dp">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/login" />
 
                 <TextView
                     android:id="@+id/tvDangXuat"

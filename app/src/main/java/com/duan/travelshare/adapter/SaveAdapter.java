@@ -15,25 +15,34 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.duan.travelshare.R;
-import com.duan.travelshare.firebasedao.SaveDao;
 import com.duan.travelshare.fragment.ChiTietPhongHomeFragment;
+import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.Save;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class SaveAdapter extends RecyclerView.Adapter<SaveAdapter.ViewHolder> {
     List<Save> list;
     List<Save> listSort;
     Filter filter;
     Context context;
-    SaveDao SaveDao;
-
+    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    DatabaseReference databaseReferencePhong = firebaseDatabase.getReference("Phong");
+    ChiTietPhong chiTietPhong;
+    Locale localeVN = new Locale("vi", "VN");
+    NumberFormat fm = NumberFormat.getCurrencyInstance(localeVN);
     public SaveAdapter(List<Save> list, Context context) {
         this.list = list;
         this.context = context;
-        this.SaveDao = new SaveDao(context);
         this.listSort = list;
     }
 
@@ -45,13 +54,29 @@ public class SaveAdapter extends RecyclerView.Adapter<SaveAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.tenPhong.setText(list.get(position).getChiTietPhong().getTenPhong());
-        holder.giaPhong.setText(list.get(position).getChiTietPhong().getGiaPhong());
-        holder.diachiPhong.setText(list.get(position).getChiTietPhong().getDiaChiPhong());
-        if (list.get(position).getChiTietPhong().getImgPhong().size() != 0) {
-            Picasso.with(context).load(list.get(position).getChiTietPhong().getImgPhong().get(0)).into(holder.imgPhong);
-        }
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+        Save save = list.get(position);
+        String idPhong = save.getIdPhong();
+
+        databaseReferencePhong.child(idPhong).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                chiTietPhong = snapshot.getValue(ChiTietPhong.class);
+
+                holder.tenPhong.setText(chiTietPhong.getTenPhong());
+                holder.giaPhong.setText(fm.format(Integer.parseInt(chiTietPhong.getGiaPhong()))+"/ngày");
+                holder.diachiPhong.setText(chiTietPhong.getDiaChiPhong());
+                if (chiTietPhong.getImgPhong().size() != 0) {
+                    Picasso.with(context).load(chiTietPhong.getImgPhong().get(0)).into(holder.imgPhong);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
     }
 
@@ -64,6 +89,7 @@ public class SaveAdapter extends RecyclerView.Adapter<SaveAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView imgPhong;
         TextView tenPhong, giaPhong, diachiPhong;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tenPhong = itemView.findViewById(R.id.titleP);
@@ -81,7 +107,7 @@ public class SaveAdapter extends RecyclerView.Adapter<SaveAdapter.ViewHolder> {
             ChiTietPhongHomeFragment Save = new ChiTietPhongHomeFragment();
 
             Bundle bundle = new Bundle();
-            bundle.putSerializable("list", listP.getChiTietPhong());
+            bundle.putSerializable("list", chiTietPhong);
             Save.setArguments(bundle);
 
             FragmentManager fragmentManager = ((AppCompatActivity) view.getContext()).getSupportFragmentManager();
@@ -112,8 +138,7 @@ public class SaveAdapter extends RecyclerView.Adapter<SaveAdapter.ViewHolder> {
             } else {
                 List<Save> save = new ArrayList<Save>();
                 for (Save p : list) {
-                    if
-                    (p.getChiTietPhong().getTenPhong().toUpperCase().contains(constraint.toString().toUpperCase()))
+                    if (chiTietPhong.getTenPhong().toUpperCase().contains(constraint.toString().toUpperCase()))
                         save.add(p);
                 }
                 results.values = save;

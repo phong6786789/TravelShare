@@ -6,45 +6,77 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.SearchView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Cache;
+import com.android.volley.Network;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
 import com.duan.travelshare.adapter.PhongHomeAdapter;
 import com.duan.travelshare.firebasedao.PhongDao;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
+import com.duan.travelshare.model.User;
+import com.duan.travelshare.notification.Data;
+import com.duan.travelshare.notification.Sender;
+import com.duan.travelshare.notification.Token;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.facebook.FacebookSdk.getCacheDir;
 
 public class HomeFragment extends Fragment {
     RecyclerView rcvPhong;
     public static PhongHomeAdapter phongAdapter;
-    List<ChiTietPhong> list;
+    List<ChiTietPhong> list = new ArrayList<>();
     PhongDao phongDao;
     private EditText textSearch;
     FullUser fullUser;
+    User user;
     String emailUser = MainActivity.emailUser;
     ShowDialog showDialog;
+    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    DatabaseReference databaseReferencePhong = firebaseDatabase.getReference("Phong");
+    DatabaseReference databaseReferenceUser = firebaseDatabase.getReference("User");
+    private FirebaseAuth mAuth;
+    String uID;
+    LinearLayout map;
+    private View view;
+    RequestQueue requestQueue;
 
     public HomeFragment() {
     }
@@ -52,7 +84,26 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        view = inflater.inflate(R.layout.fragment_home, container, false);
+        init();
+        if (mAuth.getCurrentUser() != null) {
+            uID = mAuth.getCurrentUser().getUid();
+        }
+        getAllPhong();
+        return view;
+    }
+
+    private void init() {
+
+        map = view.findViewById(R.id.lnMap);
+        mAuth = FirebaseAuth.getInstance();
+        rcvPhong = view.findViewById(R.id.listPhong);
+        phongDao = new PhongDao(getActivity());
+        phongAdapter = new PhongHomeAdapter(list, getActivity());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        rcvPhong.setLayoutManager(linearLayoutManager);
+        rcvPhong.setAdapter(phongAdapter);
         //Toolbar
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         TextView title = toolbar.findViewById(R.id.tbTitle);
@@ -60,7 +111,7 @@ public class HomeFragment extends Fragment {
         title.setText("TRANG CHỦ");
         back.setVisibility(View.INVISIBLE);
         showDialog = new ShowDialog(getActivity());
-        checkFullUser();
+
 
         //Tìm kiếm
         textSearch = view.findViewById(R.id.edtSearch);
@@ -84,65 +135,31 @@ public class HomeFragment extends Fragment {
             public void afterTextChanged(Editable s) {
             }
         });
-
-        return view;
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        rcvPhong = view.findViewById(R.id.listPhong);
-        phongDao = new PhongDao(getActivity());
-        try {
-            list = phongDao.getAllPhongHome();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        phongAdapter = new PhongHomeAdapter(list, getActivity());
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        rcvPhong.setLayoutManager(linearLayoutManager);
-        rcvPhong.setAdapter(phongAdapter);
+
     }
 
-
-    public void checkFullUser() {
-        //Lấy dữ liệu User
-        Query query = FirebaseDatabase.getInstance().getReference("FullUser").orderByChild("emailUser").equalTo(emailUser);
-        query.addValueEventListener(new ValueEventListener() {
+    private void getAllPhong() {
+        databaseReferencePhong.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    String userName, cmndUser, emailUser, birtdayUser, phoneUser, addressUser, linkImage;
-                    userName = "" + ds.child("userName").getValue();
-                    cmndUser = "" + ds.child("cmndUser").getValue();
-                    emailUser = "" + ds.child("emailUser").getValue();
-                    birtdayUser = "" + ds.child("birtdayUser").getValue();
-                    phoneUser = "" + ds.child("phoneUser").getValue();
-                    addressUser = "" + ds.child("addressUser").getValue();
-                    linkImage = "" + ds.child("linkImage").getValue();
-                    fullUser = new FullUser(userName, cmndUser, emailUser, birtdayUser, phoneUser, addressUser, linkImage);
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list.clear();
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    ChiTietPhong chiTietPhong = postSnapshot.getValue(ChiTietPhong.class);
+                    list.add(chiTietPhong);
                 }
-                try {
-                    if (fullUser.getCmndUser().isEmpty()) {
-                        ShowUserFragment fragment = new ShowUserFragment();
-                        showDialog.show("Vui lòng thêm thông tin tài khoản!");
-                        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.frame, fragment);
-                        transaction.addToBackStack(null);
-                        transaction.commit();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                phongAdapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
     }
-
-
 }
