@@ -39,8 +39,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
-import com.chabbal.slidingdotsplash.SlidingSplashView;
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
 import com.duan.travelshare.adapter.ImageSlide;
@@ -105,7 +103,6 @@ public class ChiTietPhongHomeFragment extends Fragment {
     FullUser fullUserKhach;
     ShimmerFrameLayout container;
     RelativeLayout chitiet;
-    SlidingSplashView slideImage;
     ViewPager viewPager;
 
     public ChiTietPhongHomeFragment() {
@@ -222,6 +219,8 @@ public class ChiTietPhongHomeFragment extends Fragment {
                         }
                     } else {
                         showDialog.show("Vui lòng đăng nhập trước!");
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.frame,new LoginFragment()).commit();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
