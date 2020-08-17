@@ -1,30 +1,19 @@
 package com.duan.travelshare;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
-
-import com.duan.travelshare.firebasedao.FullUserDao;
-import com.duan.travelshare.firebasedao.UserDao;
 import com.duan.travelshare.fragment.GiaoDichFragment;
 import com.duan.travelshare.fragment.HomeFragment;
 import com.duan.travelshare.fragment.ShowDialog;
-import com.duan.travelshare.fragment.ShowUserFragment;
 import com.duan.travelshare.fragment.ThongBaoFragment;
 import com.duan.travelshare.fragment.UserFragment;
 import com.duan.travelshare.model.FullUser;
-import com.duan.travelshare.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -33,14 +22,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     public static String name = "0", email = "0", userName = "0";
 
-    static FullUserDao fullUserDao;
     public static ArrayList<FullUser> list = new ArrayList<>();
     public static int position = -1;
     public static FullUser fullUserOne;

@@ -33,7 +33,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
 import com.duan.travelshare.adapter.PhongHomeAdapter;
-import com.duan.travelshare.firebasedao.PhongDao;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.User;
@@ -62,7 +61,6 @@ public class HomeFragment extends Fragment {
     RecyclerView rcvPhong;
     public static PhongHomeAdapter phongAdapter;
     List<ChiTietPhong> list = new ArrayList<>();
-    PhongDao phongDao;
     private EditText textSearch;
     FullUser fullUser;
     User user;
@@ -96,7 +94,6 @@ public class HomeFragment extends Fragment {
         map = view.findViewById(R.id.lnMap);
         mAuth = FirebaseAuth.getInstance();
         rcvPhong = view.findViewById(R.id.listPhong);
-        phongDao = new PhongDao(getActivity());
         phongAdapter = new PhongHomeAdapter(list, getActivity());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);

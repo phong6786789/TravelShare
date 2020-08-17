@@ -38,8 +38,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
-import com.duan.travelshare.firebasedao.FullUserDao;
-import com.duan.travelshare.firebasedao.UserDao;
 import com.duan.travelshare.model.FullUser;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -63,8 +61,6 @@ import static android.app.Activity.RESULT_OK;
 public class ShowUserFragment extends Fragment {
     private ImageView ivAvatar;
     private DatePickerDialog datePickerDialog;
-    private UserDao userDao;
-    private FullUserDao fullUserDao;
     private ShowDialog showDialog;
     private Button btnUpdate;
     static EditText name, cmnd, email, birthday, phone, address;
@@ -122,8 +118,6 @@ public class ShowUserFragment extends Fragment {
 
         progressDialog = new ProgressDialog(getActivity());
         showDialog = new ShowDialog(getActivity());
-        fullUserDao = new FullUserDao(getActivity());
-        userDao = new UserDao(getActivity());
         ivAvatar = view.findViewById(R.id.ivAvatar);
         //Đổ dữ liệu
 

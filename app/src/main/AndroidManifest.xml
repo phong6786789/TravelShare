@@ -73,7 +73,7 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".login.Login" />
         <activity android:name=".login.Register" />
-        <activity android:name=".login.Hello">
+        <activity android:name=".Hello">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
