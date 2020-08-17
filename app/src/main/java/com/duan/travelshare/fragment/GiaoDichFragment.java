@@ -1,5 +1,6 @@
 package com.duan.travelshare.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -40,6 +41,7 @@ public class GiaoDichFragment extends Fragment {
     public static ArrayList<GiaoDich> list = new ArrayList<>();
     public static ArrayList<GiaoDich> listDangGG = new ArrayList<>();
     public static ArrayList<GiaoDich> lisTongGG = new ArrayList<>();
+    public static ArrayList<ChiTietPhong> listPhong = new ArrayList<>();
     private RecyclerView DangGG, TongGG;
     public static KhachGiaoDichAdapter khachGiaoDichAdapter;
     public static TongGiaoDichdapter tongGiaoDichdapter;
@@ -69,6 +71,7 @@ public class GiaoDichFragment extends Fragment {
     }
 
     private void init() {
+
         //Toolbar
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         TextView title = toolbar.findViewById(R.id.tbTitle);
@@ -96,58 +99,67 @@ public class GiaoDichFragment extends Fragment {
     }
 
 
-    private void locGiaoDich() {
-
-        for (int i = 0; i < list.size(); i++) {
-            final int z = i;
-            databaseReferencePhong.child(list.get(i).getIdPhong()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    listDangGG.clear();
-                    lisTongGG.clear();
-                    chiTietPhong = snapshot.getValue(ChiTietPhong.class);
-                    String uIDChu = chiTietPhong.getuID();
+    private void getGDKhach() {
+        databaseReferenceGD.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<GiaoDich> list = new ArrayList<>();
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    GiaoDich gd = postSnapshot.getValue(GiaoDich.class);
+                    list.add(gd);
+                }
+                listDangGG.clear();
+                for (int i = 0; i < list.size(); i++) {
+                    final int z = i;
                     if (list.get(z).getIdUser().equalsIgnoreCase(mAuth.getCurrentUser().getUid())) {
                         listDangGG.add(list.get(z));
                         lnDangGG.setVisibility(View.VISIBLE);
                         Log.i("TAG", "email của người đặt: " + mAuth.getCurrentUser().getUid());
                         khachGiaoDichAdapter.notifyDataSetChanged();
-                    } else if (uIDChu.equalsIgnoreCase(mAuth.getCurrentUser().getUid())) {
-                        Log.i("TAG", "email của chủ: " + uIDChu);
-                        lisTongGG.add(list.get(z));
-                        lnTongGG.setVisibility(View.VISIBLE);
-                        tongGiaoDichdapter.notifyDataSetChanged();
                     }
-                    Log.i("TAG", "ĐANG GG: " + listDangGG.size() + "//// TỔNG GG: " + lisTongGG.size());
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                }
-            });
-        }
-
-
-    }
-
-    private void getAllGiaoDich() {
-        databaseReferenceGD.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                list.clear();
-                listDangGG.clear();
-                lisTongGG.clear();
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    GiaoDich gd = postSnapshot.getValue(GiaoDich.class);
-                    list.add(gd);
+                    container.setVisibility(View.GONE);
                 }
                 container.setVisibility(View.GONE);
-                locGiaoDich();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
 
+    private void getGDTong(){
+        final ArrayList<GiaoDich> list2 = new ArrayList<>();
+        databaseReferenceGD.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list2.clear();
+                lisTongGG.clear();
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    GiaoDich gd = postSnapshot.getValue(GiaoDich.class);
+                    list2.add(gd);
+                }
+                for (int i = 0; i < list2.size(); i++) {
+                    String idPhong = list2.get(i).getIdPhong();
+                    final int z = i;
+
+                    for(int j=0;j<listPhong.size();j++){
+                        ChiTietPhong chiTietPhong = listPhong.get(j);
+                        if(chiTietPhong.getIdPhong().equalsIgnoreCase(idPhong)){
+                            if (chiTietPhong.getuID().equalsIgnoreCase(mAuth.getCurrentUser().getUid())) {
+                                lisTongGG.add(list2.get(z));
+                                lnTongGG.setVisibility(View.VISIBLE);
+                                tongGiaoDichdapter.notifyDataSetChanged();
+                            }
+                            container.setVisibility(View.GONE);
+                        }
+                    }
+                }
+                container.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
             }
         });
     }
@@ -158,7 +170,25 @@ public class GiaoDichFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null) {
             uID = mAuth.getCurrentUser().getUid();
-            getAllGiaoDich();
+
+            databaseReferencePhong.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    listPhong.clear();
+                    for(DataSnapshot ds: snapshot.getChildren()){
+                        ChiTietPhong chiTietP = ds.getValue(ChiTietPhong.class);
+                        listPhong.add(chiTietP);
+                    }
+                    getGDKhach();
+                    getGDTong();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
         }
     }
+
+
 }

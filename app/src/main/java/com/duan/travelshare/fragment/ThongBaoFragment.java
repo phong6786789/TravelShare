@@ -3,7 +3,6 @@ package com.duan.travelshare.fragment;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,13 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
 import com.duan.travelshare.adapter.TBAdapter;
-import com.duan.travelshare.adapter.ThongBaoAdapter;
-import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.GiaoDich;
 import com.duan.travelshare.model.ThongBao;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -36,7 +32,6 @@ import java.util.ArrayList;
 
 public class ThongBaoFragment extends Fragment {
 
-    public static ThongBaoAdapter thongBaoAdapter;
     ArrayList<ThongBao> listTB = new ArrayList<>();
     ArrayList<GiaoDich> listGD = new ArrayList<>();
     RecyclerView recThongBao;

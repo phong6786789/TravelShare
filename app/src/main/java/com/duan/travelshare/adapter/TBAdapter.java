@@ -3,6 +3,7 @@ package com.duan.travelshare.adapter;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -57,6 +59,8 @@ public class TBAdapter extends RecyclerView.Adapter<TBAdapter.ViewHolder> {
     TextView ten, trangThai, gio, ngay;
     CardView cv;
     ThongBao thongBao;
+    String tenUser = "";
+    ArrayList<FullUser> listFull = new ArrayList<>();
 
     public TBAdapter() {
     }
@@ -69,6 +73,20 @@ public class TBAdapter extends RecyclerView.Adapter<TBAdapter.ViewHolder> {
             uID = mAuth.getCurrentUser().getUid();
         }
         processDiaglog = new ProgressDialog(context);
+        databaseReferenceFullUser.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    FullUser full = ds.getValue(FullUser.class);
+                    listFull.add(full);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @NonNull
@@ -80,11 +98,27 @@ public class TBAdapter extends RecyclerView.Adapter<TBAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        thongBao = list.get(position);
+        ThongBao thongBao = list.get(position);
+        Log.i("TAG", "Id chủ: " + uID + "\n id của list: " + thongBao.getIdUser());
         //Set dữ liệu
         final String idChu = thongBao.getIdChu();
         final String idKhach = thongBao.getIdUser();
         final String idGD = thongBao.getIdGG();
+        final ThongBao z = thongBao;
+
+
+        if (uID.equalsIgnoreCase(z.getIdUser())) {
+            ten.setText("Đặt phòng thành công!");
+            Log.i("TAG", "Trùng");
+        } else {
+            for (int i = 0; i < listFull.size(); i++) {
+                if (!uID.equalsIgnoreCase(listFull.get(i).getUserName())) {
+                    tenUser = listFull.get(i).getUserName();
+                    break;
+                }
+            }
+            ten.setText("Bạn có một đơn hàng mới từ " + tenUser);
+        }
         switch (thongBao.getTrangThai()) {
             case "0":
                 trangThai.setText("CHỜ XÁC NHẬN");
@@ -96,26 +130,6 @@ public class TBAdapter extends RecyclerView.Adapter<TBAdapter.ViewHolder> {
                 trangThai.setText("ĐÃ HỦY");
                 break;
         }
-        if (uID.equalsIgnoreCase(idKhach)) {
-            ten.setText("ĐẶT PHÒNG THÀNH CÔNG!");
-        } else {
-            databaseReferenceFullUser.child(uID).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    fullUserKhach = snapshot.getValue(FullUser.class);
-                    ten.setText("Bạn có một đơn hàng mới từ tài khoản " + fullUserKhach.getUserName());
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        }
-
-//
-
-
         gio.setText(thongBao.getThoiGian());
         ngay.setText(thongBao.getNgay());
     }
