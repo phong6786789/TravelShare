@@ -1,13 +1,25 @@
 package com.duan.travelshare.adapter;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +30,10 @@ import com.duan.travelshare.R;
 import com.duan.travelshare.fragment.ChiTietPhongHomeFragment;
 import com.duan.travelshare.fragment.ChiTietPhongManagerFragment;
 import com.duan.travelshare.model.ChiTietPhong;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
@@ -28,6 +44,12 @@ import java.util.Locale;
 public class PhongManagerAdapter extends RecyclerView.Adapter<PhongManagerAdapter.ViewHolder> {
     List<ChiTietPhong> list;
     Context context;
+<<<<<<< HEAD
+    PhongDao phongDao;
+    private FirebaseAuth mAuth;
+    ChiTietPhong chiTietPhong;
+=======
+>>>>>>> 3ba8f85d73035eb1e689d9b2473de1e53f6f5657
     List<ChiTietPhong> listSort;
     Filter filter;
     Locale localeVN = new Locale("vi", "VN");
@@ -75,20 +97,70 @@ public class PhongManagerAdapter extends RecyclerView.Adapter<PhongManagerAdapte
 
         @Override
         public void onClick(View view) {
-            int position = getLayoutPosition();
-            ChiTietPhong listP = list.get(position);
 
-            ChiTietPhongManagerFragment chiTietPhong = new ChiTietPhongManagerFragment();
+            final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(
+                    context,R.style.BottomSheetDialogTheme
+            );
 
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("list", listP);
-            chiTietPhong.setArguments(bundle);
+            View bottomSheetView = LayoutInflater.from(context).inflate(
+                    R.layout.bottom_sheet_dialog,
+                    (LinearLayout)bottomSheetDialog.findViewById(R.id.bottomSheetContainer)
+            );
+            bottomSheetView.findViewById(R.id.txt_XemChiTiet).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    bottomSheetDialog.dismiss();
+                    int position = getLayoutPosition();
+                     ChiTietPhong listP = list.get(position);
+                    ChiTietPhongManagerFragment chiTietPhong = new ChiTietPhongManagerFragment();
 
-            FragmentManager fragmentManager = ((AppCompatActivity) view.getContext()).getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.frame, chiTietPhong)
-                    .commit();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("list", listP);
+                    chiTietPhong.setArguments(bundle);
 
+                    FragmentManager fragmentManager = ((AppCompatActivity) view.getContext()).getSupportFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.frame, chiTietPhong)
+                            .commit();
+                }
+            });
+            bottomSheetView.findViewById(R.id.txt_Huy).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    bottomSheetDialog.dismiss();
+                }
+            });
+            bottomSheetView.findViewById(R.id.txt_XoaKhoaHoc).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    bottomSheetDialog.dismiss();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                    builder.setMessage("Bạn có chắc chắn muốn  xóa phòng  không?")
+                            .setCancelable(false)
+                            .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    phongDao.delete(list.get(getAdapterPosition()));
+                                    list.clear();
+                                    list.addAll(phongDao.getAllPhong());
+                                    Toast.makeText(context, "Xoá thành công", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+
+                }
+
+
+            });
+            bottomSheetDialog.setContentView(bottomSheetView);
+            bottomSheetDialog.show();
         }
     }
 
