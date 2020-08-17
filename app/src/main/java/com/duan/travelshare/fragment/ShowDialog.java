@@ -43,7 +43,6 @@ public class ShowDialog {
             }
         });
         dialog.show();
-
     }
 
     public void dismiss() {

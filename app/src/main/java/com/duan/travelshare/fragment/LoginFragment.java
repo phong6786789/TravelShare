@@ -1,8 +1,11 @@
 package com.duan.travelshare.fragment;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -29,6 +33,8 @@ import com.duan.travelshare.R;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -45,7 +51,7 @@ public class LoginFragment extends Fragment {
     private TextInputEditText tk, mk;
     private Button login;
     private CheckBox checkBox;
-    private TextView dangKy;
+    private TextView dangKy, quenMk;
     private String tks, mks;
     private Boolean check;
     private ProgressDialog progressDialog;
@@ -89,6 +95,7 @@ public class LoginFragment extends Fragment {
         checkBox = view.findViewById(R.id.cbCheck);
         login = view.findViewById(R.id.btnDangNhap);
         dangKy = view.findViewById(R.id.tvDangKy);
+        quenMk = view.findViewById(R.id.tvQuenMk);
         mAuth = FirebaseAuth.getInstance();
         showDialog = new ShowDialog(getActivity());
         progressDialog = new ProgressDialog(getContext());
@@ -96,6 +103,50 @@ public class LoginFragment extends Fragment {
         mk.addTextChangedListener(new ValidationTextWatcher(mk));
         tilTk = view.findViewById(R.id.tilTK);
         tilMk = view.findViewById(R.id.tilMK);
+
+        quenMk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Dialog dialog = new Dialog(getActivity());
+                dialog.setContentView(R.layout.quenmk);
+                dialog.setCancelable(true);
+                Window window = dialog.getWindow();
+                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                if (dialog != null && dialog.getWindow() != null) {
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                }
+                final EditText email = dialog.findViewById(R.id.tvEmailReset);
+                email.setText(tk.getText().toString());
+                Button reset = dialog.findViewById(R.id.btnReset);
+                Button huy = dialog.findViewById(R.id.btnHuyReset);
+                huy.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+
+                reset.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mAuth.sendPasswordResetEmail(email.getText().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                showDialog.show("Reset mật khẩu thành công!\nVui lòng kiểm tra email.");
+                                dialog.dismiss();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                showDialog.show("Reset mật khẩu thất bại");
+                            }
+                        });
+
+                    }
+                });
+                dialog.show();
+            }
+        });
 
         //nhận dữ liệu khi đăng ký thành công
         if (getArguments() != null) {
@@ -153,8 +204,6 @@ public class LoginFragment extends Fragment {
 
         return view;
     }
-
-
 
 
     public void onStart() {

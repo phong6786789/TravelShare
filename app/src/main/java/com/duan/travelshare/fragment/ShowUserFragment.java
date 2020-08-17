@@ -200,6 +200,9 @@ public class ShowUserFragment extends Fragment {
                 databaseReferenceFull.child(uID).setValue(fullUsers);
                 progressDialog.dismiss();
                 showDialog.show("Cập nhật thành công!");
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.frame, new UserFragment())
+                        .commit();
             }
         }
 

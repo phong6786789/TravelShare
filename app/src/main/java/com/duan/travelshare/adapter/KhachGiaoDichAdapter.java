@@ -17,12 +17,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.duan.travelshare.R;
 import com.duan.travelshare.fragment.ChiTietPhongHomeFragment;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.GiaoDich;
+import com.facebook.appevents.codeless.ViewIndexer;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -47,6 +49,9 @@ public class KhachGiaoDichAdapter extends RecyclerView.Adapter<KhachGiaoDichAdap
     private FirebaseAuth mAuth;
     Locale localeVN = new Locale("vi", "VN");
     NumberFormat fm = NumberFormat.getCurrencyInstance(localeVN);
+    View view;
+    ViewPager viewPager;
+    LinearLayout pager_indicator;
     public KhachGiaoDichAdapter(List<GiaoDich> list, Context context) {
         this.list = list;
         this.context = context;
@@ -56,7 +61,7 @@ public class KhachGiaoDichAdapter extends RecyclerView.Adapter<KhachGiaoDichAdap
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.one_danggiaodich, parent, false);
+         view = LayoutInflater.from(context).inflate(R.layout.one_danggiaodich, parent, false);
         return new ViewHolder(view);
     }
 
@@ -207,4 +212,69 @@ public class KhachGiaoDichAdapter extends RecyclerView.Adapter<KhachGiaoDichAdap
             }
         });
     }
+
+//    public void setViewPager() {
+//        final int size = chiTietPhong.getImgPhong().size();
+//        pager_indicator = view.findViewById(R.id.viewPagerCountDots);
+//        if(size==1){
+//            pager_indicator.setVisibility(View.GONE);
+//        }
+//        viewPager = view.findViewById(R.id.viewPager);
+//        ArrayList<String> listImage = chiTietPhong.getImgPhong();
+//        ImageSlide imageSlide = new ImageSlide(context, listImage);
+//        viewPager.setAdapter(imageSlide);
+//        viewPager.setCurrentItem(0);
+//        final ImageView dots[] = new ImageView[size];
+//        for (int i = 0; i < size; i++) {
+//            dots[i] = new ImageView(context);
+//            dots[i].setImageDrawable(context.getResources().getDrawable(R.drawable.default_dot));
+//            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+//                    LinearLayout.LayoutParams.WRAP_CONTENT,
+//                    LinearLayout.LayoutParams.WRAP_CONTENT
+//            );
+//
+//            params.setMargins(6, 0, 6, 0);
+//
+//            final int presentPosition = i;
+//            dots[presentPosition].setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    viewPager.setCurrentItem(presentPosition);
+//
+//                }
+//            });
+//
+//            pager_indicator.addView(dots[i], params);
+//        }
+//
+//        dots[0].setImageDrawable(context.getResources().getDrawable(R.drawable.selected_dot));
+//
+//        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//
+//            }
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//                for (int i = 0; i < size; i++) {
+//                    dots[i].setImageDrawable(context.getResources().getDrawable(R.drawable.default_dot));
+//                }
+//
+//                dots[position].setImageDrawable(context.getResources().getDrawable(R.drawable.selected_dot));
+//
+//                if (position + 1 == size) {
+//
+//                } else {
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {
+//
+//            }
+//        });
+//    }
+
 }

@@ -1,4 +1,5 @@
 package com.duan.travelshare.fragment;
+
 import android.Manifest;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -9,12 +10,14 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
+
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,6 +35,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
 import com.duan.travelshare.adapter.ImageSlide;
@@ -48,6 +52,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -89,6 +94,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
     ShimmerFrameLayout container;
     RelativeLayout chitiet;
     ViewPager viewPager;
+    LinearLayout pager_indicator;
 
     public ChiTietPhongHomeFragment() {
         // Required empty public constructor
@@ -205,7 +211,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
                     } else {
                         showDialog.show("Vui lòng đăng nhập trước!");
                         getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.frame,new LoginFragment()).commit();
+                                .replace(R.id.frame, new LoginFragment()).commit();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -649,14 +655,17 @@ public class ChiTietPhongHomeFragment extends Fragment {
 
     public void setViewPager() {
         final int size = chiTietPhong.getImgPhong().size();
-        LinearLayout pager_indicator  = view.findViewById(R.id.viewPagerCountDots);
+        pager_indicator = view.findViewById(R.id.viewPagerCountDots);
+        if(size==1){
+            pager_indicator.setVisibility(View.GONE);
+        }
         viewPager = view.findViewById(R.id.viewPager);
         ArrayList<String> listImage = chiTietPhong.getImgPhong();
         ImageSlide imageSlide = new ImageSlide(getActivity(), listImage);
         viewPager.setAdapter(imageSlide);
         viewPager.setCurrentItem(0);
-         final ImageView dots[] = new ImageView[size];
-        for(int i=0;i<size;i++){
+        final ImageView dots[] = new ImageView[size];
+        for (int i = 0; i < size; i++) {
             dots[i] = new ImageView(getActivity());
             dots[i].setImageDrawable(getResources().getDrawable(R.drawable.default_dot));
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -688,7 +697,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
 
             @Override
             public void onPageSelected(int position) {
-                for (int i = 0; i <size; i++) {
+                for (int i = 0; i < size; i++) {
                     dots[i].setImageDrawable(getResources().getDrawable(R.drawable.default_dot));
                 }
 

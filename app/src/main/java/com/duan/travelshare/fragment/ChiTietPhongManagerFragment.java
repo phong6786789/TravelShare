@@ -98,6 +98,7 @@ public class ChiTietPhongManagerFragment extends Fragment {
     ShimmerFrameLayout container;
     RelativeLayout chitiet;
     ViewPager viewPager;
+    LinearLayout pager_indicator;
 
     public ChiTietPhongManagerFragment() {
         // Required empty public constructor
@@ -548,7 +549,7 @@ public class ChiTietPhongManagerFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 fullUser = snapshot.getValue(FullUser.class);
-                if (!chiTietPhong.getImgPhong().get(0).isEmpty()) {
+                if (!chiTietPhong.getImgPhong().isEmpty()) {
                     setViewPager();
                 }
                 tenPhong.setText(chiTietPhong.getTenPhong());
@@ -575,14 +576,17 @@ public class ChiTietPhongManagerFragment extends Fragment {
 
     public void setViewPager() {
         final int size = chiTietPhong.getImgPhong().size();
-        LinearLayout pager_indicator  = view.findViewById(R.id.viewPagerCountDots);
+        pager_indicator = view.findViewById(R.id.viewPagerCountDots);
+        if (size == 1) {
+            pager_indicator.setVisibility(View.GONE);
+        }
         viewPager = view.findViewById(R.id.viewPager);
         ArrayList<String> listImage = chiTietPhong.getImgPhong();
         ImageSlide imageSlide = new ImageSlide(getActivity(), listImage);
         viewPager.setAdapter(imageSlide);
         viewPager.setCurrentItem(0);
         final ImageView dots[] = new ImageView[size];
-        for(int i=0;i<size;i++){
+        for (int i = 0; i < size; i++) {
             dots[i] = new ImageView(getActivity());
             dots[i].setImageDrawable(getResources().getDrawable(R.drawable.default_dot));
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -614,7 +618,7 @@ public class ChiTietPhongManagerFragment extends Fragment {
 
             @Override
             public void onPageSelected(int position) {
-                for (int i = 0; i <size; i++) {
+                for (int i = 0; i < size; i++) {
                     dots[i].setImageDrawable(getResources().getDrawable(R.drawable.default_dot));
                 }
 

@@ -16,4 +16,5 @@
     <string name="server_client_id">544446656625-7n5vha8b745qn8bp7f7qe1hu3esdpcor.apps.googleusercontent.com</string>
     <string name="tin">Quý khách đã giao dịch thành công!!!</string>
     <string name="msg_token_fmt">a</string>
+    <string name="quenMk"><u>Quên mật khẩu?</u></string>
 </resources>

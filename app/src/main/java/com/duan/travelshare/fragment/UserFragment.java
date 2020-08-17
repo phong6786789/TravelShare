@@ -33,9 +33,13 @@ import com.duan.travelshare.R;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -187,16 +191,29 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         changePass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String passOld, passNew, passNew2;
+                final String passOld, passNew, passNew2;
                 passOld = pass.getText().toString();
                 passNew = newPass.getText().toString();
                 passNew2 = newPass2.getText().toString();
                 //Check mật khẩu cũ và mật khẩu mới
                 if (validatePassNew2() & validatePassNew() & validatePassOld()) {
-                    databaseReference.child(uID).child("password").setValue(passNew);
-                    show.show("Đổi mật khẩu thành công!");
-                    dialog.dismiss();
+                    mAuth.getCurrentUser().updatePassword(passNew)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        databaseReference.child(uID).child("password").setValue(passNew);
+                                        show.show("Đổi mật khẩu thành công!");
+                                        dialog.dismiss();
+                                    }
+                                    else{
+                                        show.show("Đổi mật khẩu thất bại!");
+
+                                    }
+                                }
+                            });
                 }
+
 
                 cancle.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -431,7 +448,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
             tilMKN2.setError("Bạn không được để trống");
             requestFocus(newPass2);
             return false;
-        } else if (newPass2.getText().toString().trim().equalsIgnoreCase(newPass.getText().toString())) {
+        } else if (!newPass2.getText().toString().trim().equalsIgnoreCase(newPass.getText().toString())) {
             tilMKN2.setError("Mật khẩu không khớp nhau");
             requestFocus(newPass2);
             return false;
