@@ -6,19 +6,19 @@ import java.util.ArrayList;
 public class ChiTietPhong implements Serializable {
     private String idPhong, tenPhong, giaPhong, diaChiPhong, moTaPhong;
     ArrayList<String> imgPhong;
-    FullUser fullUser;
+    String uID;
 
     public ChiTietPhong() {
     }
 
-    public ChiTietPhong(String idPhong, String tenPhong, String giaPhong, String diaChiPhong, String moTaPhong, ArrayList<String> imgPhong, FullUser fullUser) {
+    public ChiTietPhong(String idPhong, String tenPhong, String giaPhong, String diaChiPhong, String moTaPhong, ArrayList<String> imgPhong, String uID) {
         this.idPhong = idPhong;
         this.tenPhong = tenPhong;
         this.giaPhong = giaPhong;
         this.diaChiPhong = diaChiPhong;
         this.moTaPhong = moTaPhong;
         this.imgPhong = imgPhong;
-        this.fullUser = fullUser;
+        this.uID = uID;
     }
 
     public String getIdPhong() {
@@ -69,12 +69,12 @@ public class ChiTietPhong implements Serializable {
         this.imgPhong = imgPhong;
     }
 
-    public FullUser getFullUser() {
-        return fullUser;
+    public String getuID() {
+        return uID;
     }
 
-    public void setFullUser(FullUser fullUser) {
-        this.fullUser = fullUser;
+    public void setuID(String uID) {
+        this.uID = uID;
     }
 }
 

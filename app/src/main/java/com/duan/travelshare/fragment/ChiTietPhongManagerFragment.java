@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -32,28 +33,39 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
+import com.duan.travelshare.adapter.ImageSlide;
 import com.duan.travelshare.firebasedao.PhongDao;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.HinhPhong;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
 
 public class ChiTietPhongManagerFragment extends Fragment {
-    private ImageView phong, user,  call, messenger;
+    private ImageView user, call, messenger;
     ToggleButton save;
     private LinearLayout star;
     private TextView tenPhong, giaPhong, tenUser, emailUser, moTa;
@@ -75,6 +87,19 @@ public class ChiTietPhongManagerFragment extends Fragment {
     private ArrayList<String> listImageFireBase = new ArrayList<>();
     private PhongDao phongDao;
     Boolean checkLink = false;
+    Locale localeVN = new Locale("vi", "VN");
+    NumberFormat fm = NumberFormat.getCurrencyInstance(localeVN);
+    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    DatabaseReference databaseReferenceFull = firebaseDatabase.getReference("FullUser");
+    DatabaseReference databaseReferencePhong = firebaseDatabase.getReference("Phong");
+    String uID;
+    private FirebaseAuth mAuth;
+    private FullUser fullUser;
+    private ChiTietPhong chiTietPhong;
+    private View view;
+    ShimmerFrameLayout container;
+    RelativeLayout chitiet;
+    ViewPager viewPager;
 
     public ChiTietPhongManagerFragment() {
         // Required empty public constructor
@@ -84,48 +109,19 @@ public class ChiTietPhongManagerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_chi_tiet_phong, container, false);
+        view = inflater.inflate(R.layout.fragment_chi_tiet_phong, container, false);
         //Ẩn navigation
+        init();
+        mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() != null) {
+            uID = mAuth.getCurrentUser().getUid();
+            Bundle bundle = getArguments();
+            chiTietPhong = (ChiTietPhong) bundle.getSerializable("list");
+            getAllFull();
+        }
 
-        MainActivity.navigation.setVisibility(View.GONE);
-        showDialog = new ShowDialog(getActivity());
-        //Nhạn object
-        Bundle bundle = getArguments();
-        final ChiTietPhong chiTietPhong = (ChiTietPhong) bundle.getSerializable("list");
         storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://truyen-60710.appspot.com");
 
-        //Khai báo
-        progressDialog = new ProgressDialog(getActivity());
-        phong = view.findViewById(R.id.ivPhong);
-        user = view.findViewById(R.id.ivUser);
-        save = view.findViewById(R.id.ivSave);
-        call = view.findViewById(R.id.ivCall);
-        messenger = view.findViewById(R.id.ivMessenger);
-        star = view.findViewById(R.id.lnStar);
-        tenPhong = view.findViewById(R.id.tvTenPhong);
-        giaPhong = view.findViewById(R.id.tvGiaphong);
-        tenUser = view.findViewById(R.id.tvUser);
-        emailUser = view.findViewById(R.id.tvEmailP);
-        moTa = view.findViewById(R.id.tvMota);
-        xem = view.findViewById(R.id.btnXemUser);
-        datPhong = view.findViewById(R.id.btnDatPhongChiTiet);
-
-        if (!chiTietPhong.getImgPhong().get(0).isEmpty()) {
-            Picasso.with(getActivity()).load(chiTietPhong.getImgPhong().get(0)).into(phong);
-        } else {
-            phong.setImageResource(R.drawable.phongtro);
-        }
-        if (!chiTietPhong.getFullUser().getLinkImage().isEmpty()) {
-            Picasso.with(getActivity()).load(chiTietPhong.getFullUser().getLinkImage()).into(user);
-        } else {
-            user.setImageResource(R.drawable.userimg);
-        }
-
-        tenPhong.setText(chiTietPhong.getTenPhong());
-        giaPhong.setText(chiTietPhong.getGiaPhong());
-        tenUser.setText(chiTietPhong.getFullUser().getUserName());
-        emailUser.setText(chiTietPhong.getFullUser().getEmailUser());
-        moTa.setText(chiTietPhong.getMoTaPhong());
 
         //Sửa phòng
         datPhong.setText("CHỈNH SỬA");
@@ -231,43 +227,55 @@ public class ChiTietPhongManagerFragment extends Fragment {
                                 listHinhPhong.add(listHinh.get(i).getLinkHinh());
                             }
                         }
-                        Boolean checkImage = true;
-                        //So sánh ảnh có bị thay đổi không
-                        if (listHinh.size() == chiTietPhong.getImgPhong().size()) {
-                            for (int i = 0; i < listHinh.size(); i++) {
-                                if (!listHinh.get(i).getLinkHinh().toString().equalsIgnoreCase(chiTietPhong.getImgPhong().get(i))) {
-                                    checkImage = false;
-                                    break;
+                        for (int i = 0; i < listHinhPhong.size(); i++) {
+                            Uri IndividualImage = listHinhPhong.get(i);
+                            if (IndividualImage.toString().substring(0, 5).equalsIgnoreCase("https")) {
+                                listImageFireBase.add(chiTietPhong.getImgPhong().get(i));
+                                if (listImageFireBase.size() == listHinhPhong.size()) {
+                                    final ChiTietPhong ctPhong = new ChiTietPhong(key, ten, gia, dc, mot, listImageFireBase, uID);
+                                    //Thêm phòng
+                                    databaseReferencePhong.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            databaseReferencePhong.child(key).setValue(ctPhong);
+                                            showDialog.show("Cập nhật phòng thành công!");
+                                            setViewPager();
+                                            progressDialog.dismiss();
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
                                 }
-                            }
-                        }
-                        if (checkImage == true) {
-                            for (int i = 0; i < listHinh.size(); i++) {
-                                listImageFireBase.add(listHinh.get(i).getLinkHinh().toString());
-                            }
-                            ChiTietPhong chiTietPhong = new ChiTietPhong(key, ten, gia, dc, mot, listImageFireBase, user);
-                            //Thêm phòng
-                            phongDao.updatePhong(chiTietPhong);
-                            progressDialog.dismiss();
-                            dialog.dismiss();
-                        } else {
-                            for (int i = 0; i < listHinhPhong.size(); i++) {
-                                Uri IndividualImage = listHinhPhong.get(i);
+                            } else {
                                 storageReference.child(key + "h" + (i + 1)).putFile(IndividualImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                     @Override
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                         Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
                                         while ((!uriTask.isSuccessful())) ;
-
-
                                         if (uriTask.isSuccessful()) {
                                             Uri dowloadUri = uriTask.getResult();
                                             listImageFireBase.add(String.valueOf(dowloadUri));
                                             if (listImageFireBase.size() == listHinhPhong.size()) {
-                                                ChiTietPhong chiTietPhong = new ChiTietPhong(key, ten, gia, dc, mot, listImageFireBase, user);
+                                                final ChiTietPhong ctPhong = new ChiTietPhong(key, ten, gia, dc, mot, listImageFireBase, uID);
                                                 //Thêm phòng
-                                                phongDao.updatePhong(chiTietPhong);
-                                                progressDialog.dismiss();
+                                                databaseReferencePhong.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        databaseReferencePhong.child(key).setValue(ctPhong);
+                                                        showDialog.show("Cập nhật phòng thành công!");
+                                                        setViewPager();
+                                                        progressDialog.dismiss();
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                                    }
+                                                });
+
                                                 dialog.dismiss();
                                             }
                                         } else {
@@ -281,12 +289,12 @@ public class ChiTietPhongManagerFragment extends Fragment {
                                         Toast.makeText(getActivity(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
-
                             }
                         }
-
-
                     }
+
+
+//                    }
                 });
 
                 //Button nhập lại
@@ -338,6 +346,29 @@ public class ChiTietPhongManagerFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    private void init() {
+        chitiet = view.findViewById(R.id.layouChiTiet);
+        container = (ShimmerFrameLayout) view.findViewById(R.id.scrimer_CTP);
+        container.startShimmerAnimation();
+        MainActivity.navigation.setVisibility(View.GONE);
+        showDialog = new ShowDialog(getActivity());
+        //Khai báo
+        progressDialog = new ProgressDialog(getActivity());
+        viewPager = view.findViewById(R.id.viewPager);
+        user = view.findViewById(R.id.ivUser);
+        save = view.findViewById(R.id.ivSave);
+        call = view.findViewById(R.id.ivCall);
+        messenger = view.findViewById(R.id.ivMessenger);
+        star = view.findViewById(R.id.lnStar);
+        tenPhong = view.findViewById(R.id.tvTenPhong);
+        giaPhong = view.findViewById(R.id.tvGiaphong);
+        tenUser = view.findViewById(R.id.tvUser);
+        emailUser = view.findViewById(R.id.tvEmailP);
+        moTa = view.findViewById(R.id.tvMota);
+        xem = view.findViewById(R.id.btnXemUser);
+        datPhong = view.findViewById(R.id.btnDatPhongChiTiet);
     }
 
     private void showImagePickDialog() {
@@ -514,8 +545,95 @@ public class ChiTietPhongManagerFragment extends Fragment {
         cameraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
     }
-    private void requestContactsPermissions(){
 
+    public void getAllFull() {
+        databaseReferenceFull.child(uID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                fullUser = snapshot.getValue(FullUser.class);
+                if (!chiTietPhong.getImgPhong().get(0).isEmpty()) {
+                    setViewPager();
+                }
+                tenPhong.setText(chiTietPhong.getTenPhong());
+                giaPhong.setText(fm.format(Integer.parseInt(chiTietPhong.getGiaPhong())) + "/ngày");
+                moTa.setText(chiTietPhong.getMoTaPhong());
 
-    };
+                //Set cho tài khoản chủ
+                if (!fullUser.getLinkImage().isEmpty()) {
+                    Picasso.with(getActivity()).load(fullUser.getLinkImage()).into(user);
+                }
+                tenUser.setText(fullUser.getUserName());
+                emailUser.setText(fullUser.getEmailUser());
+
+                container.setVisibility(View.GONE);
+                chitiet.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void setViewPager() {
+        final int size = chiTietPhong.getImgPhong().size();
+        LinearLayout pager_indicator  = view.findViewById(R.id.viewPagerCountDots);
+        viewPager = view.findViewById(R.id.viewPager);
+        ArrayList<String> listImage = chiTietPhong.getImgPhong();
+        ImageSlide imageSlide = new ImageSlide(getActivity(), listImage);
+        viewPager.setAdapter(imageSlide);
+        viewPager.setCurrentItem(0);
+        final ImageView dots[] = new ImageView[size];
+        for(int i=0;i<size;i++){
+            dots[i] = new ImageView(getActivity());
+            dots[i].setImageDrawable(getResources().getDrawable(R.drawable.default_dot));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+
+            params.setMargins(6, 0, 6, 0);
+
+            final int presentPosition = i;
+            dots[presentPosition].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    viewPager.setCurrentItem(presentPosition);
+
+                }
+            });
+
+            pager_indicator.addView(dots[i], params);
+        }
+
+        dots[0].setImageDrawable(getResources().getDrawable(R.drawable.selected_dot));
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                for (int i = 0; i <size; i++) {
+                    dots[i].setImageDrawable(getResources().getDrawable(R.drawable.default_dot));
+                }
+
+                dots[position].setImageDrawable(getResources().getDrawable(R.drawable.selected_dot));
+
+                if (position + 1 == size) {
+
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
 }

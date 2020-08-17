@@ -25,7 +25,14 @@ import com.duan.travelshare.fragment.ThongBaoFragment;
 import com.duan.travelshare.fragment.UserFragment;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
 
@@ -40,26 +47,21 @@ public class MainActivity extends AppCompatActivity {
     static ShowDialog showDialog;
     public static BottomNavigationView navigation;
     public static String emailUser = "";
-
+    private String token;
+    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    DatabaseReference databaseReference = firebaseDatabase.getReference("User");
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Intent i = getIntent();
-        name = i.getStringExtra("name");
-        email = i.getStringExtra("email");
-        userName = i.getStringExtra("userName");
         showDialog = new ShowDialog(this);
-
-        //Thống nhất email là gì?(gộp gg, fb hoặc tai khoản thành 1)
-        checkLoginTk();
-
-        //Đổ list vào
-        fullUserDao = new FullUserDao(this);
-        list = fullUserDao.getAllFullUser();
-
+        mAuth = FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser()!=null){
+            getToken();
+        }
 
         navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
@@ -138,6 +140,27 @@ public class MainActivity extends AppCompatActivity {
             emailUser = userName;
         }
         emailUser = email;
+    }
+
+    private void getToken() {
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("TAG", "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        token = task.getResult().getToken();
+                        //Cập nhật token
+                        databaseReference.child(mAuth.getCurrentUser().getUid()).child("token").setValue(token);
+                        // Log and toast
+//                        String msg = getString(R.string.msg_token_fmt, token);
+                    }
+                });
+
     }
 
 }

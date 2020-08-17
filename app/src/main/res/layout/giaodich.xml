@@ -227,23 +227,23 @@
         </LinearLayout>
     </LinearLayout>
 
+    <Button
+        android:layout_alignParentBottom="true"
+        android:id="@+id/btnDongGD"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue"
+        android:padding="10dp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:text="ĐÓNG"
+        android:textColor="@color/bg" />
     <LinearLayout
         android:id="@+id/lnXacNhan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btnDongGD"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/blue"
-            android:padding="10dp"
-            android:textStyle="bold"
-            android:visibility="gone"
-            android:text="ĐÓNG"
-            android:textColor="@color/bg" />
 
         <Button
             android:id="@+id/btnOkGG"

@@ -151,9 +151,9 @@ public class PhongDao {
                     while (iterator.hasNext()) {
                         DataSnapshot next = (DataSnapshot) iterator.next();
                         ChiTietPhong nd = next.getValue(ChiTietPhong.class);
-                        if (nd.getFullUser().getEmailUser().equalsIgnoreCase(email)) {
-                            list.add(nd);
-                        }
+//                        if (nd.getFullUser().getEmailUser().equalsIgnoreCase(email)) {
+//                            list.add(nd);
+//                        }
                     }
                     ManegerPhongThueFragment.chiTietPhongAdapter.notifyDataSetChanged();
 
@@ -187,4 +187,6 @@ public class PhongDao {
             }
         });
     }
+
+
 }

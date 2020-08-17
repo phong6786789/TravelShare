@@ -86,10 +86,10 @@ public class Login extends AppCompatActivity {
 
                 for (int i = 0; i < users.size(); i++) {
                     User tkx = users.get(i);
-                    if (tkx.getUserName().matches(tenTK) && tkx.getPassword().matches(mk)) {
-                        xetTk = true;
-                        break;
-                    }
+//                    if (tkx.getUserName().matches(tenTK) && tkx.getPassword().matches(mk)) {
+//                        xetTk = true;
+//                        break;
+//                    }
                 }
                 if (xetTk == true) {
                     saveUser();
@@ -279,7 +279,6 @@ public class Login extends AppCompatActivity {
             editor.putBoolean("check", check);
         }
         editor.commit();
-
     }
 
     //Khi mới vào sẽ tự đăng xuất trước
@@ -298,17 +297,17 @@ public class Login extends AppCompatActivity {
     public void checkUser() {
         Boolean check = false;
         for (int i = 0; i < users.size(); i++) {
-            String tk = users.get(i).getUserName();
-            if (email.equalsIgnoreCase(tk)) {
-                check = true;
-                break;
-            }
+//            String tk = users.get(i).getUserName();
+//            if (email.equalsIgnoreCase(tk)) {
+//                check = true;
+//                break;
+//            }
         }
 
         if (!check) {
             //Truyền dữ liệu vào Main
-            userDao.insert(new User(email, "", "0"));
-            fullUserDao.insertFullUser(new FullUser(name, "", email, "", "", "", ""));
+//            userDao.insert(new User(email, "", "0"));
+//            fullUserDao.insertFullUser(new FullUser(name, "", email, "", "", "", ""));
         }
         Intent i = new Intent(Login.this, MainActivity.class);
         i.putExtra("email", email);

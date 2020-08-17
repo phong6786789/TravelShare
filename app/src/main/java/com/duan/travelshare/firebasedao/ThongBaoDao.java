@@ -54,12 +54,12 @@ public class ThongBaoDao {
                             ThongBao nd = next.getValue(ThongBao.class);
                             list.add(nd);
 //                            Thông báo cho chủ thuê biết đang có đơn hàng cần xác nhận
-                            if (email.equalsIgnoreCase(nd.getGiaoDich().getChiTietPhong().getFullUser().getEmailUser()) ||
-                                    email.equalsIgnoreCase(nd.getGiaoDich().getFullUser().getEmailUser())) {
-                                Log.i("TAG", "subi: 0+" + list.size());
-                            }
+//                            if (email.equalsIgnoreCase(nd.getGiaoDich().getChiTietPhong().getFullUser().getEmailUser()) ||
+//                                    email.equalsIgnoreCase(nd.getGiaoDich().getFullUser().getEmailUser())) {
+//                                Log.i("TAG", "subi: 0+" + list.size());
+//                            }
                             //Khi đủ list sẽ notify
-                            ThongBaoFragment.thongBaoAdapter.notifyDataSetChanged();
+//                            ThongBaoFragment.thongBaoAdapter.notifyDataSetChanged();
                         }
                     }
             }

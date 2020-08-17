@@ -81,11 +81,11 @@ public class UserDao {
                     while (iterator.hasNext()) {
                         DataSnapshot next = (DataSnapshot) iterator.next();
                         User nd = next.getValue(User.class);
-                        if (nd.getUserName().matches(email)) {
-                            UserFragment.users = nd;
-                        }
+//                        if (nd.getUserName().matches(email)) {
+//                            UserFragment.users = nd;
+//                        }
                     }
-                    UserFragment.filterUser();
+//                    UserFragment.filterUser();
                 }
 
             }
