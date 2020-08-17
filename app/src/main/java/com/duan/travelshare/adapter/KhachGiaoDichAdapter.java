@@ -65,7 +65,7 @@ public class KhachGiaoDichAdapter extends RecyclerView.Adapter<KhachGiaoDichAdap
         String idPhong = list.get(position).getIdPhong();
 
         final GiaoDich giaoDich = list.get(position);
-        databaseReferencePhong.child(giaoDich.getIdPhong()).addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReferencePhong.child(idPhong).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 chiTietPhong = snapshot.getValue(ChiTietPhong.class);

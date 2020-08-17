@@ -108,11 +108,11 @@ public class TBAdapter extends RecyclerView.Adapter<TBAdapter.ViewHolder> {
 
 
         if (uID.equalsIgnoreCase(z.getIdUser())) {
-            ten.setText("Đặt phòng thành công!");
+            ten.setText("Đặt phòng thành công");
             Log.i("TAG", "Trùng");
         } else {
             for (int i = 0; i < listFull.size(); i++) {
-                if (!uID.equalsIgnoreCase(listFull.get(i).getUserName())) {
+                if (idKhach.equalsIgnoreCase(listFull.get(i).getuID())) {
                     tenUser = listFull.get(i).getUserName();
                     break;
                 }

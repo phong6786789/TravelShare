@@ -56,6 +56,7 @@ public class PhongManagerAdapter extends RecyclerView.Adapter<PhongManagerAdapte
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference databaseReference = firebaseDatabase.getReference("Phong");
     DatabaseReference databaseReferenceTB = firebaseDatabase.getReference("ThongBao");
+    DatabaseReference databaseReferenceSave = firebaseDatabase.getReference("Save");
     ShowDialog showDialog;
     ChiTietPhong listP;
 
@@ -149,6 +150,7 @@ public class PhongManagerAdapter extends RecyclerView.Adapter<PhongManagerAdapte
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     databaseReference.child(listP.getIdPhong()).removeValue();
+                                    databaseReferenceSave.child(listP.getIdPhong()).removeValue();
                                     databaseReferenceTB.orderByChild("idPhong").equalTo(listP.getIdPhong()).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -163,6 +165,8 @@ public class PhongManagerAdapter extends RecyclerView.Adapter<PhongManagerAdapte
 
                                         }
                                     });
+
+
                                     showDialog.show("Xóa thành công");
                                 }
                             })

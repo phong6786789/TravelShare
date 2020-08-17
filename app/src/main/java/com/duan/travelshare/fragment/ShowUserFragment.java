@@ -69,7 +69,7 @@ public class ShowUserFragment extends Fragment {
     DatabaseReference databaseReferenceFull = firebaseDatabase.getReference("FullUser");
     private FirebaseAuth mAuth;
     //Xin quyền chụp ảnh
-    Uri image_uri;
+    Uri image_uri = null;
     StorageReference storageReference;
     ProgressDialog progressDialog;
     private static final int CAMERA_REQUEST_CODE = 200;
@@ -83,6 +83,7 @@ public class ShowUserFragment extends Fragment {
     private ImageView back;
     String uID;
     private FullUser fullUser;
+    String linkImg;
 
     public ShowUserFragment() {
         // Required empty public constructor
@@ -181,23 +182,25 @@ public class ShowUserFragment extends Fragment {
 
 
     private void checkForm() {
-        if (image_uri == null) {
+        if (linkImg.isEmpty()) {
             showDialog.show("Vui lòng thêm ảnh đại diện!");
-        } else if (namex.isEmpty() || cmndx.isEmpty() || emailx.isEmpty() || birthdayx.isEmpty() || phonex.isEmpty() || addressx.isEmpty()) {
-            showDialog.show("Các trường không được để trống!");
-        } else if (namex.length() < 5) {
-            showDialog.show("Tên phải có ít nhất 5 ký tự!");
-        } else if (cmndx.length() != 9 && cmndx.length() != 12) {
-            showDialog.show("Chứng minh nhân dân phải đủ 9 số hoặc căn cước công dân phải đủ 12 số!");
-        } else if (!phonex.matches("[0-9]{10,11}")) {
-            showDialog.show("Vui lòng nhập đúng số điện thoại!");
-        } else if (addressx.length() < 10) {
-            showDialog.show("Vui lòng nhập đầy đủ địa chỉ!");
-        } else if (fullUser.getLinkImage().equalsIgnoreCase(image_uri.toString())) {
-            progressDialog.dismiss();
-            showDialog.show("Cập nhật thành công!");
         } else {
-            insertImage(image_uri);
+            if (namex.isEmpty() || cmndx.isEmpty() || emailx.isEmpty() || birthdayx.isEmpty() || phonex.isEmpty() || addressx.isEmpty()) {
+                showDialog.show("Các trường không được để trống!");
+            } else if (namex.length() < 5) {
+                showDialog.show("Tên phải có ít nhất 5 ký tự!");
+            } else if (cmndx.length() != 9 && cmndx.length() != 12) {
+                showDialog.show("Chứng minh nhân dân phải đủ 9 số hoặc căn cước công dân phải đủ 12 số!");
+            } else if (!phonex.matches("[0-9]{10,11}")) {
+                showDialog.show("Vui lòng nhập đúng số điện thoại!");
+            } else if (addressx.length() < 10) {
+                showDialog.show("Vui lòng nhập đầy đủ địa chỉ!");
+            } else {
+                FullUser fullUsers = new FullUser(uID, namex, cmndx, emailx, birthdayx, phonex, addressx, fullUser.getLinkImage());
+                databaseReferenceFull.child(uID).setValue(fullUsers);
+                progressDialog.dismiss();
+                showDialog.show("Cập nhật thành công!");
+            }
         }
 
     }
@@ -307,9 +310,11 @@ public class ShowUserFragment extends Fragment {
             if (requestCode == IMAGE_PICK_GALLERY_CODE) {
                 image_uri = data.getData();
                 Picasso.with(getActivity()).load(image_uri).into(ivAvatar);
+                linkImg = image_uri.toString();
             }
             if (requestCode == IMAGE_PICK_CAMERA_CODE) {
                 Picasso.with(getActivity()).load(image_uri).into(ivAvatar);
+                linkImg = image_uri.toString();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -329,6 +334,9 @@ public class ShowUserFragment extends Fragment {
                     databaseReferenceFull.child(uID).setValue(fullUsers);
                     progressDialog.dismiss();
                     showDialog.show("Cập nhật thành công!");
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.frame, new UserFragment())
+                            .commit();
                 } else {
                     progressDialog.dismiss();
                     showDialog.show("Cập nhật thất bại!");
@@ -374,8 +382,9 @@ public class ShowUserFragment extends Fragment {
                     birthday.setText(fullUser.getBirtdayUser());
                     phone.setText(fullUser.getPhoneUser());
                     address.setText(fullUser.getAddressUser());
-                    if (!fullUser.getLinkImage().isEmpty()) {
-                        Picasso.with(getContext()).load(fullUser.getLinkImage()).into(ivAvatar);
+                    linkImg = fullUser.getLinkImage();
+                    if (!linkImg.isEmpty()) {
+                        Picasso.with(getContext()).load(linkImg).into(ivAvatar);
                     }
                 }
 
