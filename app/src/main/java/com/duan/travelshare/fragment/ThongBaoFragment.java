@@ -44,7 +44,7 @@ public class ThongBaoFragment extends Fragment {
     String uID;
     TBAdapter adapter;
     FirebaseRecyclerAdapter adapterFirebase;
-    ShimmerFrameLayout container;
+    ShimmerFrameLayout containerx;
     public ThongBaoFragment() {
         // Required empty public constructor
     }
@@ -57,8 +57,11 @@ public class ThongBaoFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_thong_bao, container, false);
         //Toolbar
         mAuth = FirebaseAuth.getInstance();
+        containerx = (ShimmerFrameLayout) view.findViewById(R.id.shimmer_view_container);
+        containerx.setVisibility(View.GONE);
         if (mAuth.getCurrentUser() != null) {
             uID = mAuth.getCurrentUser().getUid();
+            containerx.startShimmerAnimation();
             init();
             getAllTB();
 //            setUpFireBase();
@@ -74,8 +77,7 @@ public class ThongBaoFragment extends Fragment {
         back.setVisibility(View.INVISIBLE);
 
         recThongBao = view.findViewById(R.id.recThongBao);
-        container = (ShimmerFrameLayout) view.findViewById(R.id.shimmer_view_container);
-        container.startShimmerAnimation();
+
 
         adapter = new TBAdapter(getActivity(), listTB);
         recThongBao.setAdapter(adapter);
@@ -85,6 +87,7 @@ public class ThongBaoFragment extends Fragment {
     }
 
     private void getAllTB() {
+
         databaseReferenceTB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -95,7 +98,7 @@ public class ThongBaoFragment extends Fragment {
                         listTB.add(thongBao);
                     }
                 }
-                container.setVisibility(View.GONE);
+                containerx.setVisibility(View.GONE);
                 adapter.notifyDataSetChanged();
             }
 

@@ -94,8 +94,7 @@ public class GiaoDichFragment extends Fragment {
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getActivity());
         linearLayoutManager2.setOrientation(LinearLayoutManager.VERTICAL);
         TongGG.setLayoutManager(linearLayoutManager2);
-        container = (ShimmerFrameLayout) view.findViewById(R.id.shimmer_GD);
-        container.startShimmerAnimation();
+
     }
 
 
@@ -168,9 +167,12 @@ public class GiaoDichFragment extends Fragment {
     public void onStart() {
         super.onStart();
         mAuth = FirebaseAuth.getInstance();
+        container = (ShimmerFrameLayout) view.findViewById(R.id.shimmer_GD);
+        container.setVisibility(View.GONE);
         if (mAuth.getCurrentUser() != null) {
             uID = mAuth.getCurrentUser().getUid();
-
+            container.setVisibility(View.VISIBLE);
+            container.startShimmerAnimation();
             databaseReferencePhong.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {

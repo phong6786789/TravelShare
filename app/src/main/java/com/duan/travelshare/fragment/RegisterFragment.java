@@ -67,7 +67,9 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         view = inflater.inflate(R.layout.fragment_register, container, false);
+        showDialog =new ShowDialog(getActivity());
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         TextView title = toolbar.findViewById(R.id.tbTitle);
         ImageView back = toolbar.findViewById(R.id.tbBack);
@@ -122,7 +124,7 @@ public class RegisterFragment extends Fragment {
                                         userID = mAuth.getCurrentUser().getUid();
                                         User user = new User(userID, tks, mks, "0", "token", "0");
                                         databaseReference.child(userID).setValue(user);
-                                        FullUser fullUser = new FullUser(userID, "", "", tks, "","","","");
+                                        FullUser fullUser = new FullUser(userID, "", "", tks, "", "", "", "");
                                         databaseReference2.child(userID).setValue(fullUser);
                                         Toast.makeText(getActivity(), "Đăng ký thành công",
                                                 Toast.LENGTH_SHORT).show();
@@ -148,8 +150,6 @@ public class RegisterFragment extends Fragment {
 
         return view;
     }
-
-
 
 
     private void requestFocus(View view) {
