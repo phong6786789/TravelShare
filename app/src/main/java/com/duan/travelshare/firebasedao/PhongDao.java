@@ -2,6 +2,7 @@ package com.duan.travelshare.firebasedao;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,6 +32,7 @@ public class PhongDao {
     DatabaseReference reference;
     String key = "";
     Boolean check;
+    String bookID = null;
     ShowDialog showDialog;
 
     public PhongDao() {
@@ -184,6 +187,38 @@ public class PhongDao {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+    public void delete(final ChiTietPhong chiTietPhong) {
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    if (data.child("idPhong").getValue(String.class).equalsIgnoreCase(chiTietPhong.getIdPhong())) {
+                        bookID = data.getKey();
+                        Log.d("getKey", "onCreate: key :" + bookID);
+                        reference.child(bookID).removeValue()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("delete", "delete Thanh cong");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d("delete", "delete That bai");
+                                    }
+                                });
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
