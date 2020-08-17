@@ -27,7 +27,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.duan.travelshare.R;
-import com.duan.travelshare.firebasedao.PhongDao;
 import com.duan.travelshare.fragment.ChiTietPhongHomeFragment;
 import com.duan.travelshare.fragment.ChiTietPhongManagerFragment;
 import com.duan.travelshare.model.ChiTietPhong;
@@ -45,9 +44,12 @@ import java.util.Locale;
 public class PhongManagerAdapter extends RecyclerView.Adapter<PhongManagerAdapter.ViewHolder> {
     List<ChiTietPhong> list;
     Context context;
+<<<<<<< HEAD
     PhongDao phongDao;
     private FirebaseAuth mAuth;
     ChiTietPhong chiTietPhong;
+=======
+>>>>>>> 3ba8f85d73035eb1e689d9b2473de1e53f6f5657
     List<ChiTietPhong> listSort;
     Filter filter;
     Locale localeVN = new Locale("vi", "VN");
@@ -55,7 +57,6 @@ public class PhongManagerAdapter extends RecyclerView.Adapter<PhongManagerAdapte
     public PhongManagerAdapter(List<ChiTietPhong> list, Context context) {
         this.list = list;
         this.context = context;
-        phongDao = new PhongDao(context);
         this.listSort = list;
     }
 

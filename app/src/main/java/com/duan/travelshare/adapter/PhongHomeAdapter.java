@@ -15,7 +15,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.duan.travelshare.R;
-import com.duan.travelshare.firebasedao.PhongDao;
 import com.duan.travelshare.fragment.ChiTietPhongHomeFragment;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.squareup.picasso.Picasso;
@@ -30,13 +29,11 @@ public class PhongHomeAdapter extends RecyclerView.Adapter<PhongHomeAdapter.View
     List<ChiTietPhong> listSort;
     Filter filter;
     Context context;
-    PhongDao phongDao;
     Locale localeVN = new Locale("vi", "VN");
     NumberFormat fm = NumberFormat.getCurrencyInstance(localeVN);
     public PhongHomeAdapter(List<ChiTietPhong> list, Context context) {
         this.list = list;
         this.context = context;
-        phongDao = new PhongDao(context);
         this.listSort = list;
     }
 

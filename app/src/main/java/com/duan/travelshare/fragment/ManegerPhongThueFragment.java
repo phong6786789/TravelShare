@@ -39,7 +39,6 @@ import android.widget.Toast;
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
 import com.duan.travelshare.adapter.PhongManagerAdapter;
-import com.duan.travelshare.firebasedao.PhongDao;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.HinhPhong;
@@ -65,7 +64,6 @@ import static android.app.Activity.RESULT_OK;
 
 public class ManegerPhongThueFragment extends Fragment {
 
-    private PhongDao phongDao;
     ShowDialog showDialog;
     FloatingActionButton btnAddPhongThue;
     ArrayList<ChiTietPhong> list = new ArrayList<>();
@@ -167,7 +165,6 @@ public class ManegerPhongThueFragment extends Fragment {
         });
         storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://truyen-60710.appspot.com");
         progressDialog = new ProgressDialog(getActivity());
-        phongDao = new PhongDao(getActivity());
         chiTietPhongAdapter = new PhongManagerAdapter(list, getActivity());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -179,7 +176,7 @@ public class ManegerPhongThueFragment extends Fragment {
         listImageFireBase.clear();
         listHinhPhong.clear();
         listHinh.clear();
-        key = phongDao.creatKey();
+        key = databaseReferencePhong.push().getKey();
         camera();
         final Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.add_room);

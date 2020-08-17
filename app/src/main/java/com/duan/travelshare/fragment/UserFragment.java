@@ -30,8 +30,6 @@ import android.widget.Toast;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
-import com.duan.travelshare.firebasedao.FullUserDao;
-import com.duan.travelshare.firebasedao.UserDao;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -59,8 +57,6 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     private TextView name, email;
     private User users;
     ShowDialog show;
-    UserDao userDao;
-    String emailUser = MainActivity.emailUser;
     public static FullUser list;
     View.OnClickListener listener;
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();

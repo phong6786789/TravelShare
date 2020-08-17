@@ -1,30 +1,23 @@
 package com.duan.travelshare.fragment;
-
 import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -42,14 +35,12 @@ import android.widget.ToggleButton;
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
 import com.duan.travelshare.adapter.ImageSlide;
-import com.duan.travelshare.firebasedao.ThongBaoDao;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.Save;
 import com.duan.travelshare.model.ThongBao;
 import com.duan.travelshare.model.GiaoDich;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -57,9 +48,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-
-import java.io.InputStream;
-import java.net.URL;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -70,7 +58,6 @@ import java.util.Locale;
 public class ChiTietPhongHomeFragment extends Fragment {
     Boolean check;
     final int SEND_SMS_PERMISSION_REQUEST_CODE = 111;
-    private Button sendSMS;
     private static final int REQUEST_CALL = 1;
     private ImageView user, call, messenger;
     static ToggleButton save;
@@ -84,7 +71,6 @@ public class ChiTietPhongHomeFragment extends Fragment {
     EditText hoten, cmnd, tungay, denngay, ghichu, tutime, dentime;
     private ArrayList<Save> listSave = new ArrayList<>();
     Button datPhongDat, huyDat;
-    //    private GiaoDichDao giaoDichDao;
     ShowDialog showDialog;
     Locale localeVN = new Locale("vi", "VN");
     NumberFormat fm = NumberFormat.getCurrencyInstance(localeVN);
@@ -97,7 +83,6 @@ public class ChiTietPhongHomeFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FullUser fullUser;
     private int mHour, mMinute;
-    ThongBaoDao thongBaoDao;
     static String idPhong;
     private View view;
     FullUser fullUserKhach;
@@ -263,7 +248,6 @@ public class ChiTietPhongHomeFragment extends Fragment {
         container.startShimmerAnimation();
         MainActivity.navigation.setVisibility(View.GONE);
         showDialog = new ShowDialog(getActivity());
-        thongBaoDao = new ThongBaoDao(getActivity());
         //Nhạn object
         idPhong = chiTietPhong.getIdPhong();
         //Khai báo

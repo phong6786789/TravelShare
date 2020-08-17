@@ -6,7 +6,7 @@
     android:background="@color/blue"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".login.Hello">
+    tools:context=".Hello">
 
     <TextView
         android:theme="@style/title"

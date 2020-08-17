@@ -1,25 +1,9 @@
-package com.duan.travelshare.login;
+package com.duan.travelshare;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.os.Bundle;
-import android.util.Base64;
-import android.util.Log;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.duan.travelshare.MainActivity;
-import com.duan.travelshare.R;
-import com.facebook.FacebookSdk;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 
 public class Hello extends AppCompatActivity {

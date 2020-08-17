@@ -17,8 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.duan.travelshare.R;
-import com.duan.travelshare.firebasedao.PhongDao;
-import com.duan.travelshare.firebasedao.ThongBaoDao;
 import com.duan.travelshare.fragment.ShowDialog;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.GiaoDich;
@@ -37,10 +35,8 @@ import java.util.Locale;
 public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.ViewHolder> {
     List<GiaoDich> list;
     Context context;
-    PhongDao phongDao;
     GiaoDich listP;
     ShowDialog showDialog;
-    ThongBaoDao thongBaoDao;
     ChiTietPhong chiTietPhong;
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference databaseReferencePhong = firebaseDatabase.getReference("Phong");
@@ -52,9 +48,7 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
     public TongGiaoDichdapter(List<GiaoDich> list, Context context) {
         this.list = list;
         this.context = context;
-        phongDao = new PhongDao(context);
         showDialog = new ShowDialog((Activity) context);
-        thongBaoDao = new ThongBaoDao(context);
         mAuth = FirebaseAuth.getInstance();
     }
 

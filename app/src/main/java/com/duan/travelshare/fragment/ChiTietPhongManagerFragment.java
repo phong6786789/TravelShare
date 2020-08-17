@@ -38,7 +38,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
 import com.duan.travelshare.adapter.ImageSlide;
-import com.duan.travelshare.firebasedao.PhongDao;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.HinhPhong;
@@ -85,7 +84,6 @@ public class ChiTietPhongManagerFragment extends Fragment {
     ArrayList<HinhPhong> listHinh = new ArrayList<>();
     private ArrayList<Uri> listHinhPhong = new ArrayList<>();
     private ArrayList<String> listImageFireBase = new ArrayList<>();
-    private PhongDao phongDao;
     Boolean checkLink = false;
     Locale localeVN = new Locale("vi", "VN");
     NumberFormat fm = NumberFormat.getCurrencyInstance(localeVN);
@@ -132,7 +130,6 @@ public class ChiTietPhongManagerFragment extends Fragment {
                 listImageFireBase.clear();
                 listHinhPhong.clear();
                 listHinh.clear();
-                phongDao = new PhongDao(getActivity());
                 final String key = chiTietPhong.getIdPhong();
                 final Dialog dialog = new Dialog(getActivity());
                 dialog.setContentView(R.layout.add_room);

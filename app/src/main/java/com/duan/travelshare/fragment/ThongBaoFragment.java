@@ -18,8 +18,8 @@ import android.widget.Toast;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
+import com.duan.travelshare.adapter.TBAdapter;
 import com.duan.travelshare.adapter.ThongBaoAdapter;
-import com.duan.travelshare.firebasedao.ThongBaoDao;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.GiaoDich;
 import com.duan.travelshare.model.ThongBao;
@@ -47,6 +47,7 @@ public class ThongBaoFragment extends Fragment {
     DatabaseReference databaseReferenceGD = firebaseDatabase.getReference("GiaoDich");
     private FirebaseAuth mAuth;
     String uID;
+    TBAdapter adapter;
     FirebaseRecyclerAdapter adapterFirebase;
     ShimmerFrameLayout container;
     public ThongBaoFragment() {
@@ -64,8 +65,8 @@ public class ThongBaoFragment extends Fragment {
         if (mAuth.getCurrentUser() != null) {
             uID = mAuth.getCurrentUser().getUid();
             init();
-//            getAllTB();
-            setUpFireBase();
+            getAllTB();
+//            setUpFireBase();
         }
         return view;
     }
@@ -80,6 +81,12 @@ public class ThongBaoFragment extends Fragment {
         recThongBao = view.findViewById(R.id.recThongBao);
         container = (ShimmerFrameLayout) view.findViewById(R.id.shimmer_view_container);
         container.startShimmerAnimation();
+
+        adapter = new TBAdapter(getActivity(), listTB);
+        recThongBao.setAdapter(adapter);
+        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getActivity());
+        linearLayoutManager2.setOrientation(LinearLayoutManager.VERTICAL);
+        recThongBao.setLayoutManager(linearLayoutManager2);
     }
 
     private void getAllTB() {
@@ -93,7 +100,8 @@ public class ThongBaoFragment extends Fragment {
                         listTB.add(thongBao);
                     }
                 }
-//                thongBaoAdapter.notifyDataSetChanged();
+                container.setVisibility(View.GONE);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -103,19 +111,19 @@ public class ThongBaoFragment extends Fragment {
         });
     }
 
-    private void setUpFireBase() {
-        adapterFirebase = new FirebaseRecyclerAdapter<ThongBao, ThongBaoAdapter>
-                (ThongBao.class, R.layout.one_thongbao, ThongBaoAdapter.class, databaseReferenceTB) {
-
-            @Override
-            protected void populateViewHolder(ThongBaoAdapter thongBaoAdapter, ThongBao thongBao, int i) {
-                thongBaoAdapter.bindThongBao(thongBao);
-                container.setVisibility(View.GONE);
-            }
-
-        };
-        recThongBao.setHasFixedSize(true);
-        recThongBao.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recThongBao.setAdapter(adapterFirebase);
-    }
+//    private void setUpFireBase() {
+//        adapterFirebase = new FirebaseRecyclerAdapter<ThongBao, ThongBaoAdapter>
+//                (ThongBao.class, R.layout.one_thongbao, ThongBaoAdapter.class,databaseReferenceTB) {
+//
+//            @Override
+//            protected void populateViewHolder(ThongBaoAdapter thongBaoAdapter, ThongBao thongBao, int i) {
+//                thongBaoAdapter.bindThongBao(thongBao);
+//                container.setVisibility(View.GONE);
+//            }
+//
+//        };
+//        recThongBao.setHasFixedSize(true);
+//        recThongBao.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        recThongBao.setAdapter(adapterFirebase);
+//    }
 }
