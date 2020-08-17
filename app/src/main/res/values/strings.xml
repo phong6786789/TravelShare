@@ -17,4 +17,5 @@
     <string name="tin">Quý khách đã giao dịch thành công!!!</string>
     <string name="msg_token_fmt">a</string>
     <string name="quenMk"><u>Quên mật khẩu?</u></string>
+    <string name="channelId">Notify</string>
 </resources>

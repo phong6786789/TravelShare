@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -52,10 +54,20 @@ public class MainActivity extends AppCompatActivity {
 
         navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
-        //Tạo màn hình ban đầu là fragment home đầu tiên
-        if (savedInstanceState == null) {
-            loadFragment(new HomeFragment());
+
+        String extras = getIntent().getStringExtra("data");;
+        if (extras != null&&extras.equals("thongbao")) {
+         loadFragment(new ThongBaoFragment());
+         navigation.setSelectedItemId(R.id.thongbao);
         }
+        else {
+            //Tạo màn hình ban đầu là fragment home đầu tiên
+            if (savedInstanceState == null) {
+                loadFragment(new HomeFragment());
+            }
+        }
+
+
     }
 
     //Menu bottom

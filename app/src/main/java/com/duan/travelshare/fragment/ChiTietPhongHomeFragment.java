@@ -38,12 +38,18 @@ import android.widget.ToggleButton;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
+import com.duan.travelshare.Service.APIService;
+import com.duan.travelshare.Service.Client;
+import com.duan.travelshare.Service.Data;
+import com.duan.travelshare.Service.MyResponse;
+import com.duan.travelshare.Service.Sender;
 import com.duan.travelshare.adapter.ImageSlide;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.Save;
 import com.duan.travelshare.model.ThongBao;
 import com.duan.travelshare.model.GiaoDich;
+import com.duan.travelshare.model.User;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -59,6 +65,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChiTietPhongHomeFragment extends Fragment {
     Boolean check;
@@ -84,6 +94,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
     DatabaseReference databaseReferenceGD = firebaseDatabase.getReference("GiaoDich");
     DatabaseReference databaseReferenceTB = firebaseDatabase.getReference("ThongBao");
     DatabaseReference databaseReferenceSave = firebaseDatabase.getReference("Save");
+    DatabaseReference databaseReferenceUser = firebaseDatabase.getReference("User");
     String uID;
     private FirebaseAuth mAuth;
     private FullUser fullUser;
@@ -95,6 +106,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
     RelativeLayout chitiet;
     ViewPager viewPager;
     LinearLayout pager_indicator;
+    private APIService apiService;
 
     public ChiTietPhongHomeFragment() {
         // Required empty public constructor
@@ -561,6 +573,32 @@ public class ChiTietPhongHomeFragment extends Fragment {
                             GiaoDichFragment.lisTongGG.clear();
                             GiaoDichFragment.listDangGG.clear();
                             showDialog.show("Đặt phòng thành công!");
+
+                            final String idEmail = chiTietPhong.getuID();
+                            databaseReferenceUser.child(idEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    User u = snapshot.getValue(User.class);
+
+                                    String token = u.getToken();
+
+                                    if (!token.equals("")) {
+                                        Toast.makeText(getActivity(), token, Toast.LENGTH_SHORT).show();
+
+                                        String title = "CÓ ĐƠN ĐẶT PHÒNG MỚI";
+                                        String message = fullUser.getUserName()+" đã đặt phòng của bạn.";
+                                        sendNotifications(token, title, message);
+                                    }
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
+
                             dialog.dismiss();
                         }
 
@@ -656,7 +694,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
     public void setViewPager() {
         final int size = chiTietPhong.getImgPhong().size();
         pager_indicator = view.findViewById(R.id.viewPagerCountDots);
-        if(size==1){
+        if (size == 1) {
             pager_indicator.setVisibility(View.GONE);
         }
         viewPager = view.findViewById(R.id.viewPager);
@@ -717,4 +755,24 @@ public class ChiTietPhongHomeFragment extends Fragment {
         });
     }
 
+    public void sendNotifications(String usertoken, String title, String message) {
+        Data data = new Data(title, message);
+        Sender sender = new Sender(data, usertoken);
+        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
+        apiService.sendNotifcation(sender).enqueue(new Callback<MyResponse>() {
+            @Override
+            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                if (response.code() == 200) {
+                    if (response.body().success != 1) {
+                        Toast.makeText(getActivity(), "Failed ", Toast.LENGTH_LONG);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MyResponse> call, Throwable t) {
+
+            }
+        });
+    }
 }
