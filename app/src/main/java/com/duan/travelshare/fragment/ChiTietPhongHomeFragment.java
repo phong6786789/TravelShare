@@ -204,6 +204,8 @@ public class ChiTietPhongHomeFragment extends Fragment {
                         }
                     } else {
                         showDialog.show("Vui lòng đăng nhập trước!");
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.frame,new LoginFragment()).commit();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
