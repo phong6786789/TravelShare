@@ -1,5 +1,6 @@
 package com.duan.travelshare.adapter;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -29,11 +30,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.duan.travelshare.R;
 import com.duan.travelshare.fragment.ChiTietPhongHomeFragment;
 import com.duan.travelshare.fragment.ChiTietPhongManagerFragment;
+import com.duan.travelshare.fragment.ShowDialog;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
@@ -44,33 +49,35 @@ import java.util.Locale;
 public class PhongManagerAdapter extends RecyclerView.Adapter<PhongManagerAdapter.ViewHolder> {
     List<ChiTietPhong> list;
     Context context;
-<<<<<<< HEAD
-    PhongDao phongDao;
-    private FirebaseAuth mAuth;
-    ChiTietPhong chiTietPhong;
-=======
->>>>>>> 3ba8f85d73035eb1e689d9b2473de1e53f6f5657
     List<ChiTietPhong> listSort;
     Filter filter;
     Locale localeVN = new Locale("vi", "VN");
     NumberFormat fm = NumberFormat.getCurrencyInstance(localeVN);
+    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    DatabaseReference databaseReference = firebaseDatabase.getReference("Phong");
+    DatabaseReference databaseReferenceTB = firebaseDatabase.getReference("ThongBao");
+    ShowDialog showDialog;
+    ChiTietPhong listP;
+
     public PhongManagerAdapter(List<ChiTietPhong> list, Context context) {
         this.list = list;
         this.context = context;
         this.listSort = list;
+        showDialog = new ShowDialog((Activity) context);
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.one_room, parent, false);
+
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.ten.setText(list.get(position).getTenPhong());
-        holder.gia.setText(fm.format(Integer.parseInt(list.get(position).getGiaPhong()))+"/ngày");
+        holder.gia.setText(fm.format(Integer.parseInt(list.get(position).getGiaPhong())) + "/ngày");
         holder.diachi.setText(list.get(position).getDiaChiPhong());
         if (list.get(position).getImgPhong().size() != 0) {
             Picasso.with(context).load(list.get(position).getImgPhong().get(0)).into(holder.img);
@@ -86,6 +93,7 @@ public class PhongManagerAdapter extends RecyclerView.Adapter<PhongManagerAdapte
         public ImageView img;
         public TextView ten, gia, diachi;
 
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             img = itemView.findViewById(R.id.imgP);
@@ -97,21 +105,21 @@ public class PhongManagerAdapter extends RecyclerView.Adapter<PhongManagerAdapte
 
         @Override
         public void onClick(View view) {
-
+            int position = getLayoutPosition();
+            listP = list.get(position);
             final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(
-                    context,R.style.BottomSheetDialogTheme
+                    context, R.style.BottomSheetDialogTheme
             );
 
             View bottomSheetView = LayoutInflater.from(context).inflate(
                     R.layout.bottom_sheet_dialog,
-                    (LinearLayout)bottomSheetDialog.findViewById(R.id.bottomSheetContainer)
+                    (LinearLayout) bottomSheetDialog.findViewById(R.id.bottomSheetContainer)
             );
             bottomSheetView.findViewById(R.id.txt_XemChiTiet).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     bottomSheetDialog.dismiss();
-                    int position = getLayoutPosition();
-                     ChiTietPhong listP = list.get(position);
+
                     ChiTietPhongManagerFragment chiTietPhong = new ChiTietPhongManagerFragment();
 
                     Bundle bundle = new Bundle();
@@ -140,10 +148,22 @@ public class PhongManagerAdapter extends RecyclerView.Adapter<PhongManagerAdapte
                             .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    phongDao.delete(list.get(getAdapterPosition()));
-                                    list.clear();
-                                    list.addAll(phongDao.getAllPhong());
-                                    Toast.makeText(context, "Xoá thành công", Toast.LENGTH_SHORT).show();
+                                    databaseReference.child(listP.getIdPhong()).removeValue();
+                                    databaseReferenceTB.orderByChild("idPhong").equalTo(listP.getIdPhong()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                                                String key = childSnapshot.getKey();
+                                                databaseReferenceTB.child(key).removeValue();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+                                    showDialog.show("Xóa thành công");
                                 }
                             })
                             .setNegativeButton("Không", new DialogInterface.OnClickListener() {
