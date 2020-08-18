@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
 import com.duan.travelshare.fragment.ChiTietPhongHomeFragment;
 import com.duan.travelshare.model.ChiTietPhong;
@@ -46,6 +47,7 @@ public class PhongHomeAdapter extends RecyclerView.Adapter<PhongHomeAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        MainActivity.navigation.setVisibility(View.VISIBLE);
         holder.tenPhong.setText(list.get(position).getTenPhong());
         holder.giaPhong.setText(fm.format(Integer.parseInt(list.get(position).getGiaPhong()))+"/ngày");
         holder.diachiPhong.setText(list.get(position).getDiaChiPhong());
@@ -86,7 +88,9 @@ public class PhongHomeAdapter extends RecyclerView.Adapter<PhongHomeAdapter.View
 
             FragmentManager fragmentManager = ((AppCompatActivity) view.getContext()).getSupportFragmentManager();
             fragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.slide_up,R.anim.from_defaut, R.anim.slide_bottom,R.anim.from_defaut)
                     .replace(R.id.frame, chiTietPhong)
+                    .addToBackStack(null)
                     .commit();
         }
     }

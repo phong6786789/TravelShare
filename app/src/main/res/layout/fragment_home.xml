@@ -11,6 +11,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -41,7 +43,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/imgMyMap"
@@ -77,18 +80,23 @@
                 android:layout_height="match_parent">
 
                 <com.facebook.shimmer.ShimmerFrameLayout
-                    android:orientation="vertical"
                     android:id="@+id/shimmer_view_container"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
-                        <include layout="@layout/dataplaceholderlayout"/>
-                        <include layout="@layout/dataplaceholderlayout"/>
-                        <include layout="@layout/dataplaceholderlayout"/>
-                        <include layout="@layout/dataplaceholderlayout"/>
+
+                        <include layout="@layout/dataplaceholderlayout" />
+
+                        <include layout="@layout/dataplaceholderlayout" />
+
+                        <include layout="@layout/dataplaceholderlayout" />
+
+                        <include layout="@layout/dataplaceholderlayout" />
                     </LinearLayout>
 
 
@@ -100,5 +108,27 @@
                     android:layout_height="match_parent" />
             </FrameLayout>
         </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/lnEmtyGDHome"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_gravity="center"
+            android:src="@drawable/room"
+            android:layout_width="match_parent"
+            android:layout_height="70dp" />
+        <TextView
+            android:id="@+id/textEmty"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/blue"
+            android:textAlignment="center"
+            android:text="Bạn chưa lưu phòng nào"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 </FrameLayout>

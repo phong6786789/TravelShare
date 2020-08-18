@@ -129,6 +129,7 @@ public class PhongManagerAdapter extends RecyclerView.Adapter<PhongManagerAdapte
 
                     FragmentManager fragmentManager = ((AppCompatActivity) view.getContext()).getSupportFragmentManager();
                     fragmentManager.beginTransaction()
+                            .setCustomAnimations(R.anim.fragment_enter, R.anim.fragment_exit, R.anim.fragment_pop_enter, R.anim.fragment_pop_exit)
                             .replace(R.id.frame, chiTietPhong)
                             .commit();
                 }

@@ -33,6 +33,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ import com.duan.travelshare.adapter.PhongManagerAdapter;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.HinhPhong;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -63,7 +65,8 @@ import java.util.UUID;
 import static android.app.Activity.RESULT_OK;
 
 public class ManegerPhongThueFragment extends Fragment {
-
+    LinearLayout lnEmty;
+    ShimmerFrameLayout containerx;
     ShowDialog showDialog;
     ImageView btnAddPhongThue;
     ArrayList<ChiTietPhong> list = new ArrayList<>();
@@ -103,9 +106,12 @@ public class ManegerPhongThueFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_maneger_phong_thue, container, false);
+        containerx = (ShimmerFrameLayout) view.findViewById(R.id.shimmer_view_containerPT);
+        lnEmty = view.findViewById(R.id.lnEmtyPhongThue);
         mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null) {
             uID = mAuth.getCurrentUser().getUid();
+            containerx.startShimmerAnimation();
         }
         init();
 
@@ -179,6 +185,7 @@ public class ManegerPhongThueFragment extends Fragment {
         key = databaseReferencePhong.push().getKey();
         camera();
         final Dialog dialog = new Dialog(getActivity());
+        dialog.getWindow().getAttributes().windowAnimations = R.style.up_down;
         dialog.setContentView(R.layout.add_room);
         dialog.setCancelable(true);
         Window window = dialog.getWindow();
@@ -498,6 +505,14 @@ public class ManegerPhongThueFragment extends Fragment {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     ChiTietPhong chiTietPhong = postSnapshot.getValue(ChiTietPhong.class);
                     list.add(chiTietPhong);
+                }
+                if(list.isEmpty()){
+                    lnEmty.setVisibility(View.VISIBLE);
+                    containerx.setVisibility(View.GONE);
+                }
+                else {
+                    containerx.setVisibility(View.GONE);
+                    lnEmty.setVisibility(View.INVISIBLE);
                 }
                 chiTietPhongAdapter.notifyDataSetChanged();
             }

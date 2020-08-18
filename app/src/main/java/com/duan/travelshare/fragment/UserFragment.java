@@ -369,7 +369,9 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         if (fragment != null) {
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
+                    .setCustomAnimations(R.anim.slide_up,R.anim.from_defaut, R.anim.slide_bottom,R.anim.from_defaut)
                     .replace(R.id.frame, fragment)
+                    .addToBackStack(null)
                     .commit();
         }
     }

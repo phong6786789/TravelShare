@@ -71,6 +71,8 @@ public class HomeFragment extends Fragment {
     LinearLayout map;
     private View view;
     ShimmerFrameLayout container;
+    LinearLayout lnEmty;
+    TextView textEmty;
     public HomeFragment() {
     }
 
@@ -87,7 +89,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void init() {
-
+        lnEmty = view.findViewById(R.id.lnEmtyGDHome);
+        textEmty = view.findViewById(R.id.textEmty);
         map = view.findViewById(R.id.lnMap);
         mAuth = FirebaseAuth.getInstance();
         rcvPhong = view.findViewById(R.id.listPhong);
@@ -147,6 +150,13 @@ public class HomeFragment extends Fragment {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     ChiTietPhong chiTietPhong = postSnapshot.getValue(ChiTietPhong.class);
                     list.add(chiTietPhong);
+                }
+                if(list.isEmpty()){
+                    lnEmty.setVisibility(View.VISIBLE);
+                    textEmty.setText("Chưa có phòng nào để xem");
+                }
+                else {
+                    lnEmty.setVisibility(View.INVISIBLE);
                 }
                 container.setVisibility(View.GONE);
                 phongAdapter.notifyDataSetChanged();

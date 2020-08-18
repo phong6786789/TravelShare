@@ -164,7 +164,7 @@ public class RegisterFragment extends Fragment {
             requestFocus(mk);
             return false;
         } else if (mk.getText().toString().length() < 6) {
-            tilMk.setError("Mật khẩu phải là 6 ký tự");
+            tilMk.setError("Mật khẩu phải từ 6 ký tự trở lên");
             requestFocus(mk);
             return false;
         } else {
@@ -190,7 +190,7 @@ public class RegisterFragment extends Fragment {
 
     private boolean validateEmail() {
         if (tk.getText().toString().trim().isEmpty()) {
-            tilTk.setError("Bắt buộc nhập mật Email");
+            tilTk.setError("Bắt buộc nhập email");
             requestFocus(tk);
             return false;
         } else {

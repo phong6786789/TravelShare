@@ -108,6 +108,9 @@ public class ChiTietPhongHomeFragment extends Fragment {
     LinearLayout pager_indicator;
     static APIService apiService;
 
+    String pattern = "dd/MM/yyyy";
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
     public ChiTietPhongHomeFragment() {
         // Required empty public constructor
     }
@@ -544,7 +547,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //Check email
-                String ten, cm, tu, den, ghi, time1, time2;
+                final String ten, cm, tu, den, ghi, time1, time2;
                 ten = hoten.getText().toString();
                 cm = cmnd.getText().toString();
                 tu = tungay.getText().toString();
@@ -552,9 +555,24 @@ public class ChiTietPhongHomeFragment extends Fragment {
                 ghi = ghichu.getText().toString();
                 time1 = tutime.getText().toString();
                 time2 = dentime.getText().toString();
+                Boolean checkNgay=true;
+                try {
+                    Date tuNgay = simpleDateFormat.parse(tu);
+                    Date denNgay = simpleDateFormat.parse(den);
+                    if(tuNgay.after(denNgay)){
+                        checkNgay = false;
+                    }
+                    else {
+                        checkNgay=true;
+                    }
+                } catch (Exception e){
+
+                }
                 //Check lỗi
                 if (ten.isEmpty() || cm.isEmpty() || tu.isEmpty() || den.isEmpty() || time1.isEmpty() || time2.isEmpty()) {
                     showDialog.show("Các trường không được để trống!");
+                } else if (!checkNgay) {
+                    showDialog.show("Ngày trả phòng không được trước ngày đặt");
                 } else {
                     final String keyGD = chiTietPhong.getIdPhong() + "_" + fullUserKhach.getuID();
                     final GiaoDich giaoDich = new GiaoDich(keyGD, chiTietPhong.getIdPhong(), fullUserKhach.getuID(), ten, cm, time1, tu, time2, den, ghi, "0");
@@ -588,10 +606,8 @@ public class ChiTietPhongHomeFragment extends Fragment {
                                     String token = u.getToken();
 
                                     if (!token.equals("")) {
-                                        Toast.makeText(getActivity(), token, Toast.LENGTH_SHORT).show();
-
                                         String title = "Có đơn đặt phòng mới";
-                                        String message = fullUser.getUserName()+" đã đặt phòng của bạn. Vui lòng xác nhận giao dịch.";
+                                        String message = ten + " đã đặt phòng của bạn. Vui lòng xác nhận giao dịch.";
                                         sendNotifications(token, title, message);
                                     }
 

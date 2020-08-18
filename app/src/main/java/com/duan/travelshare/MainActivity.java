@@ -128,36 +128,18 @@ public class MainActivity extends AppCompatActivity {
 
 
     //Chặn hành động bấm phím back của người dùng
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (keyCode == KeyEvent.KEYCODE_BACK) {
+//
+//            return true;
+//        }
+//
+//        return super.onKeyDown(keyCode, event);
+//    }
 
-            return true;
-        }
-
-        return super.onKeyDown(keyCode, event);
-    }
 
 
-    //Set info lên user
-    public static void setUser() {
-        for (int i = 0; i < list.size(); i++) {
-            String x = list.get(i).getEmailUser();
-            if (email.matches(x) || userName.matches(x)) {
-                position = i;
-                break;
-            }
-        }
-        fullUserOne = list.get(position);
-    }
-
-    //Kiểm tra đăng nhập bằng tài khoản hay không?
-    public void checkLoginTk() {
-        if (!MainActivity.userName.matches("0")) {
-            emailUser = userName;
-        }
-        emailUser = email;
-    }
 
     private void getToken() {
         FirebaseInstanceId.getInstance().getInstanceId()

@@ -1,13 +1,16 @@
 package com.duan.travelshare.fragment;
 
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +29,7 @@ import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.GiaoDich;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -55,7 +59,9 @@ public class GiaoDichFragment extends Fragment {
     FullUser fullUser;
     ChiTietPhong chiTietPhong;
     View view;
-
+    LinearLayout lnEmty;
+    private ViewPager pager;
+    private TabLayout tabLayout;
     public GiaoDichFragment() {
         // Required empty public constructor
     }
@@ -65,12 +71,32 @@ public class GiaoDichFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_giao_dich, container, false);
+        lnEmty = view.findViewById(R.id.lnEmtyGD);
 
         init();
         return view;
     }
 
     private void init() {
+        pager = view.findViewById(R.id.view_pager);
+        tabLayout = view.findViewById(R.id.tab_layout);
+        FragmentManager manager = getActivity().getSupportFragmentManager();
+        PagerAdapter adapter = new PagerAdapter(manager);
+        pager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(pager);
+        pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.setTabsFromPagerAdapter(adapter);//deprecated
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(pager));
+
+        View root = tabLayout.getChildAt(0);
+        if (root instanceof LinearLayout) {
+            ((LinearLayout) root).setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+            GradientDrawable drawable = new GradientDrawable();
+            drawable.setColor(getResources().getColor(R.color.blue));
+            drawable.setSize(2, 1);
+            ((LinearLayout) root).setDividerPadding(10);
+            ((LinearLayout) root).setDividerDrawable(drawable);
+        }
 
         //Toolbar
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
@@ -78,119 +104,11 @@ public class GiaoDichFragment extends Fragment {
         ImageView back = toolbar.findViewById(R.id.tbBack);
         title.setText("GIAO DỊCH");
         back.setVisibility(View.INVISIBLE);
-        //RECYCLEVIEW
-        DangGG = view.findViewById(R.id.listDangGG);
-        TongGG = view.findViewById(R.id.listTongGG);
-        lnDangGG = view.findViewById(R.id.listDangGiaoDich);
-        lnTongGG = view.findViewById(R.id.listTongGiaoDich);
-        khachGiaoDichAdapter = new KhachGiaoDichAdapter(listDangGG, getActivity());
-        DangGG.setAdapter(khachGiaoDichAdapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        DangGG.setLayoutManager(linearLayoutManager);
-
-        tongGiaoDichdapter = new TongGiaoDichdapter(lisTongGG, getActivity());
-        TongGG.setAdapter(tongGiaoDichdapter);
-        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getActivity());
-        linearLayoutManager2.setOrientation(LinearLayoutManager.VERTICAL);
-        TongGG.setLayoutManager(linearLayoutManager2);
-
     }
 
 
-    private void getGDKhach() {
-        databaseReferenceGD.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ArrayList<GiaoDich> list = new ArrayList<>();
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    GiaoDich gd = postSnapshot.getValue(GiaoDich.class);
-                    list.add(gd);
-                }
-                listDangGG.clear();
-                for (int i = 0; i < list.size(); i++) {
-                    final int z = i;
-                    if (list.get(z).getIdUser().equalsIgnoreCase(mAuth.getCurrentUser().getUid())) {
-                        listDangGG.add(list.get(z));
-                        lnDangGG.setVisibility(View.VISIBLE);
-                        Log.i("TAG", "email của người đặt: " + mAuth.getCurrentUser().getUid());
-                        khachGiaoDichAdapter.notifyDataSetChanged();
-                    }
-                    container.setVisibility(View.GONE);
-                }
-                container.setVisibility(View.GONE);
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-    }
 
-    private void getGDTong(){
-        final ArrayList<GiaoDich> list2 = new ArrayList<>();
-        databaseReferenceGD.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                list2.clear();
-                lisTongGG.clear();
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    GiaoDich gd = postSnapshot.getValue(GiaoDich.class);
-                    list2.add(gd);
-                }
-                for (int i = 0; i < list2.size(); i++) {
-                    String idPhong = list2.get(i).getIdPhong();
-                    final int z = i;
-
-                    for(int j=0;j<listPhong.size();j++){
-                        ChiTietPhong chiTietPhong = listPhong.get(j);
-                        if(chiTietPhong.getIdPhong().equalsIgnoreCase(idPhong)){
-                            if (chiTietPhong.getuID().equalsIgnoreCase(mAuth.getCurrentUser().getUid())) {
-                                lisTongGG.add(list2.get(z));
-                                lnTongGG.setVisibility(View.VISIBLE);
-                                tongGiaoDichdapter.notifyDataSetChanged();
-                            }
-                            container.setVisibility(View.GONE);
-                        }
-                    }
-                }
-                container.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mAuth = FirebaseAuth.getInstance();
-        container = (ShimmerFrameLayout) view.findViewById(R.id.shimmer_GD);
-        container.setVisibility(View.GONE);
-        if (mAuth.getCurrentUser() != null) {
-            uID = mAuth.getCurrentUser().getUid();
-            container.setVisibility(View.VISIBLE);
-            container.startShimmerAnimation();
-            databaseReferencePhong.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    listPhong.clear();
-                    for(DataSnapshot ds: snapshot.getChildren()){
-                        ChiTietPhong chiTietP = ds.getValue(ChiTietPhong.class);
-                        listPhong.add(chiTietP);
-                    }
-                    getGDKhach();
-                    getGDTong();
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                }
-            });
-        }
-    }
 
 
 }

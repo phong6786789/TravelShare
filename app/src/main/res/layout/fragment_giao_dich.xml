@@ -3,89 +3,52 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="8dp"
     android:orientation="vertical"
     tools:context=".fragment.GiaoDichFragment">
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/lnEmtyGD"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/shimmer_GD"
+        <ImageView
+            android:layout_gravity="center"
+            android:src="@drawable/room"
+            android:layout_width="match_parent"
+            android:layout_height="70dp" />
+        <TextView
+            android:layout_marginTop="8dp"
+            android:textColor="@color/blue"
+            android:textAlignment="center"
+            android:text="Bạn chưa có giao dịch nào"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context=".MainActivity">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <include layout="@layout/srimmergiaodich" />
-
-            <include layout="@layout/srimmergiaodich" />
-
-            <include layout="@layout/srimmergiaodich" />
-
-            <include layout="@layout/srimmergiaodich" />
-
-            <include layout="@layout/srimmergiaodich" />
-        </LinearLayout>
-
-    </com.facebook.shimmer.ShimmerFrameLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:id="@+id/listDangGiaoDich"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <com.google.android.material.tabs.TabLayout
             android:layout_alignParentTop="true"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/border2"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/blue"
-                android:padding="9dp"
-                android:text="ĐANG GIAO DỊCH"
-                android:textAlignment="center"
-                android:textColor="@color/bg"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/listDangGG"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/listTongGiaoDich"
+            android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/listDangGiaoDich"
-            android:background="@drawable/border2"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:layout_height="48dp"
+            app:tabSelectedTextColor="@color/blue">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/blue"
-                android:padding="9dp"
-                android:text="DANH SÁCH KHÁCH ĐẶT PHÒNG"
-                android:textAlignment="center"
-                android:textColor="@color/bg"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/listTongGG"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
+        </com.google.android.material.tabs.TabLayout>
+        <androidx.viewpager.widget.ViewPager
+            android:layout_below="@id/tab_layout"
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </RelativeLayout>
+
+
+
 </FrameLayout>

@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.duan.travelshare.MainActivity;
@@ -45,6 +46,7 @@ public class ThongBaoFragment extends Fragment {
     TBAdapter adapter;
     FirebaseRecyclerAdapter adapterFirebase;
     ShimmerFrameLayout containerx;
+    LinearLayout lnEmty;
     public ThongBaoFragment() {
         // Required empty public constructor
     }
@@ -56,20 +58,29 @@ public class ThongBaoFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_thong_bao, container, false);
         //Toolbar
+        lnEmty = view.findViewById(R.id.lnEmtyTB);
         mAuth = FirebaseAuth.getInstance();
         containerx = (ShimmerFrameLayout) view.findViewById(R.id.shimmer_view_container);
-        containerx.setVisibility(View.GONE);
-        if (mAuth.getCurrentUser() != null) {
-            uID = mAuth.getCurrentUser().getUid();
-            containerx.startShimmerAnimation();
-            init();
-            getAllTB();
+       try {
+           if (mAuth.getCurrentUser() != null) {
+               uID = mAuth.getCurrentUser().getUid();
+               containerx.startShimmerAnimation();
+               init();
+               getAllTB();
 //            setUpFireBase();
-        }
+           }
+           else {
+               lnEmty.setVisibility(View.VISIBLE);
+           }
+       }
+       catch (Exception e){
+           e.printStackTrace();
+       }
         return view;
     }
 
     private void init() {
+
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         TextView title = toolbar.findViewById(R.id.tbTitle);
         ImageView back = toolbar.findViewById(R.id.tbBack);
@@ -98,8 +109,16 @@ public class ThongBaoFragment extends Fragment {
                         listTB.add(thongBao);
                     }
                 }
-                containerx.setVisibility(View.GONE);
-                adapter.notifyDataSetChanged();
+                if(listTB.isEmpty()){
+                    lnEmty.setVisibility(View.VISIBLE);
+                    containerx.setVisibility(View.GONE);
+                }
+                else {
+                    lnEmty.setVisibility(View.INVISIBLE);
+                    containerx.setVisibility(View.GONE);
+                    adapter.notifyDataSetChanged();
+                }
+
             }
 
             @Override
@@ -108,20 +127,5 @@ public class ThongBaoFragment extends Fragment {
             }
         });
     }
-
-//    private void setUpFireBase() {
-//        adapterFirebase = new FirebaseRecyclerAdapter<ThongBao, ThongBaoAdapter>
-//                (ThongBao.class, R.layout.one_thongbao, ThongBaoAdapter.class,databaseReferenceTB) {
-//
-//            @Override
-//            protected void populateViewHolder(ThongBaoAdapter thongBaoAdapter, ThongBao thongBao, int i) {
-//                thongBaoAdapter.bindThongBao(thongBao);
-//                container.setVisibility(View.GONE);
-//            }
-//
-//        };
-//        recThongBao.setHasFixedSize(true);
-//        recThongBao.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        recThongBao.setAdapter(adapterFirebase);
 //    }
 }

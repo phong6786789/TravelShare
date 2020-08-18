@@ -43,6 +43,8 @@ public class SaveFragment extends Fragment {
     DatabaseReference databaseReferenceSave = firebaseDatabase.getReference("Save");
     private FirebaseAuth mAuth;
     ShimmerFrameLayout containerx;
+    LinearLayout lnEmty;
+    TextView textEmty;
     public SaveFragment() {
     }
 
@@ -51,6 +53,8 @@ public class SaveFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         //Toolbar
+        lnEmty = view.findViewById(R.id.lnEmtyGDHome);
+        textEmty = view.findViewById(R.id.textEmty);
         containerx = (ShimmerFrameLayout) view.findViewById(R.id.shimmer_view_container);
         containerx.startShimmerAnimation();
         mAuth = FirebaseAuth.getInstance();
@@ -115,6 +119,12 @@ public class SaveFragment extends Fragment {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     Save s = postSnapshot.getValue(Save.class);
                     list.add(s);
+                }
+                if(list.isEmpty()){
+                    lnEmty.setVisibility(View.VISIBLE);
+                }
+                else {
+                    lnEmty.setVisibility(View.INVISIBLE);
                 }
                 containerx.setVisibility(View.GONE);
                 saveAdapter.notifyDataSetChanged();
