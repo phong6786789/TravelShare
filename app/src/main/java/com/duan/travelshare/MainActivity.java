@@ -1,4 +1,5 @@
 package com.duan.travelshare;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+
 import com.duan.travelshare.fragment.GiaoDichFragment;
 import com.duan.travelshare.fragment.HomeFragment;
 import com.duan.travelshare.fragment.ShowDialog;
@@ -24,12 +26,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     public static String name = "0", email = "0", userName = "0";
-
+    int startingPosition = 0;
     public static ArrayList<FullUser> list = new ArrayList<>();
     public static int position = -1;
     public static FullUser fullUserOne;
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference databaseReference = firebaseDatabase.getReference("User");
     private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,22 +52,21 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         showDialog = new ShowDialog(this);
         mAuth = FirebaseAuth.getInstance();
-        if(mAuth.getCurrentUser()!=null){
+        if (mAuth.getCurrentUser() != null) {
             getToken();
         }
 
         navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
 
-        String extras = getIntent().getStringExtra("data");;
-        if (extras != null&&extras.equals("thongbao")) {
-         loadFragment(new ThongBaoFragment());
-         navigation.setSelectedItemId(R.id.thongbao);
-        }
-        else {
+        String extras = getIntent().getStringExtra("data");
+        if (extras != null && extras.equals("thongbao")) {
+            loadFragment(new ThongBaoFragment(),2);
+            navigation.setSelectedItemId(R.id.thongbao);
+        } else {
             //Tạo màn hình ban đầu là fragment home đầu tiên
             if (savedInstanceState == null) {
-                loadFragment(new HomeFragment());
+                loadFragment(new HomeFragment(),1);
             }
         }
 
@@ -79,33 +82,48 @@ public class MainActivity extends AppCompatActivity {
             switch (menuItem.getItemId()) {
                 case R.id.home:
                     fragment = new HomeFragment();
-                    loadFragment(fragment);
+                    loadFragment(fragment,1);
                     return true;
 
                 case R.id.giaodich:
                     fragment = new GiaoDichFragment();
-                    loadFragment(fragment);
+                    loadFragment(fragment,2);
                     return true;
                 case R.id.thongbao:
                     fragment = new ThongBaoFragment();
-                    loadFragment(fragment);
+                    loadFragment(fragment,3);
                     return true;
 
                 case R.id.user:
                     fragment = new UserFragment();
-                    loadFragment(fragment);
+                    loadFragment(fragment,4);
                     return true;
             }
             return false;
         }
     };
 
-    private void loadFragment(Fragment fragment) {
-        // load fragment
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frame, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+    private boolean loadFragment(Fragment fragment, int newPosition) {
+        if (fragment != null) {
+            if (startingPosition > newPosition) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.from_left, R.anim.to_right)
+                        .replace(R.id.frame, fragment).commit();
+
+            }
+            if (startingPosition < newPosition) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.from_right, R.anim.to_left)
+                        .replace(R.id.frame, fragment).commit();
+
+            }
+            startingPosition = newPosition;
+            return true;
+        }
+
+        return false;
     }
 
 

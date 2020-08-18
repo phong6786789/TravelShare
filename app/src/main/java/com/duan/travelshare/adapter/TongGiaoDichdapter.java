@@ -17,9 +17,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.duan.travelshare.R;
+import com.duan.travelshare.fragment.ChiTietPhongHomeFragment;
 import com.duan.travelshare.fragment.ShowDialog;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.GiaoDich;
+import com.duan.travelshare.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,9 +44,11 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
     DatabaseReference databaseReferencePhong = firebaseDatabase.getReference("Phong");
     DatabaseReference databaseReferenceGD = firebaseDatabase.getReference("GiaoDich");
     DatabaseReference databaseReferenceTB = firebaseDatabase.getReference("ThongBao");
+    DatabaseReference databaseReferenceUser = firebaseDatabase.getReference("User");
     private FirebaseAuth mAuth;
     Locale localeVN = new Locale("vi", "VN");
     NumberFormat fm = NumberFormat.getCurrencyInstance(localeVN);
+    User user;
     public TongGiaoDichdapter(List<GiaoDich> list, Context context) {
         this.list = list;
         this.context = context;
@@ -121,6 +125,7 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
             listP = list.get(position);
             String key = listP.getIdPhong();
             final Dialog dialog = new Dialog(context);
+            dialog.getWindow().getAttributes().windowAnimations = R.style.up_down;
             dialog.setContentView(R.layout.giaodich);
             dialog.setCancelable(true);
             Window window = dialog.getWindow();
@@ -200,9 +205,24 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
                             databaseReferenceGD.child(listP.getIdGD()).setValue(listP);
                             databaseReferenceTB.child(idThongBao).child("trangThai").setValue("1");
                             trangThai.setText("ĐÃ XÁC NHẬN");
-                            dong.setVisibility(View.VISIBLE);
-                            ok.setVisibility(View.GONE);
-                            huy.setVisibility(View.GONE);
+                            databaseReferenceUser.child(listP.getIdUser()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    user = snapshot.getValue(User.class);
+                                    String token = user.getToken();
+                                    ChiTietPhongHomeFragment.sendNotifications(token, "Đơn hàng đã được xác nhận", "CLick để xem chi tiết");
+                                    dong.setVisibility(View.VISIBLE);
+                                    ok.setVisibility(View.GONE);
+                                    huy.setVisibility(View.GONE);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
+
                         }
 
                         @Override
@@ -223,10 +243,25 @@ public class TongGiaoDichdapter extends RecyclerView.Adapter<TongGiaoDichdapter.
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             databaseReferenceGD.child(listP.getIdPhong()).setValue(listP);
                             databaseReferenceTB.child(idThongBao).child("trangThai").setValue("2");
-                            dong.setVisibility(View.VISIBLE);
-                            trangThai.setText("ĐÃ HỦY");
-                            ok.setVisibility(View.GONE);
-                            huy.setVisibility(View.GONE);
+
+                            databaseReferenceUser.child(listP.getIdUser()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    user = snapshot.getValue(User.class);
+                                    String token = user.getToken();
+                                    ChiTietPhongHomeFragment.sendNotifications(user.getToken(), "Đơn hàng đã bị hủy", "Click để xem chi tiết");
+                                    dong.setVisibility(View.VISIBLE);
+                                    trangThai.setText("ĐÃ HỦY");
+                                    ok.setVisibility(View.GONE);
+                                    huy.setVisibility(View.GONE);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
                         }
 
                         @Override

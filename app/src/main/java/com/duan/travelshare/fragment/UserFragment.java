@@ -2,6 +2,7 @@ package com.duan.travelshare.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -41,6 +42,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -169,6 +171,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
 
     private void changePass() {
         final Dialog dialog = new Dialog(getActivity());
+        dialog.getWindow().getAttributes().windowAnimations = R.style.up_down;
         dialog.setContentView(R.layout.change_pass);
         dialog.setCancelable(true);
         Window window = dialog.getWindow();
@@ -191,27 +194,48 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         changePass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+                progressDialog.show();
+                progressDialog.setMessage("Đang cập nhật...");
                 final String passOld, passNew, passNew2;
                 passOld = pass.getText().toString();
                 passNew = newPass.getText().toString();
                 passNew2 = newPass2.getText().toString();
                 //Check mật khẩu cũ và mật khẩu mới
                 if (validatePassNew2() & validatePassNew() & validatePassOld()) {
-                    mAuth.getCurrentUser().updatePassword(passNew)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        databaseReference.child(uID).child("password").setValue(passNew);
-                                        show.show("Đổi mật khẩu thành công!");
-                                        dialog.dismiss();
-                                    }
-                                    else{
-                                        show.show("Đổi mật khẩu thất bại!");
 
-                                    }
-                                }
-                            });
+
+                    final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    AuthCredential credential = EmailAuthProvider.getCredential(mAuth.getCurrentUser().getEmail(), passOld);
+                    user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                user.updatePassword(passNew)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    databaseReference.child(uID).child("password").setValue(passNew);
+                                                    show.show("Đổi mật khẩu thành công!");
+                                                    dialog.dismiss();
+                                                    progressDialog.dismiss();
+                                                    FirebaseAuth.getInstance().signOut();
+                                                    LoginFragment fragment = new LoginFragment();
+                                                    getActivity().getSupportFragmentManager()
+                                                            .beginTransaction()
+                                                            .replace(R.id.frame, fragment)
+                                                            .commit();
+                                                } else {
+                                                    show.show("Đổi mật khẩu thất bại!");
+                                                    progressDialog.dismiss();
+                                                }
+                                            }
+                                        });
+                            }
+                        }
+                    });
+
                 }
 
 

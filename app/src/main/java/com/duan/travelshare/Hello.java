@@ -18,7 +18,7 @@ public class Hello extends AppCompatActivity {
 
             public void run() {
                 try {
-                    sleep(2300);
+                    sleep(2000);
                 } catch (Exception e) {
 
                 } finally {
@@ -35,7 +35,5 @@ public class Hello extends AppCompatActivity {
         super.onPause();
         finish();
     }
-
-
 }
 

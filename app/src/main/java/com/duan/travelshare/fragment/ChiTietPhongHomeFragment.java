@@ -106,7 +106,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
     RelativeLayout chitiet;
     ViewPager viewPager;
     LinearLayout pager_indicator;
-    private APIService apiService;
+    static APIService apiService;
 
     public ChiTietPhongHomeFragment() {
         // Required empty public constructor
@@ -132,8 +132,10 @@ public class ChiTietPhongHomeFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
+                    Toast.makeText(getActivity(), "Đã thêm vào phòg yêu thích", Toast.LENGTH_SHORT).show();
                     databaseReferenceSave.child(idPhong).setValue(new Save(mAuth.getCurrentUser().getUid(), idPhong));
                 } else {
+                    Toast.makeText(getActivity(), "Hủy phòng yêu thích", Toast.LENGTH_SHORT).show();
                     databaseReferenceSave.child(idPhong).removeValue();
                 }
             }
@@ -287,6 +289,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
 
     private void sendSMS() {
         final Dialog dialog1 = new Dialog(getActivity());
+        dialog1.getWindow().getAttributes().windowAnimations = R.style.up_down;
         dialog1.setContentView(R.layout.sendmasenger);
         dialog1.setCancelable(true);
         Window window = dialog1.getWindow();
@@ -336,6 +339,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
 
     private void makePhoneCall() {
         final Dialog dialog = new Dialog(getActivity());
+        dialog.getWindow().getAttributes().windowAnimations = R.style.up_down;
         dialog.setContentView(R.layout.call);
         dialog.setCancelable(true);
         Window window = dialog.getWindow();
@@ -392,6 +396,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
 
     private void datPhong() {
         final Dialog dialog = new Dialog(getActivity());
+        dialog.getWindow().getAttributes().windowAnimations = R.style.up_down;
         dialog.setContentView(R.layout.datphong);
         dialog.setCancelable(true);
         Window window = dialog.getWindow();
@@ -585,8 +590,8 @@ public class ChiTietPhongHomeFragment extends Fragment {
                                     if (!token.equals("")) {
                                         Toast.makeText(getActivity(), token, Toast.LENGTH_SHORT).show();
 
-                                        String title = "CÓ ĐƠN ĐẶT PHÒNG MỚI";
-                                        String message = fullUser.getUserName()+" đã đặt phòng của bạn.";
+                                        String title = "Có đơn đặt phòng mới";
+                                        String message = fullUser.getUserName()+" đã đặt phòng của bạn. Vui lòng xác nhận giao dịch.";
                                         sendNotifications(token, title, message);
                                     }
 
@@ -755,7 +760,7 @@ public class ChiTietPhongHomeFragment extends Fragment {
         });
     }
 
-    public void sendNotifications(String usertoken, String title, String message) {
+    public static void sendNotifications(String usertoken, String title, String message) {
         Data data = new Data(title, message);
         Sender sender = new Sender(data, usertoken);
         apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
@@ -764,7 +769,6 @@ public class ChiTietPhongHomeFragment extends Fragment {
             public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
                 if (response.code() == 200) {
                     if (response.body().success != 1) {
-                        Toast.makeText(getActivity(), "Failed ", Toast.LENGTH_LONG);
                     }
                 }
             }

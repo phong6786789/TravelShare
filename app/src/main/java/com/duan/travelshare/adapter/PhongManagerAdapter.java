@@ -177,6 +177,7 @@ public class PhongManagerAdapter extends RecyclerView.Adapter<PhongManagerAdapte
                                 }
                             });
                     AlertDialog alertDialog = builder.create();
+                    alertDialog.getWindow().getAttributes().windowAnimations = R.style.up_down;
                     alertDialog.show();
 
                 }

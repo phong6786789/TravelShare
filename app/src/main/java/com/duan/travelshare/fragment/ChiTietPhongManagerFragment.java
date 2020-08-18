@@ -133,6 +133,7 @@ public class ChiTietPhongManagerFragment extends Fragment {
                 listHinh.clear();
                 final String key = chiTietPhong.getIdPhong();
                 final Dialog dialog = new Dialog(getActivity());
+                dialog.getWindow().getAttributes().windowAnimations = R.style.up_down;
                 dialog.setContentView(R.layout.add_room);
                 dialog.setCancelable(true);
                 Window window = dialog.getWindow();
@@ -164,9 +165,11 @@ public class ChiTietPhongManagerFragment extends Fragment {
                     switch (chiTietPhong.getImgPhong().size()) {
                         case 1:
                             Picasso.with(getActivity()).load(chiTietPhong.getImgPhong().get(0)).into(h1);
+                            h2.setVisibility(View.VISIBLE);
                             listHinh.add(new HinhPhong("h1", Uri.parse(chiTietPhong.getImgPhong().get(0))));
                             break;
                         case 2:
+                            h3.setVisibility(View.VISIBLE);
                             Picasso.with(getActivity()).load(chiTietPhong.getImgPhong().get(0)).into(h1);
                             Picasso.with(getActivity()).load(chiTietPhong.getImgPhong().get(1)).into(h2);
                             listHinh.add(new HinhPhong("h1", Uri.parse(chiTietPhong.getImgPhong().get(0))));
@@ -303,6 +306,16 @@ public class ChiTietPhongManagerFragment extends Fragment {
                         giaPhong.setText("");
                         diaChi.setText("");
                         moTa.setText("");
+                        image_uri = null;
+                        listHinh.clear();
+                        listImageFireBase.clear();
+                        listHinhPhong.clear();
+                        h1.setImageResource(R.drawable.addroom);
+                        h2.setImageResource(R.drawable.addroom);
+                        h2.setVisibility(View.INVISIBLE);
+                        h3.setImageResource(R.drawable.addroom);
+                        h3.setVisibility(View.INVISIBLE);
+
                     }
                 });
 
@@ -500,6 +513,7 @@ public class ChiTietPhongManagerFragment extends Fragment {
                 if (!checkLink) {
                     listHinh.add(new HinhPhong("h1", image_uri));
                 }
+                h2.setVisibility(View.VISIBLE);
                 break;
             case 2:
                 checkLink = false;
@@ -517,6 +531,7 @@ public class ChiTietPhongManagerFragment extends Fragment {
                 if (!checkLink) {
                     listHinh.add(new HinhPhong("h2", image_uri));
                 }
+                h3.setVisibility(View.VISIBLE);
                 break;
             case 3:
                 checkLink = false;

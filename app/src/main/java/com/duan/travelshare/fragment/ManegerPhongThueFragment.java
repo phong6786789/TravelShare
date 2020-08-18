@@ -65,7 +65,7 @@ import static android.app.Activity.RESULT_OK;
 public class ManegerPhongThueFragment extends Fragment {
 
     ShowDialog showDialog;
-    FloatingActionButton btnAddPhongThue;
+    ImageView btnAddPhongThue;
     ArrayList<ChiTietPhong> list = new ArrayList<>();
     RecyclerView rcvphong;
     public static PhongManagerAdapter chiTietPhongAdapter;
@@ -437,6 +437,7 @@ public class ManegerPhongThueFragment extends Fragment {
                         if (hinhPhong.getIdHinh().matches("h1")) {
                             checkLink = true;
                             listHinh.set(i, new HinhPhong("h1", image_uri));
+
                             break;
                         }
                     }
@@ -444,6 +445,8 @@ public class ManegerPhongThueFragment extends Fragment {
                 if (!checkLink) {
                     listHinh.add(new HinhPhong("h1", image_uri));
                 }
+                h2.setVisibility(View.VISIBLE);
+                h3.setVisibility(View.INVISIBLE);
                 break;
             case 2:
                 checkLink = false;
@@ -454,6 +457,7 @@ public class ManegerPhongThueFragment extends Fragment {
                         if (hinhPhong.getIdHinh().matches("h2")) {
                             checkLink = true;
                             listHinh.set(i, new HinhPhong("h2", image_uri));
+
                             break;
                         }
                     }
@@ -461,6 +465,7 @@ public class ManegerPhongThueFragment extends Fragment {
                 if (!checkLink) {
                     listHinh.add(new HinhPhong("h2", image_uri));
                 }
+                h3.setVisibility(View.VISIBLE);
                 break;
             case 3:
                 checkLink = false;

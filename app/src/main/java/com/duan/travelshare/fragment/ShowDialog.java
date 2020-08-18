@@ -25,6 +25,7 @@ public class ShowDialog {
 
     public void show(String text) {
         dialog = new Dialog(activity);
+        dialog.getWindow().getAttributes().windowAnimations = R.style.up_down;
         dialog.setContentView(R.layout.show);
         dialog.setCancelable(true);
         Window window = dialog.getWindow();

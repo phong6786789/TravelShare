@@ -128,6 +128,7 @@ public class KhachGiaoDichAdapter extends RecyclerView.Adapter<KhachGiaoDichAdap
             int position = getLayoutPosition();
             final GiaoDich listP = list.get(position);
             final Dialog dialog = new Dialog(context);
+            dialog.getWindow().getAttributes().windowAnimations = R.style.up_down;
             dialog.setContentView(R.layout.giaodich);
             dialog.setCancelable(true);
             Window window = dialog.getWindow();

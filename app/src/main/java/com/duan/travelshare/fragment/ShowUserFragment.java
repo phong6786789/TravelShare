@@ -195,7 +195,7 @@ public class ShowUserFragment extends Fragment {
                 showDialog.show("Vui lòng nhập đúng số điện thoại!");
             } else if (addressx.length() < 10) {
                 showDialog.show("Vui lòng nhập đầy đủ địa chỉ!");
-            } else {
+            } else if (image_uri == null) {
                 FullUser fullUsers = new FullUser(uID, namex, cmndx, emailx, birthdayx, phonex, addressx, fullUser.getLinkImage());
                 databaseReferenceFull.child(uID).setValue(fullUsers);
                 progressDialog.dismiss();
@@ -203,6 +203,8 @@ public class ShowUserFragment extends Fragment {
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.frame, new UserFragment())
                         .commit();
+            } else {
+                insertImage(image_uri);
             }
         }
 

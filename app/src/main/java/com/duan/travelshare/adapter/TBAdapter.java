@@ -20,10 +20,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.duan.travelshare.MainActivity;
 import com.duan.travelshare.R;
+import com.duan.travelshare.fragment.ChiTietPhongHomeFragment;
 import com.duan.travelshare.model.ChiTietPhong;
 import com.duan.travelshare.model.FullUser;
 import com.duan.travelshare.model.GiaoDich;
 import com.duan.travelshare.model.ThongBao;
+import com.duan.travelshare.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -50,6 +52,8 @@ public class TBAdapter extends RecyclerView.Adapter<TBAdapter.ViewHolder> {
     DatabaseReference databaseReferencePhong = firebaseDatabase.getReference("Phong");
     DatabaseReference databaseReferenceFullUser = firebaseDatabase.getReference("FullUser");
     DatabaseReference databaseReferenceGD = firebaseDatabase.getReference("GiaoDich");
+    DatabaseReference databaseReferenceUser = firebaseDatabase.getReference("User");
+
     private FirebaseAuth mAuth;
     Locale localeVN = new Locale("vi", "VN");
     NumberFormat fm = NumberFormat.getCurrencyInstance(localeVN);
@@ -61,6 +65,7 @@ public class TBAdapter extends RecyclerView.Adapter<TBAdapter.ViewHolder> {
     ThongBao thongBao;
     String tenUser = "";
     ArrayList<FullUser> listFull = new ArrayList<>();
+    User user;
 
     public TBAdapter() {
     }
@@ -163,6 +168,7 @@ public class TBAdapter extends RecyclerView.Adapter<TBAdapter.ViewHolder> {
 
                     processDiaglog.show();
                     final Dialog dialog = new Dialog(context);
+                    dialog.getWindow().getAttributes().windowAnimations = R.style.up_down;
                     dialog.setContentView(R.layout.giaodich);
                     dialog.setCancelable(true);
                     Window window = dialog.getWindow();
@@ -246,10 +252,24 @@ public class TBAdapter extends RecyclerView.Adapter<TBAdapter.ViewHolder> {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     databaseReferenceGD.child(giaoDich.getIdGD()).setValue(giaoDich);
-                                    trangThai.setText("ĐÃ XÁC NHẬN");
-                                    dong.setVisibility(View.VISIBLE);
-                                    ok.setVisibility(View.GONE);
-                                    huy.setVisibility(View.GONE);
+                                    databaseReferenceUser.child(giaoDich.getIdUser()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            user = snapshot.getValue(User.class);
+                                            String token = user.getToken();
+                                            ChiTietPhongHomeFragment.sendNotifications(token, "Đơn hàng đã được xác nhận", "CLick để xem chi tiết");
+                                            trangThai.setText("ĐÃ XÁC NHẬN");
+                                            dong.setVisibility(View.VISIBLE);
+                                            ok.setVisibility(View.GONE);
+                                            huy.setVisibility(View.GONE);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+
                                 }
 
                                 @Override
@@ -272,11 +292,26 @@ public class TBAdapter extends RecyclerView.Adapter<TBAdapter.ViewHolder> {
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     databaseReferenceGD.child(giaoDich.getIdGD()).setValue(giaoDich);
                                     databaseReferenceTB.child(giaoDich.getIdGD()).child("trangThai").setValue("2");
-                                    trangThai.setText("ĐÃ HỦY");
-                                    dong.setVisibility(View.VISIBLE);
-                                    ok.setVisibility(View.GONE);
-                                    huy.setVisibility(View.GONE);
-                                    processDiaglog.dismiss();
+
+                                    databaseReferenceUser.child(giaoDich.getIdUser()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            user = snapshot.getValue(User.class);
+                                            String token = user.getToken();
+                                            ChiTietPhongHomeFragment.sendNotifications(token, "Đơn hàng đã bị hủy", "Click để xem chi tiết");
+                                            trangThai.setText("ĐÃ HỦY");
+                                            dong.setVisibility(View.VISIBLE);
+                                            ok.setVisibility(View.GONE);
+                                            huy.setVisibility(View.GONE);
+                                            processDiaglog.dismiss();
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+
                                 }
 
                                 @Override

@@ -178,8 +178,7 @@ public class LoginFragment extends Fragment {
                                                 .commit();
                                         progressDialog.dismiss();
                                     } else {
-                                        Toast.makeText(getActivity(), "Đăng nhập thất bại",
-                                                Toast.LENGTH_SHORT).show();
+                                        showDialog.show("Tài khoản hoặc mật khẩu không chính xác");
                                         progressDialog.dismiss();
                                     }
                                 }
