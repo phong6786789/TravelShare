@@ -6,9 +6,10 @@
     android:background="@color/blue"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".Hello">
+    tools:context="com.duan.travelshare.Hello">
 
     <TextView
+        android:gravity="center"
         android:theme="@style/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

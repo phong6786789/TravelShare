@@ -46,7 +46,6 @@
         </com.facebook.shimmer.ShimmerFrameLayout>
     </RelativeLayout>
     <LinearLayout
-        android:visibility="gone"
         android:id="@+id/lnEmtyGDKhach"
         android:orientation="vertical"
         android:gravity="center"

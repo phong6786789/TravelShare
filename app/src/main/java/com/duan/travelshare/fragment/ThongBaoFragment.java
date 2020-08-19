@@ -61,16 +61,18 @@ public class ThongBaoFragment extends Fragment {
         lnEmty = view.findViewById(R.id.lnEmtyTB);
         mAuth = FirebaseAuth.getInstance();
         containerx = (ShimmerFrameLayout) view.findViewById(R.id.shimmer_view_container);
-       try {
+        init();
+
+        try {
            if (mAuth.getCurrentUser() != null) {
                uID = mAuth.getCurrentUser().getUid();
                containerx.startShimmerAnimation();
-               init();
                getAllTB();
 //            setUpFireBase();
            }
            else {
                lnEmty.setVisibility(View.VISIBLE);
+               containerx.setVisibility(View.GONE);
            }
        }
        catch (Exception e){

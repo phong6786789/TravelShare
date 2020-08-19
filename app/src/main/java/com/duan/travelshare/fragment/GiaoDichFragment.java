@@ -62,6 +62,7 @@ public class GiaoDichFragment extends Fragment {
     LinearLayout lnEmty;
     private ViewPager pager;
     private TabLayout tabLayout;
+
     public GiaoDichFragment() {
         // Required empty public constructor
     }
@@ -72,7 +73,6 @@ public class GiaoDichFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_giao_dich, container, false);
         lnEmty = view.findViewById(R.id.lnEmtyGD);
-
         init();
         return view;
     }
@@ -105,10 +105,5 @@ public class GiaoDichFragment extends Fragment {
         title.setText("GIAO DỊCH");
         back.setVisibility(View.INVISIBLE);
     }
-
-
-
-
-
 
 }
